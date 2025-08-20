@@ -9,7 +9,7 @@ import TheLayout from '@/components/TheLayout.vue';
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'HomeView',
+  name: 'CalendarioView',
   components: {
     TheLayout
   }
