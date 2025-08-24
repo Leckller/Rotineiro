@@ -48,6 +48,9 @@ public class User implements UserDetails {
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
+  @OneToMany(mappedBy = "user")
+  private List<Routine> routines;
+
   @Override
   @JsonIgnore
   public Collection<? extends GrantedAuthority> getAuthorities() {

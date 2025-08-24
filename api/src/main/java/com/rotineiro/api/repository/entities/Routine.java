@@ -41,7 +41,14 @@ public class Routine {
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "routines")
+  @OneToMany(mappedBy = "routine")
   private List<Task> tasks;
+
+  @OneToMany(mappedBy = "routine")
+  private List<RoutineHistory> routineHistories;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
 }

@@ -2,11 +2,8 @@ package com.rotineiro.api.repository.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,15 +11,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tasks")
-public class Task {
+@Table(name = "task_histories")
+public class TaskHistory {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @Column(nullable = false)
-  private String name;
+  private boolean completed = false;
 
   @Column(nullable = false)
   private double estimate;
@@ -33,17 +30,8 @@ public class Task {
   @Column(nullable = false)
   private LocalDateTime finishedAt;
 
-  @CreationTimestamp
-  private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
-
-  @OneToMany(mappedBy = "task")
-  private List<TaskHistory> taskHistories;
-
   @ManyToOne
-  @JoinColumn(name = "routine_id", nullable = false)
-  private Routine routine;
+  @JoinColumn(name = "task_id", nullable = false)
+  private Task task;
 
 }
