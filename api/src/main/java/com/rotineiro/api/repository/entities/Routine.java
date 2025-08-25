@@ -29,10 +29,8 @@ public class Routine {
   @Enumerated(EnumType.STRING)
   private PriorityEnum priority = PriorityEnum.LOW;
 
-  @Column(nullable = false)
   private LocalDateTime startedAt;
 
-  @Column(nullable = false)
   private LocalDateTime finishedAt;
 
   @CreationTimestamp
