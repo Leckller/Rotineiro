@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import RotinaView from '@/views/RotinaView.vue'
+import CalendarioView from '@/views/CalendarioView.vue'
+import DashboardView from '@/views/DashboardView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,17 +13,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'rotina',
-    component: HomeView
+    component: RotinaView
   },
   {
     path: '/',
     name: 'calendario',
-    component: HomeView
+    component: CalendarioView
   },
   {
     path: '/',
     name: 'dashboard',
-    component: HomeView
+    component: DashboardView
   }
 ]
 

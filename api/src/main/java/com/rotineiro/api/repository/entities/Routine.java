@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,10 +30,8 @@ public class Routine {
   @Enumerated(EnumType.STRING)
   private PriorityEnum priority = PriorityEnum.LOW;
 
-  @Column(nullable = false)
   private LocalDateTime startedAt;
 
-  @Column(nullable = false)
   private LocalDateTime finishedAt;
 
   @CreationTimestamp
@@ -41,7 +40,14 @@ public class Routine {
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "routines")
-  private List<Task> tasks;
+  @OneToMany(mappedBy = "routine")
+  private List<Task> tasks = new ArrayList<Task>();
+
+  @OneToMany(mappedBy = "routine")
+  private List<RoutineHistory> routineHistories = new ArrayList<RoutineHistory>();;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
 }

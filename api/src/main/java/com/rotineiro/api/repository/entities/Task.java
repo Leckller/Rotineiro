@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,12 +25,12 @@ public class Task {
   private String name;
 
   @Column(nullable = false)
-  private double estimate;
+  private Double estimate;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime startedAt;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime finishedAt;
 
   @CreationTimestamp
@@ -38,8 +39,15 @@ public class Task {
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
+  @OneToMany(mappedBy = "task")
+  private List<TaskHistory> taskHistories;
+
   @ManyToOne
   @JoinColumn(name = "routine_id", nullable = false)
-  private Routine routines;
+  private Routine routine;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
 }

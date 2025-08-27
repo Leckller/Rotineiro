@@ -50,6 +50,7 @@ public class UserController {
     TokenDto tokenDto = new TokenDto(token);
     DefaultResponse<TokenDto> response = new DefaultResponse<TokenDto>();
     response.setMessage("Usuário criado com sucesso!");
+    response.setResult(tokenDto);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
