@@ -14,10 +14,10 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
   List<Task> findAllByUserUsername(String username);
   @Modifying
   @Query("update Task t set t.routine.id = :routineId " +
-      "where t.id in :taskIds and t.user.id = :userId")
+         "where t.id in :taskIds and t.user.username = :username")
   int assignTasksToRoutine(@Param("routineId") Integer routineId,
                            @Param("taskIds") List<Integer> taskIds,
-                           @Param("userId") Integer userId);
+                           @Param("username") String username);
 
   List<Task> findAllByIdInAndUserId(List<Integer> taskIds, Integer userId);
 }

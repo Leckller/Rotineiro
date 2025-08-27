@@ -7,6 +7,7 @@ import com.rotineiro.api.repository.entities.Task;
 import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,12 @@ public class TaskService {
 
   }
 
-
-
+  @Transactional
+  public void assingTasksToRoutine(String username, Integer routineId, List<Integer> taskIds ) {
+    int updated = this.taskRepo.assignTasksToRoutine(routineId, taskIds, username);
+    if (updated != taskIds.size()) {
+      System.out.println("Alguma das tarefas não existe.");
+    }
+  }
 
 }

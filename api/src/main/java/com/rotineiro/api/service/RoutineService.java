@@ -24,10 +24,13 @@ public class RoutineService {
   private RoutineHistoryRepository routineHistoryRepository;
   @Autowired
   private UserService userService;
+  @Autowired
+  private TaskService taskService;
 
-  public RoutineService(RoutineRepository routineRepo, RoutineHistoryRepository routineHistoryRepository) {
+  public RoutineService(RoutineRepository routineRepo, RoutineHistoryRepository routineHistoryRepository, TaskService taskService) {
     this.routineRepo = routineRepo;
     this.routineHistoryRepository = routineHistoryRepository;
+    this.taskService = taskService;
   }
 
   public Routine getRoutinebyId(String username, Integer routineId) throws NotFoundException, UnauthorizedException {
@@ -64,11 +67,13 @@ public class RoutineService {
       routine.setPriority(dto.priority());
     }
 
+    this.routineRepo.save(routine);
+
     if(!dto.tasks().isEmpty()) {
-      // TODO
+      this.taskService.assingTasksToRoutine(username, routine.getId(), dto.tasks());
     }
 
-    return this.routineRepo.save(routine);
+    return routine;
 
   }
 
