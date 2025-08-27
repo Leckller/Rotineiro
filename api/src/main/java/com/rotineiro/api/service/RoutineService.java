@@ -1,9 +1,11 @@
 package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
+import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.RoutineRepository;
 import com.rotineiro.api.repository.entities.Routine;
+import com.rotineiro.api.repository.entities.Task;
 import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
@@ -67,11 +69,6 @@ public class RoutineService {
     }
 
     return this.routineRepo.save(routine);
-
-  }
-
-  public Routine addTaskToRoutine(String username) {
-    User user = this.userService.findByUsername(username);
 
   }
 

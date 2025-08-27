@@ -27,10 +27,10 @@ public class Task {
   @Column(nullable = false)
   private double estimate;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime startedAt;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime finishedAt;
 
   @CreationTimestamp
@@ -45,5 +45,9 @@ public class Task {
   @ManyToOne
   @JoinColumn(name = "routine_id", nullable = false)
   private Routine routine;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
 }
