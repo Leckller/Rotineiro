@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -40,10 +41,10 @@ public class Routine {
   private LocalDateTime updatedAt;
 
   @OneToMany(mappedBy = "routine")
-  private List<Task> tasks;
+  private List<Task> tasks = new ArrayList<Task>();
 
   @OneToMany(mappedBy = "routine")
-  private List<RoutineHistory> routineHistories;
+  private List<RoutineHistory> routineHistories = new ArrayList<RoutineHistory>();;
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)

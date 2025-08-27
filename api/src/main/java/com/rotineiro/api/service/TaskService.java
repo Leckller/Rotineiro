@@ -17,11 +17,11 @@ import java.util.Objects;
 @Service
 public class TaskService {
 
-  @Autowired
   private final TaskRepository taskRepo;
   private final UserService userService;
   private final TaskHistoryRepository taskHistRepo;
 
+  @Autowired
   public TaskService(TaskRepository taskRepo, UserService userService, TaskHistoryRepository taskHistRepo) {
     this.taskRepo = taskRepo;
     this.userService = userService;

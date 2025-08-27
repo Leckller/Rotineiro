@@ -47,7 +47,7 @@ public class RoutineService {
 
   }
 
-  public List<Routine> getRoutines(String username) {
+  public List<Routine> getAllRoutines(String username) {
 
     User user = this.userService.findByUsername(username);
     return this.routineRepo.findAllByUser(user);
@@ -69,7 +69,7 @@ public class RoutineService {
 
     this.routineRepo.save(routine);
 
-    if(!dto.tasks().isEmpty()) {
+    if(dto.tasks() != null && !dto.tasks().isEmpty()) {
       this.taskService.assingTasksToRoutine(username, routine.getId(), dto.tasks());
     }
 
