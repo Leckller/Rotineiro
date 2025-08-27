@@ -1,13 +1,12 @@
 package com.rotineiro.api.controller.dtos.Task;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record CreateTaskDto(
 
     @NotBlank(message = "O Nome é obrigatório")
@@ -19,14 +18,8 @@ public record CreateTaskDto(
     @JsonProperty("estimate")
     Double estimate,
 
-    @NotNull(message = "É necessário o ID da rotina")
     @JsonProperty("routine_id")
-    Integer routineId,
-
-    @NotEmpty(message = "É necessário passar uma lista com um ou mais ids de tarefas")
-    @Size(min = 1, max = 10, message = "É necessário pelo menos um id da tarefa, com limite de 10")
-    @JsonProperty("tasks")
-    List<Integer> taskId
+    Integer routineId
 
 ) {
 }

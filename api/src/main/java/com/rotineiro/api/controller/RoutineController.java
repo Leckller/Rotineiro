@@ -43,9 +43,11 @@ public class RoutineController {
 
   @PostMapping
   public ResponseEntity<DefaultResponse<RoutineDto>> createRoutine(@Valid @RequestBody CreateRoutineDto dto) {
+
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     Routine routine = this.routineService.createRoutine(username, dto);
     DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+
     response.setMessage("Rotina criada com sucesso!");
     response.setResult(RoutineDto.fromEntity(routine));
 

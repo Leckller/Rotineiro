@@ -10,6 +10,7 @@ import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,18 +19,16 @@ import java.util.Objects;
 @Service
 public class RoutineService {
 
-  @Autowired
-  private RoutineRepository routineRepo;
-  @Autowired
-  private RoutineHistoryRepository routineHistoryRepository;
-  @Autowired
-  private UserService userService;
-  @Autowired
-  private TaskService taskService;
+  private final RoutineRepository routineRepo;
+  private final RoutineHistoryRepository routineHistoryRepository;
+  private final UserService userService;
+  private final TaskService taskService;
 
-  public RoutineService(RoutineRepository routineRepo, RoutineHistoryRepository routineHistoryRepository, TaskService taskService) {
+  @Autowired
+  public RoutineService(RoutineRepository routineRepo, RoutineHistoryRepository routineHistoryRepository, UserService userService, @Lazy TaskService taskService) {
     this.routineRepo = routineRepo;
     this.routineHistoryRepository = routineHistoryRepository;
+    this.userService = userService;
     this.taskService = taskService;
   }
 

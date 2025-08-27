@@ -3,12 +3,14 @@ package com.rotineiro.api.service;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.TaskRepository;
+import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.Task;
 import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +21,14 @@ public class TaskService {
 
   private final TaskRepository taskRepo;
   private final UserService userService;
+  private final RoutineService routineService;
   private final TaskHistoryRepository taskHistRepo;
 
   @Autowired
-  public TaskService(TaskRepository taskRepo, UserService userService, TaskHistoryRepository taskHistRepo) {
+  public TaskService(TaskRepository taskRepo, UserService userService, @Lazy RoutineService routineService, TaskHistoryRepository taskHistRepo) {
     this.taskRepo = taskRepo;
     this.userService = userService;
+    this.routineService = routineService;
     this.taskHistRepo = taskHistRepo;
   }
 
@@ -52,6 +56,13 @@ public class TaskService {
     Task task = new Task();
     task.setName(dto.name());
     task.setEstimate(dto.estimate());
+    task.setUser(user);
+
+    if(dto.routineId() != null) {
+      Routine routine = this.routineService.getRoutinebyId(username, dto.routineId());
+      task.setRoutine(routine);
+    }
+
     return this.taskRepo.save(task);
 
   }

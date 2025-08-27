@@ -25,7 +25,7 @@ public class Task {
   private String name;
 
   @Column(nullable = false)
-  private double estimate;
+  private Double estimate;
 
   @Column(nullable = true)
   private LocalDateTime startedAt;
