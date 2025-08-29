@@ -1,27 +1,21 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RotinaView from '@/views/RotinaView.vue'
-import CalendarioView from '@/views/CalendarioView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomeView
   },
   {
-    path: '/',
+    path: '/rotinas',
     name: 'rotina',
     component: RotinaView
   },
   {
-    path: '/',
-    name: 'calendario',
-    component: CalendarioView
-  },
-  {
-    path: '/',
+    path: '/dashboard',
     name: 'dashboard',
     component: DashboardView
   }
