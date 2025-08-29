@@ -6,8 +6,11 @@ import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import com.rotineiro.api.service.TokenService;
 import com.rotineiro.api.service.UserService;
+import com.rotineiro.api.utils.DefaultResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +35,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public TokenDto login(@Valid @RequestBody AuthDto authDto) throws UnauthorizedException {
+  public ResponseEntity<DefaultResponse<TokenDto>> login(@Valid @RequestBody AuthDto authDto) throws UnauthorizedException {
 
     User user = this.userService.userExistsAndIsValid(authDto.email(), authDto.password());
 
@@ -41,8 +44,12 @@ public class AuthController {
 
     Authentication auth = authenticationManager.authenticate(usernamePassword);
     String token = tokenService.generateToken(auth.getName());
+    TokenDto tokenDto = new TokenDto(token);
+    DefaultResponse<TokenDto> response = new DefaultResponse<TokenDto>();
+    response.setMessage("Usuário logado com sucesso!");
+    response.setResult(tokenDto);
 
-    return new TokenDto(token);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
 }
