@@ -30,7 +30,7 @@ export const RoutineService = {
     return data as CreateRoutineResponse;
   },
   async getAllRoutines(): Promise<GetAllRoutinesResponse> {
-    const { data } = await api.post("routine/all");
+    const { data } = await api.get("routine/all");
     return data as GetAllRoutinesResponse;
   }
 

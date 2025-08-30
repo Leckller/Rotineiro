@@ -21,12 +21,12 @@ export const UserService = {
     // api.post("", )
   },
   async login(loginRequest: LoginRequest): Promise<LoginResponse> {
-    const { data } = await api.post("user", loginRequest);
+    const { data } = await api.post("auth/login", loginRequest);
     localStorage.setItem("rotineiro_access_token", (data as LoginResponse).response.token)
     return data as LoginResponse
   },
   async register(registerRequest: RegisterRequest): Promise<RegisterResponse> {
-    const { data } = await api.post("auth/login", registerRequest)
+    const { data } = await api.post("user", registerRequest)
     localStorage.setItem("rotineiro_access_token", (data as LoginResponse).response.token)
     return data as RegisterResponse
   },

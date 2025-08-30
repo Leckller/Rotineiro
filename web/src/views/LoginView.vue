@@ -1,6 +1,6 @@
 <template>
   <TheLayout>
-    <form @submit.prevent="handleSubmit">
+    <form @submit="handleSubmit($event)">
 
       <label>
         Email
@@ -12,9 +12,21 @@
         <input type="text" v-model="password">
       </label>
 
+      <label v-if="!login">
+        Nome
+        <input type="text" v-model="name">
+      </label>
+
+      <label v-if="!login">
+        Nome de Usuário
+        <input type="text" v-model="username">
+      </label>
+
 
       <button type="submit">{{ login ? "Logar!" : "Cadastrar!" }}</button>
-      <button @click="handleToggleForm">Não possui uma conta? Crie agora!</button>
+      <button type="button" @click="handleToggleForm">
+        {{ login ? "Não possui uma conta? Crie agora!" : "Já possui uma conta? Faça o login!" }}
+      </button>
 
     </form>
   </TheLayout>
@@ -32,7 +44,9 @@ export default defineComponent({
     return {
       login: false,
       email: "",
-      password: ""
+      password: "",
+      name: "",
+      username: ""
     }
   },
   components: {
@@ -43,8 +57,20 @@ export default defineComponent({
     this.login = url == "login"
   },
   methods: {
-    async handleSubmit() {
-      await UserService.login({ email: this.email, password: this.password });
+    async handleSubmit(e: Event) {
+      e.preventDefault();
+
+      try {
+
+        if (this.login) {
+          await UserService.login({ email: this.email, password: this.password });
+        } else {
+          await UserService.register({ email: this.email, password: this.password, name: this.name, username: this.username });
+        }
+
+      } catch {
+
+      }
       router.push("/home");
     },
     handleToggleForm() {

@@ -1,4 +1,3 @@
-// api.ts
 import axios, { AxiosError } from "axios";
 import { UserService } from "./userService";
 
@@ -9,11 +8,11 @@ const api = axios.create({
 });
 
 export type DefaultResponse<T> = {
-  message: string,
-  response: T
-}
+  message: string;
+  response: T;
+};
 
-// Mensagens centralizadas
+// Mensagens padronizadas
 const errorMessages: Record<number, string> = {
   400: "Bad Request",
   401: "Unauthorized",
@@ -22,44 +21,35 @@ const errorMessages: Record<number, string> = {
   500: "Internal Server Error",
 };
 
-// Interceptor para adicionar token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("rotineiro_access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Adiciona token automaticamente
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("rotineiro_access_token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// Interceptor de resposta
+// Trata respostas/erros
 api.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const status = error.response?.status;
+  (res) => res,
+  async (err: AxiosError) => {
 
-    if (status) {
-      const message = errorMessages[status] || "Unexpected Error";
-
-      // Exibir de forma padronizada (pode trocar alert por toast, logger, etc.)
-      console.error(`API Error [${status}]: ${message}`);
-      alert(message);
-
-      // Caso seja 401, tenta renovar o token e refazer a request
-      if (status === 401 && error.config) {
-        try {
-          await UserService.refreshToken();
-          return api(error.config); // Reenvia a requisição original
-        } catch (refreshError) {
-          console.error("Token refresh failed", refreshError);
-          throw refreshError;
-        }
-      }
+    if (!err.response) {
+      console.error("Network Error:", err.message);
+      alert("Não foi possível conectar ao servidor. Verifique sua conexão.");
+      return Promise.reject(err);
     }
 
-    return Promise.reject(error);
+    const status = err.response?.status;
+    if (!status) return Promise.reject(err);
+
+    const message = errorMessages[status] || "Unexpected Error";
+    console.error(`API Error [${status}]: ${message}`);
+
+    if (status === 401 || status === 403) {
+      localStorage.removeItem("rotineiro_access_token")
+    }
+
+    return Promise.reject(err);
   }
 );
 

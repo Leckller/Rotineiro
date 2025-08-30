@@ -19,11 +19,11 @@ type GetAllTasksResponse = DefaultResponse<TaskEntity[]>
 export const TaskService = {
 
   async createTask(request: CreateTaskRequest): Promise<CreateTaskResponse> {
-    const { data } = await api.post("Task", request);
+    const { data } = await api.post("task", request);
     return data as CreateTaskResponse;
   },
   async getAllTasks(): Promise<GetAllTasksResponse> {
-    const { data } = await api.post("Task/all");
+    const { data } = await api.get("task/all");
     return data as GetAllTasksResponse;
   }
 
