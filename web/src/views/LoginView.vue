@@ -1,6 +1,6 @@
 <template>
   <TheLayout>
-    <form @submit="handleSubmit($event)">
+    <form class="form" @submit="handleSubmit($event)">
 
       <label>
         Email
@@ -67,11 +67,8 @@ export default defineComponent({
         } else {
           await UserService.register({ email: this.email, password: this.password, name: this.name, username: this.username });
         }
-
-      } catch {
-
-      }
-      router.push("/home");
+        router.push("/home");
+      } catch {}
     },
     handleToggleForm() {
       this.login = !this.login;
@@ -79,3 +76,23 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+
+.form {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+</style>

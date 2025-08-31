@@ -2,7 +2,7 @@
 
   <TheHeader />
 
-  <main>
+  <main class="main">
     <TheNotification />
     <slot />
   </main>
@@ -28,3 +28,14 @@ export default defineComponent({
 })
 
 </script>
+
+<style setup>
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+</style>
