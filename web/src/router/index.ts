@@ -32,7 +32,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   const isAuthenticated = localStorage.getItem("rotineiro_access_token");
   if (
     // make sure the user is authenticated

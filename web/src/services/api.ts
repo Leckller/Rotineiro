@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { UserService } from "./userService";
+import { useNotificationStore } from "@/stores/notification";
 
 const api = axios.create({
   baseURL: "http://localhost:8095/",
@@ -43,7 +43,7 @@ api.interceptors.response.use(
     if (!status) return Promise.reject(err);
 
     const message = errorMessages[status] || "Unexpected Error";
-    console.error(`API Error [${status}]: ${message}`);
+    useNotificationStore().createNotification({title: `API Error [${status}]: ${message}`})
 
     if (status === 401 || status === 403) {
       localStorage.removeItem("rotineiro_access_token")
