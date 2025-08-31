@@ -5,7 +5,7 @@
     <section>
       <h3>Tarefas de hoje</h3>
       <article v-for="task in tasks" :key="task.id">
-
+        {{ task.name }}
       </article>
     </section>
 

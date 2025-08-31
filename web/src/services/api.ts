@@ -44,7 +44,7 @@ api.interceptors.response.use(
 
     useNotificationStore().createNotification({
       time: 2500,
-      title: `[${errorMessages[status]}]: ${(err.response.data as DefaultResponse<undefined>).message}`,
+      title: `${errorMessages[status]}: ${(err.response.data as DefaultResponse<undefined>).message}`,
       type: NotificationEnum.error
     })
 

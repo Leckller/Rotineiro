@@ -2,26 +2,10 @@
   <TheLayout>
     <form class="form" @submit="handleSubmit($event)">
 
-      <label>
-        Email
-        <input type="text" v-model="email">
-      </label>
-
-      <label>
-        Senha
-        <input type="text" v-model="password">
-      </label>
-
-      <label v-if="!login">
-        Nome
-        <input type="text" v-model="name">
-      </label>
-
-      <label v-if="!login">
-        Nome de Usuário
-        <input type="text" v-model="username">
-      </label>
-
+      <TheInput v-model="email" label="Email"/>
+      <TheInput v-model="password" label="Senha"/>
+      <TheInput v-model="name" label="Nome"/>
+      <TheInput v-model="username" label="Nome de Usuário"/>
 
       <button type="submit">{{ login ? "Logar!" : "Cadastrar!" }}</button>
       <button type="button" @click="handleToggleForm">
@@ -33,6 +17,7 @@
 </template>
 
 <script lang="ts">
+import TheInput from '@/components/TheInput.vue';
 import TheLayout from '@/components/TheLayout.vue';
 import router from '@/router';
 import { UserService } from '@/services/userService';
@@ -50,7 +35,8 @@ export default defineComponent({
     }
   },
   components: {
-    TheLayout
+    TheLayout,
+    TheInput
   },
   mounted() {
     const url = router.currentRoute.value.path
