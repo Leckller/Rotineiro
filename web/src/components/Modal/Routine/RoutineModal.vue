@@ -5,6 +5,7 @@
     <form @submit="createRotuine($event)">
 
       <TheInput label="Nome da Rotina" :min="3" v-model="name" />
+      <TheInput label="Descrição" :min="5" v-model="description" />
 
       <TheSelect v-model="selectedOption"
         :options="[{ name: 'Baixa', value: 1 }, { name: 'Média', value: 2 }, { name: 'Alta', value: 2 }]"
@@ -35,6 +36,7 @@ export default defineComponent({
     return {
       name: "",
       selectedOption: 1,
+      description: "",
       modalStore: useModalStore()
     }
   },
@@ -57,7 +59,7 @@ export default defineComponent({
             break;
         }
 
-        await RoutineService.createRoutine({ priority, name: this.name });
+        await RoutineService.createRoutine({ priority, name: this.name, description: this.description });
 
         this.modalStore.closeModal()
 

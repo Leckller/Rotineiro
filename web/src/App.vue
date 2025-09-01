@@ -11,6 +11,18 @@
   color: #2c3e50;
 }
 
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 1s;
+}
+
+button:hover {
+  transition: all 1s;
+  transform: scale(1.01);
+}
+
 * {
   padding: 0;
   margin: 0;

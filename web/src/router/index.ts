@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import RotinaView from '@/views/RotinaView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
+import EditRoutineView from '@/views/EditRoutineView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/routine',
     name: 'rotina',
     component: RotinaView
+  },
+  {
+    path: '/routine/:id',
+    name: 'editRotina',
+    component: EditRoutineView
   },
   {
     path: '/dashboard',
