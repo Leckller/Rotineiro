@@ -1,6 +1,8 @@
 <template>
   <TheLayout>
-    <button>
+
+
+    <button @click="createRoutine()">
       Criar Rotina
     </button>
   </TheLayout>
@@ -22,9 +24,9 @@ export default defineComponent({
     TheLayout
   },
   methods: {
-    CreateRoutine() {
+    createRoutine() {
       this.modalStore.openAndSetModal("createRoutine");
     }
-  }
+  },
 })
 </script>

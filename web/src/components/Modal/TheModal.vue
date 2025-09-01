@@ -3,7 +3,7 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>{{ title }}</h2>
-        <button @click="modalStore.closeModal()" aria-label="Fechar">
+        <button @click="modalStore.closeModal()" aria-label="Fechar" class="fechar">
           <FontAwesomeIcon icon="xmark" />
         </button>
       </div>
@@ -42,7 +42,9 @@ export default {
     });
   },
   unmounted() {
-    document.removeEventListener('keydown');
+    document.removeEventListener('keydown', () => {
+      return;
+    });
   }
 };
 </script>
@@ -91,6 +93,10 @@ export default {
   border: none;
   outline: none;
   font-size: x-large;
+}
+
+.fechar {
+  cursor: pointer;
 }
 
 .modal-content {

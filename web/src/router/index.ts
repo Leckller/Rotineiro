@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/rotinas',
+    path: '/routine',
     name: 'rotina',
     component: RotinaView
   },

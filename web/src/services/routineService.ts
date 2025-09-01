@@ -15,7 +15,7 @@ export type RoutineEntity = {
 export type CreateRoutineRequest = {
   name: string,
   priority: PriorityEnum,
-  tasks: number[]
+  tasks?: number[]
 }
 
 export type CreateRoutineResponse = DefaultResponse<RoutineEntity>

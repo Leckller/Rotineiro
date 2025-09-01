@@ -3,7 +3,11 @@
   <TheHeader />
 
   <main class="main">
+
+    <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+
     <TheNotification />
+
     <slot />
   </main>
 
@@ -16,26 +20,37 @@ import { defineComponent } from 'vue';
 import TheHeader from './TheHeader.vue';
 import TheFooter from './TheFooter.vue';
 import TheNotification from './Modal/TheNotification.vue';
+import RoutineModal from './Modal/Routine/RoutineModal.vue';
+import { useModalStore } from '@/stores/modals';
 
 
 export default defineComponent({
   name: "TheLayout",
+  data() {
+    return {
+      modalStore: useModalStore()
+    }
+  },
   components: {
     TheHeader,
     TheNotification,
-    TheFooter
+    TheFooter,
+    RoutineModal
+  },
+  methods: {
+    getActiveModal() {
+      return this.modalStore.actualModalName
+    }
   }
 })
 
 </script>
 
 <style setup>
-
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-
 </style>
