@@ -60,6 +60,7 @@ public class RoutineService {
     Routine routine = new Routine();
 
     routine.setName(dto.name());
+    routine.setDescription(dto.description());
     routine.setUser(user);
 
     if(dto.priority() != null) {
