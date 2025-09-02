@@ -20,7 +20,7 @@ public class ExceptionController {
 
   @ExceptionHandler({BadRequestException.class})
   public ResponseEntity<MessageDto> handleBadRequest(Exception exception) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
         new com.rotineiro.api.utils.MessageDto(exception.getMessage())
     );
   }

@@ -30,6 +30,9 @@ public class Routine {
   @Enumerated(EnumType.STRING)
   private PriorityEnum priority = PriorityEnum.LOW;
 
+  @Column(nullable = false)
+  private String description;
+
   private LocalDateTime startedAt;
 
   private LocalDateTime finishedAt;

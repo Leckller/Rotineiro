@@ -2,7 +2,15 @@
 
   <TheHeader />
 
-  <main>
+  <main class="main">
+
+    <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
+    <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
+    <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
+
+    <TheNotification />
+
     <slot />
   </main>
 
@@ -14,14 +22,47 @@
 import { defineComponent } from 'vue';
 import TheHeader from './TheHeader.vue';
 import TheFooter from './TheFooter.vue';
+import TheNotification from './Modal/TheNotification.vue';
+import RoutineModal from './Modal/Routine/RoutineModal.vue';
+import { useModalStore } from '@/stores/modals';
+import CreateTaskModal from './Modal/Routine/CreateTaskModal.vue';
+import EditTaskModal from './Modal/Task/EditTaskModal.vue';
+import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
 
 
 export default defineComponent({
   name: "TheLayout",
+  data() {
+    return {
+      modalStore: useModalStore()
+    }
+  },
   components: {
     TheHeader,
-    TheFooter
+    TheNotification,
+    TheFooter,
+    EditTaskModal,
+    CreateTaskModal,
+    DeleteTaskModal,
+    RoutineModal
+  },
+  methods: {
+    getActiveModal() {
+      return this.modalStore.actualModalName
+    }
   }
 })
 
 </script>
+
+<style setup>
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 8px;
+}
+</style>

@@ -18,6 +18,9 @@ public record CreateRoutineDto(
     @JsonProperty("priority")
     PriorityEnum priority,
 
+    @JsonProperty("description")
+    String description,
+
     @JsonProperty("tasks")
     List<Integer> tasks
 

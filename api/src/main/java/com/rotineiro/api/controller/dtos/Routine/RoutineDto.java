@@ -22,9 +22,13 @@ public record RoutineDto(
     List<TaskDto> tasks,
 
     @JsonProperty("priority")
-    PriorityEnum priority
+    PriorityEnum priority,
+
+    @JsonProperty("description")
+    String description
+
 ) {
   public static RoutineDto fromEntity(Routine routine) {
-    return new RoutineDto(routine.getId(), routine.getName(), routine.getTasks().stream().map(TaskDto::fromEntity).toList(), routine.getPriority());
+    return new RoutineDto(routine.getId(), routine.getName(), routine.getTasks().stream().map(TaskDto::fromEntity).toList(), routine.getPriority(), routine.getDescription());
   }
 }

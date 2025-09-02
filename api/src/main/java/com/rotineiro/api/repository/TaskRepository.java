@@ -18,6 +18,11 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
   int assignTasksToRoutine(@Param("routineId") Integer routineId,
                            @Param("taskIds") List<Integer> taskIds,
                            @Param("username") String username);
+  @Query("SELECT t FROM Task t " +
+         "WHERE (t.routine IS NULL OR t.routine.id <> :routineId) " +
+         "AND t.user.username = :username")
+  List<Task> availableTasksForRoutine(@Param("routineId") Integer routineId,
+                                      @Param("username") String username);
 
   List<Task> findAllByIdInAndUserId(List<Integer> taskIds, Integer userId);
 }

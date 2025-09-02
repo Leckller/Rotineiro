@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view />
 </template>
 
 <style>
@@ -11,10 +11,30 @@
   color: #2c3e50;
 }
 
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 1s;
+}
+
+button:hover {
+  transition: all .5s;
+  transform: scale(1.01);
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
