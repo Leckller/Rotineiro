@@ -144,6 +144,7 @@ export default defineComponent({
 
 .card-info {
   display: flex;
+  flex-direction: row;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -157,7 +158,6 @@ export default defineComponent({
   padding: 16px;
   border-radius: 8px;
   border: solid 1px black;
-  width: 100%;
   max-width: 160px;
 }
 

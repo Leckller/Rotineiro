@@ -23,6 +23,7 @@
     </form>
 
     <form v-if="!createTaskModal" @submit="addTasks($event)">
+      <p v-if="tasks.length <= 0">Nenhuma tarefa disponível</p>
       <section class="suggested-tasks" v-if="tasks.length > 0">
         <h3>Tarefas Já Criadas</h3>
 
@@ -47,7 +48,7 @@
 
       </section>
 
-      <button type="submit" class="confirm">
+      <button v-if="tasks.length > 0" type="submit" class="confirm">
         Adicionar Tarefas
       </button>
     </form>
@@ -66,6 +67,7 @@ import TheInput from '@/components/TheInput.vue';
 import { useModalStore } from '@/stores/modals';
 import { TaskEntity, TaskService } from '@/services/taskService';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { NotificationType, useNotificationStore } from '@/stores/notification';
 
 export default defineComponent({
   name: "RoutineModal",
@@ -76,7 +78,9 @@ export default defineComponent({
       selectedTasks: [] as number[],
       name: "",
       estimate: "",
-      modalStore: useModalStore()
+      modalStore: useModalStore(),
+      notificationStore: useNotificationStore()
+
     }
   },
   components: { TheModal, TheInput, FontAwesomeIcon },
@@ -89,6 +93,9 @@ export default defineComponent({
     }
   },
   methods: {
+    showNotification(notification: NotificationType) {
+      this.notificationStore.createNotification(notification)
+    },
     handleAddTask(task: TaskEntity) {
       this.selectedTasks.push(task.id);
     },
@@ -101,6 +108,8 @@ export default defineComponent({
       try {
 
         await TaskService.assingTasksToRoutine({ routine_id: +this.$route.params.id, tasks: this.selectedTasks })
+        this.showNotification({ title: "Tarefas Adicionadas Com Sucesso!", time: 2000 })
+        this.modalStore.closeModal()
 
       } catch {
 
@@ -112,6 +121,8 @@ export default defineComponent({
       try {
 
         await TaskService.createTask({ routine_id: +this.$route.params.id, estimate: +this.estimate, name: this.name });
+        this.showNotification({ title: "Tarefa Criada Com Sucesso!", time: 2000 })
+        this.modalStore.closeModal()
 
       } catch {
 
