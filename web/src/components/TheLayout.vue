@@ -5,6 +5,7 @@
   <main class="main">
 
     <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
 
     <TheNotification />
 
@@ -22,6 +23,7 @@ import TheFooter from './TheFooter.vue';
 import TheNotification from './Modal/TheNotification.vue';
 import RoutineModal from './Modal/Routine/RoutineModal.vue';
 import { useModalStore } from '@/stores/modals';
+import CreateTaskModal from './Modal/Routine/CreateTaskModal.vue';
 
 
 export default defineComponent({
@@ -35,6 +37,7 @@ export default defineComponent({
     TheHeader,
     TheNotification,
     TheFooter,
+    CreateTaskModal,
     RoutineModal
   },
   methods: {
@@ -54,5 +57,6 @@ export default defineComponent({
   justify-content: center;
   width: 100%;
   height: 100%;
+  gap: 8px;
 }
 </style>

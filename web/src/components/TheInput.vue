@@ -1,7 +1,7 @@
 <template>
   <label class="label">
     {{ label }}
-    <input :required="required" :minlength="min" class="input" type="text" :value="modelValue"
+    <input :required="required" :minlength="min" class="input" :type="type" :value="modelValue"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
   </label>
 </template>
@@ -27,6 +27,10 @@ export default defineComponent({
     required: {
       type: Boolean,
       default: true,
+    },
+    type: {
+      type: String,
+      default: "Text",
     },
   },
   emits: {

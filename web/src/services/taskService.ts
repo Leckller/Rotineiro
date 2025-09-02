@@ -16,6 +16,8 @@ type CreateTaskResponse = DefaultResponse<TaskEntity>
 
 type GetAllTasksResponse = DefaultResponse<TaskEntity[]>
 
+type GetAvailableTasksResponse = DefaultResponse<TaskEntity[]>
+
 export const TaskService = {
 
   async createTask(request: CreateTaskRequest): Promise<CreateTaskResponse> {
@@ -25,6 +27,10 @@ export const TaskService = {
   async getAllTasks(): Promise<GetAllTasksResponse> {
     const { data } = await api.get("task/all");
     return data as GetAllTasksResponse;
+  },
+  async getAvailableTasks(routineId: number): Promise<GetAvailableTasksResponse> {
+    const { data } = await api.get(`task/${routineId}`);
+    return data as GetAvailableTasksResponse;
   }
 
 }

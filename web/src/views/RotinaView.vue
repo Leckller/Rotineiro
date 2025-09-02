@@ -24,7 +24,7 @@
 
     </button>
 
-    <button @click="createRoutine()">
+    <button class="card" @click="createRoutine()">
       Criar Rotina
     </button>
   </TheLayout>

@@ -19,7 +19,7 @@ button {
 }
 
 button:hover {
-  transition: all 1s;
+  transition: all .5s;
   transform: scale(1.01);
 }
 
