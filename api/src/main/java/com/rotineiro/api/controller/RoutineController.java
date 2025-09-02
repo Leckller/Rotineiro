@@ -41,6 +41,17 @@ public class RoutineController {
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> getByRoutineId(@PathVariable Integer id) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.getRoutinebyId(username, id);
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+    response.setMessage("Uma rotina fresquinha direto do forno!");
+    response.setResult(RoutineDto.fromEntity(routine));
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
   @PostMapping
   public ResponseEntity<DefaultResponse<RoutineDto>> createRoutine(@Valid @RequestBody CreateRoutineDto dto) {
 

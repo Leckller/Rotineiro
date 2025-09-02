@@ -45,6 +45,19 @@ public class TaskController {
     return  ResponseEntity.status(HttpStatus.OK).body(response);
 
   }
+  @GetMapping("/{routineId}")
+  public ResponseEntity<DefaultResponse<List<TaskDto>>> getAvailableTasksForRoutine(@PathVariable Integer routineId) {
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    List<Task> tasks = this.taskService.availableTasksForRoutine(username, routineId);
+    DefaultResponse<List<TaskDto>> response = new DefaultResponse<List<TaskDto>>();
+
+    response.setMessage("Eba tarefas disponíveis!");
+    response.setResult(tasks.stream().map(TaskDto::fromEntity).toList());
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+
+  }
 
   @PostMapping
   public ResponseEntity<DefaultResponse<TaskDto>> createTask(@Valid @RequestBody CreateTaskDto dto) {

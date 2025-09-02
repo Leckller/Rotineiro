@@ -67,6 +67,10 @@ public class TaskService {
 
   }
 
+  public List<Task> availableTasksForRoutine (String username, Integer routineId) {
+    return this.taskRepo.availableTasksForRoutine(routineId, username);
+  }
+
   @Transactional
   public void assingTasksToRoutine(String username, Integer routineId, List<Integer> taskIds ) {
     int updated = this.taskRepo.assignTasksToRoutine(routineId, taskIds, username);
