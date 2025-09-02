@@ -6,6 +6,8 @@
 
     <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
     <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
+    <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
+    <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
 
     <TheNotification />
 
@@ -24,6 +26,8 @@ import TheNotification from './Modal/TheNotification.vue';
 import RoutineModal from './Modal/Routine/RoutineModal.vue';
 import { useModalStore } from '@/stores/modals';
 import CreateTaskModal from './Modal/Routine/CreateTaskModal.vue';
+import EditTaskModal from './Modal/Task/EditTaskModal.vue';
+import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
 
 
 export default defineComponent({
@@ -37,7 +41,9 @@ export default defineComponent({
     TheHeader,
     TheNotification,
     TheFooter,
+    EditTaskModal,
     CreateTaskModal,
+    DeleteTaskModal,
     RoutineModal
   },
   methods: {

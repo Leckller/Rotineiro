@@ -1,10 +1,19 @@
+import { Task, TaskEntity } from "@/services/taskService";
 import { defineStore } from "pinia";
 
 export const useModalStore = defineStore("modals", {
-    state: () => ({ actualModalName: "", open: false }),
+    state: (): { actualModalName: string, open: boolean, infos: { editTask: TaskEntity, rmvTask: TaskEntity } } => (
+        { actualModalName: "", open: false, infos: { editTask: new Task(0, "", 0), rmvTask: new Task(0, "", 0) } }
+    ),
     actions: {
         closeModal() {
             this.open = false
+        },
+        setEditTaskInfos(task: TaskEntity) {
+            this.infos.editTask = task;
+        },
+        setRmvTaskInfos(task: TaskEntity) {
+            this.infos.rmvTask = task;
         },
         openAndSetModal(name: string) {
             this.open = true

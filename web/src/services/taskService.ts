@@ -1,5 +1,17 @@
 import api, { DefaultResponse } from "./api";
 
+export class Task {
+  constructor(id: number, name: string, estimate: number) {
+    this.id = id
+    this.name = name;
+    this.estimate = estimate;
+  }
+
+  public id: number;
+  public name: string;
+  public estimate: number;
+}
+
 export type TaskEntity = {
   id: number,
   name: string,

@@ -1,6 +1,11 @@
 <template>
   <div class="overlay" @click.self="modalStore.closeModal()">
-    <div class="modal" role="dialog" aria-modal="true">
+    <div 
+      class="modal" 
+      :style="{ height: modalHeight }" 
+      role="dialog" 
+      aria-modal="true"
+    >
       <div class="modal-header">
         <h2>{{ title }}</h2>
         <button @click="modalStore.closeModal()" aria-label="Fechar" class="fechar">
@@ -20,31 +25,34 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "TheModal",
-  data() {
-    return {
-      modalStore: useModalStore()
-    }
-  },
   props: {
     title: {
       type: String,
       required: true,
     },
+    modalHeight: {
+      type: String,
+      default: "90%"
+    }
+  },
+  data() {
+    return {
+      modalStore: useModalStore()
+    }
   },
   components: {
     FontAwesomeIcon,
   },
   mounted() {
-    document.addEventListener('keydown', (e) => {
-      if(e.key == "Escape") {
-        this.modalStore.closeModal()
+    this.handleEsc = (e) => {
+      if (e.key === "Escape") {
+        this.modalStore.closeModal();
       }
-    });
+    };
+    document.addEventListener("keydown", this.handleEsc);
   },
   unmounted() {
-    document.removeEventListener('keydown', () => {
-      return;
-    });
+    document.removeEventListener("keydown", this.handleEsc);
   }
 };
 </script>
@@ -71,8 +79,8 @@ export default {
   padding: 8px 16px;
   border-radius: 16px;
   max-width: 500px;
-  height: 90%;
   width: 100%;
+  /* removi height fixo daqui pra deixar a prop funcionar */
 }
 
 @media (max-width: 500px) {

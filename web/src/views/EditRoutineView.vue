@@ -54,10 +54,10 @@
 
           <div>
             <p>{{ task.name }}</p>
-            <button>
+            <button @click="handleEditTask(task)">
               <FontAwesomeIcon icon="pencil" />
             </button>
-            <button>
+            <button @click="handleRmvTask(task)">
               <FontAwesomeIcon icon="trash" />
             </button>
           </div>
@@ -74,6 +74,7 @@
 <script lang="ts">
 import TheLayout from '@/components/TheLayout.vue';
 import { RoutineEntity, RoutineService } from '@/services/routineService';
+import { TaskEntity } from '@/services/taskService';
 import { useModalStore } from '@/stores/modals';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue';
@@ -109,6 +110,14 @@ export default defineComponent({
         this.routine = (await RoutineService.getRoutineById(+id)).response;
       } catch (error) {
       }
+    },
+    handleEditTask(task: TaskEntity) {
+      this.modalStore.setEditTaskInfos(task);
+      this.modalStore.openAndSetModal("editTask");
+    },
+    handleRmvTask(task: TaskEntity) {
+      this.modalStore.setRmvTaskInfos(task);
+      this.modalStore.openAndSetModal("rmvTask");
     }
   }
 })
@@ -174,5 +183,4 @@ export default defineComponent({
   align-items: center;
   justify-content: space-around;
 }
-
 </style>
