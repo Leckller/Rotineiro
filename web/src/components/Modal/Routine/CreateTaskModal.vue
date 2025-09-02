@@ -11,7 +11,7 @@
       </button>
     </div>
 
-    <form @submit="createTask($event)">
+    <form v-if="createTaskModal" @submit="createTask($event)">
 
       <TheInput label="Nome da Tarefa" :min="3" v-model="name" />
       <TheInput label="Estimativa da Tarefa ( Minutos )" :min="3" type="number" v-model="estimate" />
@@ -22,7 +22,7 @@
 
     </form>
 
-    <form @submit="addTasks($event)">
+    <form v-if="!createTaskModal" @submit="addTasks($event)">
       <section class="suggested-tasks" v-if="tasks.length > 0">
         <h3>Tarefas Já Criadas</h3>
 
@@ -30,16 +30,16 @@
           <article class="card" v-for="task in tasks" :key="task.id">
             <div class="card-info">
               <p>
-                {{ task.name }}
+                <strong>{{ task.name }}</strong>
               </p>
               <p>
                 {{ task.estimate }} minutos
               </p>
             </div>
-            <button class="card-btn blue" v-if="!selectedTasks.some(t => t.id == task.id)" @click="handleAddTask(task)">
+            <button class="card-btn blue" v-if="!selectedTasks.some(t => t == task.id)" @click="handleAddTask(task)">
               <FontAwesomeIcon icon="add" />
             </button>
-            <button class="card-btn red" v-if="selectedTasks.some(t => t.id == task.id)" @click="handleRmvTask(task)">
+            <button class="card-btn red" v-if="selectedTasks.some(t => t == task.id)" @click="handleRmvTask(task)">
               <FontAwesomeIcon icon="trash" />
             </button>
           </article>
@@ -52,6 +52,8 @@
       </button>
     </form>
 
+    <div class="space" />
+    <div class="space" />
   </TheModal>
 
 
@@ -71,7 +73,7 @@ export default defineComponent({
     return {
       createTaskModal: true,
       tasks: [] as TaskEntity[],
-      selectedTasks: [] as TaskEntity[],
+      selectedTasks: [] as number[],
       name: "",
       estimate: "",
       modalStore: useModalStore()
@@ -88,13 +90,21 @@ export default defineComponent({
   },
   methods: {
     handleAddTask(task: TaskEntity) {
-      this.selectedTasks.push(task);
+      this.selectedTasks.push(task.id);
     },
     handleRmvTask(task: TaskEntity) {
-      this.selectedTasks = this.selectedTasks.filter((t) => t.id != task.id);
+      this.selectedTasks = this.selectedTasks.filter((t) => t != task.id);
     },
     async addTasks(e: Event) {
+      e.preventDefault();
 
+      try {
+
+        await TaskService.assingTasksToRoutine({ routine_id: +this.$route.params.id, tasks: this.selectedTasks })
+
+      } catch {
+
+      }
     },
     async createTask(e: Event) {
       e.preventDefault();
@@ -134,10 +144,12 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   padding: 16px;
-  max-width: 200px;
   border-radius: 16px;
   border: solid 1px black;
   font-size: small;
+  width: 100%;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 .card-info {
