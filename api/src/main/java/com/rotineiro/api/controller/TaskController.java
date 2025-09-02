@@ -2,6 +2,7 @@ package com.rotineiro.api.controller;
 
 import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
+import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.controller.dtos.Task.TaskDto;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.Task;
@@ -11,6 +12,7 @@ import com.rotineiro.api.utils.DefaultResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,5 +75,27 @@ public class TaskController {
 
   }
 
+  @DeleteMapping("/{taskId}")
+  public ResponseEntity<DefaultResponse<Null>> deleteTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    this.taskService.deleteTask(username, taskId);
+
+    DefaultResponse<Null> response = new DefaultResponse<Null>();
+    response.setMessage("Tarefa deletada com sucesso!");
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PatchMapping("/{taskId}")
+  public ResponseEntity<DefaultResponse<TaskDto>> editTask(@PathVariable Integer taskId, @Valid @RequestBody EditTaskDto dto) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.editTask(username, taskId, dto);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Tarefa editada com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
 
 }

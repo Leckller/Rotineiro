@@ -1,6 +1,7 @@
 package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
+import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.TaskRepository;
 import com.rotineiro.api.repository.entities.Routine;
@@ -77,6 +78,24 @@ public class TaskService {
     if (updated != taskIds.size()) {
       System.out.println("Alguma das tarefas não existe.");
     }
+  }
+
+  public void deleteTask(String username, Integer taskId) {
+    Task task = this.getTaskById(username, taskId);
+    this.taskRepo.delete(task);
+  }
+
+  public Task editTask(String username, Integer taskId, EditTaskDto dto) {
+    Task task = this.getTaskById(username, taskId);
+
+    if (dto.name() != null) {
+      task.setName(dto.name());
+    }
+    if (dto.estimate() != null) {
+      task.setEstimate(dto.estimate());
+    }
+
+    return this.taskRepo.save(task);
   }
 
 }
