@@ -29,6 +29,7 @@ import TheInput from '@/components/TheInput.vue';
 import TheSelect from '@/components/Forms/TheSelect.vue';
 import { PriorityEnum, RoutineService } from '@/services/routineService';
 import { useModalStore } from '@/stores/modals';
+import { useRoutineStore } from '@/stores/Routine';
 
 export default defineComponent({
   name: "RoutineModal",
@@ -37,7 +38,8 @@ export default defineComponent({
       name: "",
       selectedOption: 1,
       description: "",
-      modalStore: useModalStore()
+      modalStore: useModalStore(),
+      routineStore: useRoutineStore()
     }
   },
   components: { TheModal, TheInput, TheSelect },
@@ -59,7 +61,8 @@ export default defineComponent({
             break;
         }
 
-        await RoutineService.createRoutine({ priority, name: this.name, description: this.description });
+        const routine = await RoutineService.createRoutine({ priority, name: this.name, description: this.description });
+        this.routineStore.addRoutine(routine.response);
 
         this.modalStore.closeModal()
 

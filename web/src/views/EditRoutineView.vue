@@ -8,8 +8,8 @@
           <FontAwesomeIcon icon="arrow-left" />
         </button>
         <div class="routine-info">
-          <h2>{{ routine.name }}</h2>
-          <p>{{ routine.description }}</p>
+          <h2>{{ routineStore.selectedRoutine.name }}</h2>
+          <p>{{ routineStore.selectedRoutine.description }}</p>
         </div>
         <button>
           <FontAwesomeIcon icon="pencil" />
@@ -23,7 +23,7 @@
             Duração Total
           </p>
           <p>
-            {{routine.tasks.reduce((pv, curr) => {
+            {{routineStore.selectedRoutine.tasks.reduce((pv, curr) => {
               return pv + curr.estimate
             }, 0)}}
           </p>
@@ -34,7 +34,7 @@
             Atividades
           </p>
           <p>
-            {{ routine.tasks.length }}
+            {{ routineStore.selectedRoutine.tasks.length }}
           </p>
         </article>
       </section>
@@ -50,7 +50,7 @@
           </button>
         </div>
 
-        <TaskCard v-for="task in routine.tasks" :key="task.id" :task="task" />
+        <TaskCard v-for="task in routineStore.selectedRoutine.tasks" :key="task.id" :task="task" />
 
       </section>
     </div>
@@ -62,8 +62,9 @@
 <script lang="ts">
 import TaskCard from '@/components/Task/TaskCard.vue';
 import TheLayout from '@/components/TheLayout.vue';
-import { RoutineEntity, RoutineService } from '@/services/routineService';
+import { RoutineService } from '@/services/routineService';
 import { useModalStore } from '@/stores/modals';
+import { useRoutineStore } from '@/stores/Routine';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue';
 
@@ -76,13 +77,7 @@ export default defineComponent({
   data() {
     return {
       modalStore: useModalStore(),
-      routine: {
-        description: "",
-        id: 0,
-        name: "",
-        priority: 0,
-        tasks: []
-      } as RoutineEntity
+      routineStore: useRoutineStore()
     }
   },
   async created() {
@@ -95,7 +90,8 @@ export default defineComponent({
     async getRoutine() {
       try {
         const id = this.$route.params.id as string;
-        this.routine = (await RoutineService.getRoutineById(+id)).response;
+        const routine = (await RoutineService.getRoutineById(+id)).response;
+        this.routineStore.selectRoutine(routine);
       } catch (error) {
       }
     },

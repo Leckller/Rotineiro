@@ -25,6 +25,7 @@ import TheModal from '../TheModal.vue';
 import { useModalStore } from '@/stores/modals';
 import { NotificationEnum, NotificationType, useNotificationStore } from '@/stores/notification';
 import { Task, TaskService } from '@/services/taskService';
+import { useRoutineStore } from '@/stores/Routine';
 
 export default defineComponent({
   name: "DeleteTaskModal",
@@ -33,7 +34,8 @@ export default defineComponent({
     return {
       tarefa: "",
       modalStore: useModalStore(),
-      notificationStore: useNotificationStore()
+      notificationStore: useNotificationStore(),
+      routineStore: useRoutineStore()
     }
   },
   created() {
@@ -50,9 +52,12 @@ export default defineComponent({
     async handleRmvTask() {
       try {
         const { message } = await TaskService.deleteTask(this.modalStore.infos.rmvTask.id);
+        this.routineStore.rmvTaskFromSelectedRoutine(this.modalStore.infos.rmvTask.id);
         this.showNotification({ title: message, time: 2000 })
+        this.modalStore.closeModal()
       } catch (error) {
         this.showNotification({ title: "Aconteceu um Erro durante a remoção da tarefa", time: 2000, type: NotificationEnum.error })
+        this.modalStore.closeModal()
       }
     }
   }

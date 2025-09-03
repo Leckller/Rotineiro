@@ -5,6 +5,30 @@ export enum PriorityEnum {
   LOW, MEDIUM, HIGH
 }
 
+export class Routine implements RoutineEntity {
+
+  constructor(
+    id: number,
+    name: string,
+    tasks: TaskEntity[],
+    priority: PriorityEnum,
+    description: string) {
+
+    this.description = description;
+    this.id = id;
+    this.name = name;
+    this.tasks = tasks;
+    this.priority = priority;
+
+  }
+
+  public id: number;
+  public name: string;
+  public tasks: TaskEntity[];
+  public priority: PriorityEnum;
+  public description: string;
+}
+
 export type RoutineEntity = {
   id: number,
   name: string,
