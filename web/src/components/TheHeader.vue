@@ -1,19 +1,17 @@
 <template>
 
-  <header>
-    <RouterLink to="/home">
-      Home
+  <header class="header">
+    <RouterLink class="link" to="/home">
+      <h2>Rotineiro</h2>
     </RouterLink>
 
-    <RouterLink to="/routine">
+    <RouterLink class="link" to="/routine">
       Rotinas
     </RouterLink>
 
-    <RouterLink to="/dashboard">
+    <RouterLink class="link" to="/dashboard">
       Dashboard
     </RouterLink>
-
-
   </header>
 
 </template>
@@ -29,3 +27,30 @@ export default defineComponent({
 })
 
 </script>
+
+<style scoped>
+.header {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
+  justify-content: space-around;
+}
+
+@media (max-width: 900px) {
+  .header {
+    position: absolute;
+    z-index: -10;
+    width: 0;
+    visibility: hidden;
+  }
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+  font-size: x-large;
+  outline: none;
+}
+</style>

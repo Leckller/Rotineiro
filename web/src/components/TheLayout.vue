@@ -4,7 +4,7 @@
 
   <main class="main">
 
-    <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <CreateRoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
     <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
     <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
     <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
@@ -23,11 +23,11 @@ import { defineComponent } from 'vue';
 import TheHeader from './TheHeader.vue';
 import TheFooter from './TheFooter.vue';
 import TheNotification from './Modal/TheNotification.vue';
-import RoutineModal from './Modal/Routine/RoutineModal.vue';
 import { useModalStore } from '@/stores/modals';
-import CreateTaskModal from './Modal/Routine/CreateTaskModal.vue';
 import EditTaskModal from './Modal/Task/EditTaskModal.vue';
 import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
+import CreateTaskModal from './Modal/Task/CreateTaskModal.vue';
+import CreateRoutineModal from './Modal/Routine/CreateRoutineModal.vue';
 
 
 export default defineComponent({
@@ -44,7 +44,7 @@ export default defineComponent({
     EditTaskModal,
     CreateTaskModal,
     DeleteTaskModal,
-    RoutineModal
+    CreateRoutineModal
   },
   methods: {
     getActiveModal() {
@@ -60,9 +60,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 25px 0;
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
   gap: 8px;
 }
 </style>
