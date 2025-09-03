@@ -11,7 +11,7 @@
           <h2>{{ routineStore.selectedRoutine.name }}</h2>
           <p>{{ routineStore.selectedRoutine.description }}</p>
         </div>
-        <button>
+        <button @click="editRoutine()">
           <FontAwesomeIcon icon="pencil" />
         </button>
       </section>
@@ -85,7 +85,10 @@ export default defineComponent({
   },
   methods: {
     createTask() {
-      this.modalStore.openAndSetModal("createTask")
+      this.modalStore.openAndSetModal("createTask");
+    },
+    editRoutine() {
+      this.modalStore.openAndSetModal("editRoutine");
     },
     async getRoutine() {
       try {

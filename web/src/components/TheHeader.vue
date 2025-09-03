@@ -31,26 +31,30 @@ export default defineComponent({
 <style scoped>
 .header {
   display: flex;
+  flex-wrap: wrap;
+  /* permite quebrar linha no mobile */
   gap: 16px;
-  align-items: end;
-  justify-content: center;
-  width: 100%;
+  align-items: center;
   justify-content: space-around;
+  width: 100%;
+  padding: 8px;
+  /* ajuda a não colar nas bordas */
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
   .header {
-    position: absolute;
-    z-index: -10;
-    width: 0;
-    visibility: hidden;
+    display: none;
   }
 }
 
 .link {
   color: black;
   text-decoration: none;
-  font-size: x-large;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  /* responsivo */
   outline: none;
+  white-space: nowrap;
+  /* evita quebra feia em duas linhas */
 }
 </style>

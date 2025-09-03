@@ -1,10 +1,14 @@
 <template>
 
-  <TheHeader />
+  <TheHeader v-if="$route.path != '/'" />
 
   <main class="main">
 
+    <!-- Routines -->
+    <EditRoutineModal v-if="modalStore.open && getActiveModal() == 'editRoutine'" />
     <CreateRoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+
+    <!-- Tasks  -->
     <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
     <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
     <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
@@ -14,7 +18,7 @@
     <slot />
   </main>
 
-  <TheFooter />
+  <TheFooter v-if="$route.path != '/'" />
 
 </template>
 
@@ -28,6 +32,7 @@ import EditTaskModal from './Modal/Task/EditTaskModal.vue';
 import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
 import CreateTaskModal from './Modal/Task/CreateTaskModal.vue';
 import CreateRoutineModal from './Modal/Routine/CreateRoutineModal.vue';
+import EditRoutineModal from './Modal/Routine/EditRoutineModal.vue';
 
 
 export default defineComponent({
@@ -43,6 +48,7 @@ export default defineComponent({
     TheFooter,
     EditTaskModal,
     CreateTaskModal,
+    EditRoutineModal,
     DeleteTaskModal,
     CreateRoutineModal
   },

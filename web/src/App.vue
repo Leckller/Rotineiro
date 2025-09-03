@@ -29,11 +29,20 @@ button:hover {
   box-sizing: border-box;
 }
 
-html, body, #app {
+html{
+  width: 100vw;
+  height: 100vh;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#app {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
   align-items: center;
 }

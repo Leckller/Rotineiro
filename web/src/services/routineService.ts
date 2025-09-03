@@ -44,7 +44,15 @@ export type CreateRoutineRequest = {
   tasks?: number[]
 }
 
+export type EditRoutineRequest = {
+  name: string,
+  priority: PriorityEnum,
+  description: string
+}
+
 export type CreateRoutineResponse = DefaultResponse<RoutineEntity>
+
+export type EditRoutineResponse = DefaultResponse<RoutineEntity>
 
 export type getRoutineByIdResponse = DefaultResponse<RoutineEntity>
 
@@ -56,6 +64,10 @@ export const RoutineService = {
   async createRoutine(request: CreateRoutineRequest): Promise<CreateRoutineResponse> {
     const { data } = await api.post("routine", request);
     return data as CreateRoutineResponse;
+  },
+  async editRoutine(request: EditRoutineRequest): Promise<EditRoutineResponse> {
+    const { data } = await api.patch("routine", request);
+    return data as EditRoutineResponse;
   },
   async getAllRoutines(): Promise<GetAllRoutinesResponse> {
     const { data } = await api.get("routine/all");

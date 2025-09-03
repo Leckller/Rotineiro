@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardView
-  }
+  },
 ]
 
 const router = createRouter({
