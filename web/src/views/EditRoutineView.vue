@@ -50,19 +50,7 @@
           </button>
         </div>
 
-        <article v-for="task in routine.tasks" :key="task.id" class="card-task">
-
-          <div>
-            <p>{{ task.name }}</p>
-            <button @click="handleEditTask(task)">
-              <FontAwesomeIcon icon="pencil" />
-            </button>
-            <button @click="handleRmvTask(task)">
-              <FontAwesomeIcon icon="trash" />
-            </button>
-          </div>
-
-        </article>
+        <TaskCard v-for="task in routine.tasks" :key="task.id" :task="task" />
 
       </section>
     </div>
@@ -72,9 +60,9 @@
 </template>
 
 <script lang="ts">
+import TaskCard from '@/components/Task/TaskCard.vue';
 import TheLayout from '@/components/TheLayout.vue';
 import { RoutineEntity, RoutineService } from '@/services/routineService';
-import { TaskEntity } from '@/services/taskService';
 import { useModalStore } from '@/stores/modals';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue';
@@ -83,7 +71,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: "EditRoutineView",
   components: {
-    TheLayout, FontAwesomeIcon
+    TheLayout, FontAwesomeIcon, TaskCard
   },
   data() {
     return {
@@ -111,14 +99,6 @@ export default defineComponent({
       } catch (error) {
       }
     },
-    handleEditTask(task: TaskEntity) {
-      this.modalStore.setEditTaskInfos(task);
-      this.modalStore.openAndSetModal("editTask");
-    },
-    handleRmvTask(task: TaskEntity) {
-      this.modalStore.setRmvTaskInfos(task);
-      this.modalStore.openAndSetModal("rmvTask");
-    }
   }
 })
 
@@ -173,6 +153,7 @@ export default defineComponent({
 .tasks {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
   width: 100%;
 }
