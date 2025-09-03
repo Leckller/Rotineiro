@@ -32,6 +32,13 @@ public class ExceptionController {
     );
   }
 
+  @ExceptionHandler({UnauthorizedException.class })
+  public ResponseEntity<MessageDto> handleUnauthorized(Exception exception) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+        new MessageDto(exception.getMessage())
+    );
+  }
+
   @ExceptionHandler({BlockedException.class })
   public ResponseEntity<MessageDto> handleBlocked(Exception exception) {
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
