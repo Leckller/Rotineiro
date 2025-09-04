@@ -1,6 +1,6 @@
 <template>
   <TheLayout>
-    xd
+    Dashboard
   </TheLayout>
 </template>
 

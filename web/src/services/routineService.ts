@@ -65,8 +65,8 @@ export const RoutineService = {
     const { data } = await api.post("routine", request);
     return data as CreateRoutineResponse;
   },
-  async editRoutine(request: EditRoutineRequest): Promise<EditRoutineResponse> {
-    const { data } = await api.patch("routine", request);
+  async editRoutine(request: EditRoutineRequest, routineID: number): Promise<EditRoutineResponse> {
+    const { data } = await api.patch(`routine/${routineID}`, request);
     return data as EditRoutineResponse;
   },
   async getAllRoutines(): Promise<GetAllRoutinesResponse> {

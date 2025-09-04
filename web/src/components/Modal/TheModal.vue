@@ -86,7 +86,7 @@ export default {
 @media (max-width: 900px) {
   .modal {
     border-radius: 0px;
-    height: 100%;
+    height: 100% !important;
   }
 }
 

@@ -8,7 +8,7 @@
           <p>
             {{ routine.name }}
           </p>
-          <button @click="editRoutine(routine.id)">
+          <button class="edit-routine" @click.stop="editRoutine(routine.id)">
             <FontAwesomeIcon icon="pen-to-square" />
           </button>
         </div>
@@ -84,6 +84,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .card-title {
   display: flex;
   justify-content: space-between;
@@ -117,6 +118,11 @@ export default defineComponent({
   padding: 16px;
   border-radius: 8px;
   gap: 8px;
+}
+
+.card:hover {
+  transition: all .5s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .card-header {

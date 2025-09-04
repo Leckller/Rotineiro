@@ -1,35 +1,21 @@
 <template>
 
-  <TheModal title="Editar Tarefa" modalHeight="150px">
-
-    <p>
-      Tem certeza que Deseja apagar a tarefa "<strong>{{ tarefa }}</strong>"
-    </p>
-
-    <div>
-      <button @click="handleCancelRmv">
-        Cancelar
-      </button>
-      <button @click="handleRmvTask">
-        Confirmar
-      </button>
-    </div>
-
-  </TheModal>
+  <TheModalConfirm title="Deseja apagar essa tarefa?" @confirm="handleRmvTask" @cancel="handleCancelRmv"
+    message="Tem certeza que deseja excluir esta tarefa? Essa ação não pode ser desfeita." />
 
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import TheModal from '../TheModal.vue';
 import { useModalStore } from '@/stores/modals';
 import { NotificationEnum, NotificationType, useNotificationStore } from '@/stores/notification';
 import { Task, TaskService } from '@/services/taskService';
 import { useRoutineStore } from '@/stores/Routine';
+import TheModalConfirm from '../TheModalConfirm.vue';
 
 export default defineComponent({
   name: "DeleteTaskModal",
-  components: { TheModal },
+  components: { TheModalConfirm },
   data() {
     return {
       tarefa: "",
@@ -47,7 +33,6 @@ export default defineComponent({
     },
     handleCancelRmv() {
       this.modalStore.infos.rmvTask = new Task(0, "", 0);
-      this.modalStore.closeModal()
     },
     async handleRmvTask() {
       try {

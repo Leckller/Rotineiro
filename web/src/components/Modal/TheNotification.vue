@@ -1,12 +1,8 @@
 <template>
   <div class="notifications">
     <TransitionGroup name="notif" tag="div">
-      <div
-        class="card-notification"
-        :class="getNotificationColorClass(not.type)"
-        v-for="not in getNotifications()"
-        :key="not.id"
-      >
+      <div class="card-notification" :class="getNotificationColorClass(not.type)" v-for="not in getNotifications()"
+        :key="not.id">
         <div class="card-header">
           <p>{{ not.title }}</p>
           <button @click="closeNotificiation(not.id)">
@@ -58,9 +54,11 @@ export default {
 .default-color {
   background-color: rgb(164, 211, 255);
 }
+
 .error-color {
   background-color: rgb(255, 230, 207);
 }
+
 .important-color {
   background-color: rgb(255, 255, 198);
 }
@@ -81,10 +79,16 @@ export default {
   flex-direction: column;
 }
 
+@media (max-width: 400px) {
+  .card-notification {
+    max-width: 300px !important;
+  }
+}
+
 .card-notification {
   display: flex;
   margin: 8px 0;
-  min-width: 320px;
+  min-width: 300px;
   max-width: 400px;
   padding: 16px;
   border-radius: 8px;

@@ -1,6 +1,6 @@
 <template>
 
-  <TheModal title="Criar Rotina">
+  <TheModal title="Editar Rotina">
 
     <form class="form" @submit="editRoutine($event)">
 
@@ -46,6 +46,19 @@ export default defineComponent({
   created() {
     this.name = this.routineStore.selectedRoutine.name;
     this.description = this.routineStore.selectedRoutine.description;
+    let priority = 1
+    switch (this.routineStore.selectedRoutine.priority) {
+      case PriorityEnum.MEDIUM:
+        priority = 2
+        break;
+      case PriorityEnum.HIGH:
+        priority = 3
+        break;
+      default:
+        priority = 1
+        break;
+    }
+    this.selectedOption = priority;
   },
   methods: {
     async editRoutine(e: Event) {
@@ -65,8 +78,8 @@ export default defineComponent({
             break;
         }
 
-        const routine = await RoutineService.editRoutine({ priority, name: this.name, description: this.description });
-        this.routineStore.addRoutine(routine.response);
+        const routine = await RoutineService.editRoutine({ priority, name: this.name, description: this.description }, +this.$route.params.id);
+        this.routineStore.editRoutine(routine.response);
 
         this.modalStore.closeModal()
 

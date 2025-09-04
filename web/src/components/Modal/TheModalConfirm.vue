@@ -13,7 +13,7 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn cancel" @click="close">Cancelar</button>
+        <button class="btn cancel" @click="cancel">Cancelar</button>
         <button class="btn confirm" @click="confirm">Confirmar</button>
       </div>
     </div>
@@ -35,10 +35,14 @@ export default {
     title: { type: String, required: true },
     message: { type: String, default: "" },
   },
-  emits: ["confirm"],
+  emits: ["confirm", "cancel"],
   methods: {
     close() {
-      this.modalStore.closeModal();
+      this.modalStore.closeModal()
+    },
+    cancel() {
+      this.$emit("cancel")
+      this.close();
     },
     confirm() {
       this.$emit("confirm");
@@ -67,6 +71,12 @@ export default {
 }
 
 /* Modal */
+@media (max-width: 450px) {
+  .modal {
+    max-width: 300px !important;
+  }
+}
+
 .modal {
   background-color: white;
   display: flex;

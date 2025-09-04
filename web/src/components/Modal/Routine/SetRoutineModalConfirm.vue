@@ -1,7 +1,7 @@
 <template>
 
-  <TheModalConfirm title="Excluir tarefa?" @confirm="setActualRoutine"
-    message="Tem certeza que deseja excluir esta tarefa? Essa ação não pode ser desfeita." />
+  <TheModalConfirm title="Deseja utilizar essa rotina?" @confirm="setActualRoutine"
+    message="Tem certeza que deseja utilizar esta tarefa? Caso tenha uma em andamento ela será finalizada." />
 
 </template>
 
@@ -10,6 +10,7 @@ import { defineComponent } from 'vue';
 import TheModalConfirm from '../TheModalConfirm.vue';
 import { NotificationEnum, useNotificationStore } from '@/stores/notification';
 import { NotificationType } from '@/stores/notification';
+import { useModalStore } from '@/stores/modals';
 
 
 export default defineComponent({
@@ -17,7 +18,8 @@ export default defineComponent({
   components: { TheModalConfirm },
   data() {
     return {
-      notifcationStore: useNotificationStore()
+      notifcationStore: useNotificationStore(),
+      modalStore: useModalStore()
     }
   },
   methods: {

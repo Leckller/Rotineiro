@@ -16,6 +16,10 @@ export const useRoutineStore = defineStore("routine", {
     setActualRoutine(id: number) {
       this.infos.actualRoutineId = id
     },
+    editRoutine(routine: RoutineEntity) {
+      this.routines = [...this.routines.filter(r => r.id != routine.id), routine]
+      this.selectedRoutine = routine;
+    },
     addRoutine(routine: RoutineEntity) {
       this.routines.push(routine)
     },

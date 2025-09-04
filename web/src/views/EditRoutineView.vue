@@ -3,11 +3,12 @@
   <TheLayout>
 
     <div class="content">
-      <section class="routine-header">
+
+      <section class="header">
         <button>
           <FontAwesomeIcon icon="arrow-left" />
         </button>
-        <div class="routine-info">
+        <div class="header-title">
           <h2>{{ routineStore.selectedRoutine.name }}</h2>
           <p>{{ routineStore.selectedRoutine.description }}</p>
         </div>
@@ -16,11 +17,13 @@
         </button>
       </section>
 
-      <section class="card-info">
-        <article class="card">
+      <section class="routine-info">
+        <article class="card info">
           <p>
-            <FontAwesomeIcon icon="clock" />
-            Duração Total
+            <strong>
+              <FontAwesomeIcon icon="clock" />
+              Duração Total
+            </strong>
           </p>
           <p>
             {{routineStore.selectedRoutine.tasks.reduce((pv, curr) => {
@@ -28,10 +31,12 @@
             }, 0)}}
           </p>
         </article>
-        <article class="card">
+        <article class="card info">
           <p>
-            <FontAwesomeIcon icon="bullseye" />
-            Atividades
+            <strong>
+              <FontAwesomeIcon icon="bullseye" />
+              Atividades
+            </strong>
           </p>
           <p>
             {{ routineStore.selectedRoutine.tasks.length }}
@@ -42,10 +47,10 @@
       <section class="tasks">
 
         <div class="task-header">
-          <p>
+          <h3>
             Atividades da Rotina
-          </p>
-          <button @click="createTask">
+          </h3>
+          <button class="add-task" @click="createTask">
             + Adicionar
           </button>
         </div>
@@ -115,7 +120,7 @@ export default defineComponent({
   padding: 16px;
 }
 
-.routine-header {
+.header {
   display: flex;
   gap: 16px;
   text-align: center;
@@ -123,14 +128,7 @@ export default defineComponent({
   justify-content: space-around;
 }
 
-.routine-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-
-.card-info {
+.header-title {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -139,14 +137,29 @@ export default defineComponent({
   gap: 16px;
 }
 
+.routine-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
 .card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: start;
   padding: 16px;
   border-radius: 8px;
-  border: solid 1px black;
-  max-width: 160px;
+  gap: 8px;
+}
+
+.info {
+  align-items: center !important;
+  font-size: large;
+  width: 40%;
+  flex-grow: 1;
 }
 
 .tasks {
@@ -155,12 +168,22 @@ export default defineComponent({
   align-items: center;
   gap: 16px;
   width: 100%;
+  max-width: 300px;
 }
 
 .task-header {
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+.add-task {
+  color: white;
+  font-size: smaller;
+  background-color: oklch(.623 .214 259.815);
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 200px;
 }
 </style>
