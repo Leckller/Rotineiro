@@ -82,5 +82,10 @@ public class RoutineController {
 
   }
 
+//  @PatchMapping("/start/{routineID}")
+//  public ResponseEntity<DefaultResponse<>> startRoutine(@PathVariable Integer routineID) {
+//
+//  }
+
 
 }

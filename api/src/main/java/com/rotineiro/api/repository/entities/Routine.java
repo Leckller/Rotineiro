@@ -33,9 +33,8 @@ public class Routine {
   @Column(nullable = false)
   private String description;
 
+  @Column(nullable = true)
   private LocalDateTime startedAt;
-
-  private LocalDateTime finishedAt;
 
   @CreationTimestamp
   private LocalDateTime createdAt;

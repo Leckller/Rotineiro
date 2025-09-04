@@ -27,11 +27,11 @@ public class Task {
   @Column(nullable = false)
   private Double estimate;
 
-  @Column(nullable = true)
-  private LocalDateTime startedAt;
+  @Column(nullable = false)
+  private Boolean completed = false;
 
   @Column(nullable = true)
-  private LocalDateTime finishedAt;
+  private LocalDateTime startedAt;
 
   @CreationTimestamp
   private LocalDateTime createdAt;

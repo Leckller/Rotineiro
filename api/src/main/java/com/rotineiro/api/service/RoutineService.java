@@ -8,6 +8,7 @@ import com.rotineiro.api.repository.RoutineRepository;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.Task;
 import com.rotineiro.api.repository.entities.User;
+import com.rotineiro.api.security.exceptions.BadRequestException;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,24 @@ public class RoutineService {
     }
 
     return this.routineRepo.save(routine);
+
+  }
+
+  public Routine startRoutine(String username, Integer routineID) {
+
+    User user = this.userService.findByUsername(username);
+
+    if(!user.hasActiveRoutine()) {
+
+    }
+
+    Routine routine = this.getRoutinebyId(username, routineID);
+
+    if (routine.getTasks().isEmpty()) {
+      throw new BadRequestException("Adicione pelo menos uma Tarefa na Rotina para iniciar.");
+    }
+
+    routine.setStartedAt(new LocaldateTime());
 
   }
 

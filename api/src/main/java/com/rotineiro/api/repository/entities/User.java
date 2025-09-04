@@ -52,7 +52,21 @@ public class User implements UserDetails {
   private List<Routine> routines;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<RoutineHistory> routinesHistory;
+
+  @OneToOne
+  @JoinColumn(name = "active_routine_id")
+  private Routine activeRoutine;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Task> tasks;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<TaskHistory> tasksHistory;
+
+  public boolean hasActiveRoutine() {
+    return activeRoutine != null;
+  }
 
   @Override
   @JsonIgnore
