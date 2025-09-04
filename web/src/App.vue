@@ -20,7 +20,7 @@ button {
 
 button:hover {
   transition: all .5s;
-  transform: scale(1.01);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 * {

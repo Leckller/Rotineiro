@@ -21,7 +21,7 @@
         </article>
       </div>
 
-      <button class="btn">
+      <button @click="() => $router.push('/routine') " class="btn">
         <FontAwesomeIcon icon="plus" />
         Escolher Rotina
       </button>
@@ -83,9 +83,9 @@ export default defineComponent({
 <style scoped>
 .content {
   display: flex;
-  padding: 16px;
+  padding: 0 16px;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
   height: 100%;
   width: 100%;

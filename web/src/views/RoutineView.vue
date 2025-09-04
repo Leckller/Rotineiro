@@ -24,8 +24,16 @@
 
     </button>
 
-    <button class="card" @click="createRoutine()">
-      Criar Rotina
+    <button class="card create-routine" @click="createRoutine()">
+      <FontAwesomeIcon icon="plus" class="plus-icon" />
+      <p>
+        Criar Nova Rotina
+      </p>
+      <p>
+        <small>
+          Monte uma rotina personalizada para seus objetivos
+        </small>
+      </p>
     </button>
   </TheLayout>
 </template>
@@ -58,7 +66,7 @@ export default defineComponent({
     getRoutines() {
       return this.routineStore.routines;
     },
-    editRoutine(id: number){
+    editRoutine(id: number) {
       router.push(`/routine/${id}`)
     },
     createRoutine() {
@@ -79,19 +87,33 @@ export default defineComponent({
   width: 100%;
 }
 
+.plus-icon {
+  background-color: rgb(216, 216, 216);
+  padding: 8px;
+  height: 15px;
+  width: 15px;
+  border-radius: 999px;
+}
+
+.create-routine:hover {
+  border: solid 2px oklch(.809 .105 251.813);
+  background-color: oklch(.97 .014 254.604);
+}
+
+.create-routine {
+  align-items: center !important;
+  border-style: dashed !important;
+  border: solid 2px rgb(216, 216, 216);
+  box-shadow: none;
+}
+
 .card {
   display: flex;
   flex-direction: column;
+  align-items: start;
   padding: 16px;
   border-radius: 8px;
-  width: 100%;
-  border: solid 1px black;
-  max-width: 320px;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: start;
-  justify-content: center;
-  gap: 24px;
+  gap: 8px;
 }
 
 .card-header {
