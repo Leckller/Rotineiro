@@ -39,6 +39,10 @@ body {
   height: 100%;
 }
 
+small {
+  color: rgb(88, 88, 88);
+}
+
 #app {
   height: 100%;
   width: 100%;
