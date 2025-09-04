@@ -7,6 +7,7 @@
     <!-- Routines -->
     <EditRoutineModal v-if="modalStore.open && getActiveModal() == 'editRoutine'" />
     <CreateRoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <SetRoutineModalConfirm v-if="modalStore.open && getActiveModal() == 'confirmSelectedRoutine'" />
 
     <!-- Tasks  -->
     <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
@@ -33,6 +34,7 @@ import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
 import CreateTaskModal from './Modal/Task/CreateTaskModal.vue';
 import CreateRoutineModal from './Modal/Routine/CreateRoutineModal.vue';
 import EditRoutineModal from './Modal/Routine/EditRoutineModal.vue';
+import SetRoutineModalConfirm from './Modal/Routine/SetRoutineModalConfirm.vue';
 
 
 export default defineComponent({
@@ -50,7 +52,8 @@ export default defineComponent({
     CreateTaskModal,
     EditRoutineModal,
     DeleteTaskModal,
-    CreateRoutineModal
+    CreateRoutineModal,
+    SetRoutineModalConfirm
   },
   methods: {
     getActiveModal() {

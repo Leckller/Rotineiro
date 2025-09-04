@@ -1,7 +1,7 @@
 <template>
   <TheLayout>
 
-    <button class="card" v-for="routine in getRoutines()" :key="routine.id">
+    <button @click="selectRoutine" class="card" v-for="routine in getRoutines()" :key="routine.id">
 
       <div class="card-header">
         <div class="card-title">
@@ -63,6 +63,9 @@ export default defineComponent({
     this.setRoutines();
   },
   methods: {
+    selectRoutine() {
+      this.modalStore.openAndSetModal("confirmSelectedRoutine")
+    },
     getRoutines() {
       return this.routineStore.routines;
     },

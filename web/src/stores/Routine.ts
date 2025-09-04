@@ -3,8 +3,8 @@ import { TaskEntity } from "@/services/taskService";
 import { defineStore } from "pinia";
 
 export const useRoutineStore = defineStore("routine", {
-  state: (): { routines: RoutineEntity[], selectedRoutine: RoutineEntity } => (
-    { routines: [], selectedRoutine: new Routine(0, "", [], PriorityEnum.LOW, "") }
+  state: (): { routines: RoutineEntity[], selectedRoutine: RoutineEntity, infos: { actualRoutineId: number } } => (
+    { routines: [], selectedRoutine: new Routine(0, "", [], PriorityEnum.LOW, ""), infos: { actualRoutineId: 0 } }
   ),
   actions: {
     selectRoutine(routine: RoutineEntity) {
@@ -12,6 +12,9 @@ export const useRoutineStore = defineStore("routine", {
     },
     setRoutines(routines: RoutineEntity[]) {
       this.routines = routines;
+    },
+    setActualRoutine(id: number) {
+      this.infos.actualRoutineId = id
     },
     addRoutine(routine: RoutineEntity) {
       this.routines.push(routine)
