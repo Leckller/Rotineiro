@@ -1,6 +1,7 @@
 package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
+import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.RoutineRepository;
@@ -74,6 +75,26 @@ public class RoutineService {
     }
 
     return routine;
+
+  }
+
+  public Routine editRoutine(String username, Integer routineID, EditRoutineDto dto) {
+
+    Routine routine = this.getRoutinebyId(username, routineID);
+
+    if(dto.priority() != null) {
+      routine.setPriority(dto.priority());
+    }
+
+    if(dto.name() != null) {
+      routine.setName(dto.name());
+    }
+
+    if(dto.description() != null) {
+      routine.setDescription(dto.description());
+    }
+
+    return this.routineRepo.save(routine);
 
   }
 
