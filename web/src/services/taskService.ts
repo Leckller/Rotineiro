@@ -43,6 +43,11 @@ type DeleteTaskResponse = DefaultResponse<null>
 
 type EditTaskResponse = DefaultResponse<TaskEntity>
 
+type StartTaskResponse = DefaultResponse<TaskEntity>
+
+type ToggleTaskResponse = DefaultResponse<TaskEntity>
+
+
 
 export const TaskService = {
 
@@ -69,6 +74,14 @@ export const TaskService = {
   async deleteTask(taskId: number): Promise<DeleteTaskResponse> {
     const { data } = await api.delete(`task/${taskId}`);
     return data as DeleteTaskResponse;
+  },
+  async startTask(taskId: number): Promise<StartTaskResponse> {
+    const { data } = await api.patch(`task/start/${taskId}`);
+    return data as StartTaskResponse;
+  },
+  async toggleTask(taskId: number): Promise<ToggleTaskResponse> {
+    const { data } = await api.patch(`task/complete/${taskId}`);
+    return data as ToggleTaskResponse;
   }
 
 }

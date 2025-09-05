@@ -28,9 +28,35 @@
       </button>
     </section>
 
-    <article v-for="task in routine.tasks" :key="task.id">
-      {{ task.name }}
-    </article>
+
+    <section>
+
+      <div class="routine-card">
+        <h2>
+          <p>
+            Progresso do dia
+          </p>
+          <span>
+            {{(routine.tasks.filter(t => t.completed).length / routine.tasks.length) * 100}}
+          </span>
+        </h2>
+      </div>
+
+      <div class="routine-task-cards">
+        <article class="task-card" v-for="task in routine.tasks" :key="task.id">
+          <input type="checkbox">
+          <div>
+            <p> {{ task.name }} </p>
+            <p> {{ task.estimate }} min</p>
+          </div>
+          <button>
+            <FontAwesomeIcon icon="play"/>
+          </button>
+        </article>
+      </div>
+
+    </section>
+
 
   </TheLayout>
 
@@ -57,8 +83,11 @@ export default defineComponent({
   },
   async created() {
     const routine = (await UserService.getActualRoutine()).response;
-    this.routine = routine;
     this.getActualDate()
+    if (routine == null) {
+      return
+    }
+    this.routine = routine;
   },
   methods: {
     getActualDate() {
