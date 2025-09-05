@@ -1,10 +1,15 @@
 <template>
 
-  <TheHeader />
+  <TheHeader v-if="$route.path != '/'" />
 
   <main class="main">
 
-    <RoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <!-- Routines -->
+    <EditRoutineModal v-if="modalStore.open && getActiveModal() == 'editRoutine'" />
+    <CreateRoutineModal v-if="modalStore.open && getActiveModal() == 'createRoutine'" />
+    <SetRoutineModalConfirm v-if="modalStore.open && getActiveModal() == 'confirmSelectedRoutine'" />
+
+    <!-- Tasks  -->
     <CreateTaskModal v-if="modalStore.open && getActiveModal() == 'createTask'" />
     <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
     <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
@@ -14,7 +19,7 @@
     <slot />
   </main>
 
-  <TheFooter />
+  <TheFooter v-if="$route.path != '/'" />
 
 </template>
 
@@ -23,11 +28,13 @@ import { defineComponent } from 'vue';
 import TheHeader from './TheHeader.vue';
 import TheFooter from './TheFooter.vue';
 import TheNotification from './Modal/TheNotification.vue';
-import RoutineModal from './Modal/Routine/RoutineModal.vue';
 import { useModalStore } from '@/stores/modals';
-import CreateTaskModal from './Modal/Routine/CreateTaskModal.vue';
 import EditTaskModal from './Modal/Task/EditTaskModal.vue';
 import DeleteTaskModal from './Modal/Task/DeleteTaskModal.vue';
+import CreateTaskModal from './Modal/Task/CreateTaskModal.vue';
+import CreateRoutineModal from './Modal/Routine/CreateRoutineModal.vue';
+import EditRoutineModal from './Modal/Routine/EditRoutineModal.vue';
+import SetRoutineModalConfirm from './Modal/Routine/SetRoutineModalConfirm.vue';
 
 
 export default defineComponent({
@@ -43,8 +50,10 @@ export default defineComponent({
     TheFooter,
     EditTaskModal,
     CreateTaskModal,
+    EditRoutineModal,
     DeleteTaskModal,
-    RoutineModal
+    CreateRoutineModal,
+    SetRoutineModalConfirm
   },
   methods: {
     getActiveModal() {
@@ -60,9 +69,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 25px 0;
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
   gap: 8px;
 }
 </style>

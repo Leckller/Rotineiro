@@ -1,19 +1,17 @@
 <template>
 
-  <header>
-    <RouterLink to="/home">
-      Home
+  <header class="header">
+    <RouterLink class="link" to="/home">
+      <h2>Rotineiro</h2>
     </RouterLink>
 
-    <RouterLink to="/routine">
+    <RouterLink class="link" to="/routine">
       Rotinas
     </RouterLink>
 
-    <RouterLink to="/dashboard">
+    <RouterLink class="link" to="/dashboard">
       Dashboard
     </RouterLink>
-
-
   </header>
 
 </template>
@@ -29,3 +27,34 @@ export default defineComponent({
 })
 
 </script>
+
+<style scoped>
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  /* permite quebrar linha no mobile */
+  gap: 16px;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding: 8px;
+  /* ajuda a não colar nas bordas */
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .header {
+    display: none;
+  }
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  /* responsivo */
+  outline: none;
+  white-space: nowrap;
+  /* evita quebra feia em duas linhas */
+}
+</style>

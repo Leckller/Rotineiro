@@ -18,22 +18,30 @@ button {
   transition: all 1s;
 }
 
-button:hover {
-  transition: all .5s;
-  transform: scale(1.01);
-}
-
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-html, body, #app {
+html{
+  width: 100vw;
+  height: 100vh;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+small {
+  color: rgb(88, 88, 88);
+}
+
+#app {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
   align-items: center;
 }

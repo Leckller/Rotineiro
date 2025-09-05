@@ -1,7 +1,9 @@
 package com.rotineiro.api.controller;
 
+import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
 import com.rotineiro.api.controller.dtos.user.CreateUserDto;
 import com.rotineiro.api.controller.dtos.user.TokenDto;
+import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.SecurityConfig;
 import com.rotineiro.api.security.exceptions.BadRequestException;
@@ -16,10 +18,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -57,5 +57,21 @@ public class UserController {
         .body(response);
 
   }
+
+  @GetMapping("/actualRoutine")
+  public ResponseEntity<DefaultResponse<RoutineDto>> getActualRoutine() {
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.userService.getActualRoutine(username);
+
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+
+    response.setMessage("Um novo dia, mais uma rotina!");
+    response.setResult(RoutineDto.fromEntity(routine));
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+
+  }
+
 
 }

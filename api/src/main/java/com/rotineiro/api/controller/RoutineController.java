@@ -1,7 +1,9 @@
 package com.rotineiro.api.controller;
 
 import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
+import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
+import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.security.SecurityConfig;
 import com.rotineiro.api.service.RoutineService;
@@ -63,7 +65,36 @@ public class RoutineController {
     response.setResult(RoutineDto.fromEntity(routine));
 
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
   }
 
+  @PatchMapping("/{routineID}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> editRoutine(@PathVariable Integer routineID, @Valid @RequestBody EditRoutineDto dto) {
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.editRoutine(username, routineID, dto);
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+
+    response.setMessage("Rotina editada com sucesso!");
+    response.setResult(RoutineDto.fromEntity(routine));
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+
+  }
+
+  @PatchMapping("/start/{routineID}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> startRoutine(@PathVariable Integer routineID) {
+
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.startRoutine(username, routineID);
+
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+
+    response.setMessage("Rotina selecionada com sucesso!");
+    response.setResult(RoutineDto.fromEntity(routine));
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+
+  }
 
 }

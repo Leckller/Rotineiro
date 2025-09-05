@@ -2,6 +2,7 @@ package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.user.CreateUserDto;
 import com.rotineiro.api.repository.UserRepository;
+import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.User;
 import com.rotineiro.api.security.exceptions.BadRequestException;
 import com.rotineiro.api.security.exceptions.NotFoundException;
@@ -23,6 +24,11 @@ public class UserService implements UserDetailsService {
   @Autowired
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
+  }
+
+  public Routine getActualRoutine(String username) {
+    User user = this.findByUsername(username);
+    return user.getActiveRoutine();
   }
 
   public User createUser(CreateUserDto  userCreationDto) throws BadRequestException {

@@ -83,10 +83,10 @@ export default {
   /* removi height fixo daqui pra deixar a prop funcionar */
 }
 
-@media (max-width: 500px) {
+@media (max-width: 900px) {
   .modal {
     border-radius: 0px;
-    height: 100%;
+    height: 100% !important;
   }
 }
 

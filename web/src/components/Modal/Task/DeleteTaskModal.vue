@@ -1,39 +1,27 @@
 <template>
 
-  <TheModal title="Editar Tarefa" modalHeight="150px">
-
-    <p>
-      Tem certeza que Deseja apagar a tarefa "<strong>{{ tarefa }}</strong>"
-    </p>
-
-    <div>
-      <button @click="handleCancelRmv">
-        Cancelar
-      </button>
-      <button @click="handleRmvTask">
-        Confirmar
-      </button>
-    </div>
-
-  </TheModal>
+  <TheModalConfirm title="Deseja apagar essa tarefa?" @confirm="handleRmvTask" @cancel="handleCancelRmv"
+    message="Tem certeza que deseja excluir esta tarefa? Essa ação não pode ser desfeita." />
 
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import TheModal from '../TheModal.vue';
 import { useModalStore } from '@/stores/modals';
 import { NotificationEnum, NotificationType, useNotificationStore } from '@/stores/notification';
 import { Task, TaskService } from '@/services/taskService';
+import { useRoutineStore } from '@/stores/Routine';
+import TheModalConfirm from '../TheModalConfirm.vue';
 
 export default defineComponent({
   name: "DeleteTaskModal",
-  components: { TheModal },
+  components: { TheModalConfirm },
   data() {
     return {
       tarefa: "",
       modalStore: useModalStore(),
-      notificationStore: useNotificationStore()
+      notificationStore: useNotificationStore(),
+      routineStore: useRoutineStore()
     }
   },
   created() {
@@ -44,15 +32,17 @@ export default defineComponent({
       this.notificationStore.createNotification(notification)
     },
     handleCancelRmv() {
-      this.modalStore.infos.rmvTask = new Task(0, "", 0);
-      this.modalStore.closeModal()
+      this.modalStore.infos.rmvTask = new Task(0, "", 0, false);
     },
     async handleRmvTask() {
       try {
         const { message } = await TaskService.deleteTask(this.modalStore.infos.rmvTask.id);
+        this.routineStore.rmvTaskFromSelectedRoutine(this.modalStore.infos.rmvTask.id);
         this.showNotification({ title: message, time: 2000 })
+        this.modalStore.closeModal()
       } catch (error) {
         this.showNotification({ title: "Aconteceu um Erro durante a remoção da tarefa", time: 2000, type: NotificationEnum.error })
+        this.modalStore.closeModal()
       }
     }
   }

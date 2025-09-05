@@ -3,38 +3,43 @@
   <TheLayout>
 
     <div class="content">
-      <section class="routine-header">
+
+      <section class="header">
         <button>
           <FontAwesomeIcon icon="arrow-left" />
         </button>
-        <div class="routine-info">
-          <h2>{{ routine.name }}</h2>
-          <p>{{ routine.description }}</p>
+        <div class="header-title">
+          <h2>{{ routineStore.selectedRoutine.name }}</h2>
+          <p>{{ routineStore.selectedRoutine.description }}</p>
         </div>
-        <button>
+        <button @click="editRoutine()">
           <FontAwesomeIcon icon="pencil" />
         </button>
       </section>
 
-      <section class="card-info">
-        <article class="card">
+      <section class="routine-info">
+        <article class="card info">
           <p>
-            <FontAwesomeIcon icon="clock" />
-            Duração Total
+            <strong>
+              <FontAwesomeIcon icon="clock" />
+              Duração Total
+            </strong>
           </p>
           <p>
-            {{routine.tasks.reduce((pv, curr) => {
+            {{routineStore.selectedRoutine.tasks.reduce((pv, curr) => {
               return pv + curr.estimate
             }, 0)}}
           </p>
         </article>
-        <article class="card">
+        <article class="card info">
           <p>
-            <FontAwesomeIcon icon="bullseye" />
-            Atividades
+            <strong>
+              <FontAwesomeIcon icon="bullseye" />
+              Atividades
+            </strong>
           </p>
           <p>
-            {{ routine.tasks.length }}
+            {{ routineStore.selectedRoutine.tasks.length }}
           </p>
         </article>
       </section>
@@ -42,27 +47,15 @@
       <section class="tasks">
 
         <div class="task-header">
-          <p>
+          <h3>
             Atividades da Rotina
-          </p>
-          <button @click="createTask">
+          </h3>
+          <button class="add-task" @click="createTask">
             + Adicionar
           </button>
         </div>
 
-        <article v-for="task in routine.tasks" :key="task.id" class="card-task">
-
-          <div>
-            <p>{{ task.name }}</p>
-            <button @click="handleEditTask(task)">
-              <FontAwesomeIcon icon="pencil" />
-            </button>
-            <button @click="handleRmvTask(task)">
-              <FontAwesomeIcon icon="trash" />
-            </button>
-          </div>
-
-        </article>
+        <TaskCard v-for="task in routineStore.selectedRoutine.tasks" :key="task.id" :task="task" />
 
       </section>
     </div>
@@ -72,10 +65,11 @@
 </template>
 
 <script lang="ts">
+import TaskCard from '@/components/Task/TaskCard.vue';
 import TheLayout from '@/components/TheLayout.vue';
-import { RoutineEntity, RoutineService } from '@/services/routineService';
-import { TaskEntity } from '@/services/taskService';
+import { RoutineService } from '@/services/routineService';
 import { useModalStore } from '@/stores/modals';
+import { useRoutineStore } from '@/stores/Routine';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue';
 
@@ -83,18 +77,12 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: "EditRoutineView",
   components: {
-    TheLayout, FontAwesomeIcon
+    TheLayout, FontAwesomeIcon, TaskCard
   },
   data() {
     return {
       modalStore: useModalStore(),
-      routine: {
-        description: "",
-        id: 0,
-        name: "",
-        priority: 0,
-        tasks: []
-      } as RoutineEntity
+      routineStore: useRoutineStore()
     }
   },
   async created() {
@@ -102,23 +90,19 @@ export default defineComponent({
   },
   methods: {
     createTask() {
-      this.modalStore.openAndSetModal("createTask")
+      this.modalStore.openAndSetModal("createTask");
+    },
+    editRoutine() {
+      this.modalStore.openAndSetModal("editRoutine");
     },
     async getRoutine() {
       try {
         const id = this.$route.params.id as string;
-        this.routine = (await RoutineService.getRoutineById(+id)).response;
+        const routine = (await RoutineService.getRoutineById(+id)).response;
+        this.routineStore.selectRoutine(routine);
       } catch (error) {
       }
     },
-    handleEditTask(task: TaskEntity) {
-      this.modalStore.setEditTaskInfos(task);
-      this.modalStore.openAndSetModal("editTask");
-    },
-    handleRmvTask(task: TaskEntity) {
-      this.modalStore.setRmvTaskInfos(task);
-      this.modalStore.openAndSetModal("rmvTask");
-    }
   }
 })
 
@@ -136,7 +120,7 @@ export default defineComponent({
   padding: 16px;
 }
 
-.routine-header {
+.header {
   display: flex;
   gap: 16px;
   text-align: center;
@@ -144,14 +128,7 @@ export default defineComponent({
   justify-content: space-around;
 }
 
-.routine-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-
-.card-info {
+.header-title {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -160,27 +137,53 @@ export default defineComponent({
   gap: 16px;
 }
 
+.routine-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
 .card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: start;
   padding: 16px;
   border-radius: 8px;
-  border: solid 1px black;
-  max-width: 160px;
+  gap: 8px;
+}
+
+.info {
+  align-items: center !important;
+  font-size: large;
+  width: 40%;
+  flex-grow: 1;
 }
 
 .tasks {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
   width: 100%;
+  max-width: 300px;
 }
 
 .task-header {
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+.add-task {
+  color: white;
+  font-size: smaller;
+  background-color: oklch(.623 .214 259.815);
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 200px;
 }
 </style>

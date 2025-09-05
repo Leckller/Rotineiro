@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import RotinaView from '@/views/RotinaView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import EditRoutineView from '@/views/EditRoutineView.vue'
+import RoutineView from '@/views/RoutineView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/routine',
     name: 'rotina',
-    component: RotinaView
+    component: RoutineView
   },
   {
     path: '/routine/:id',
@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardView
-  }
+  },
 ]
 
 const router = createRouter({

@@ -27,6 +27,9 @@ public class Task {
   @Column(nullable = false)
   private Double estimate;
 
+  @Column(nullable = false)
+  private Boolean completed = false;
+
   @Column(nullable = true)
   private LocalDateTime startedAt;
 

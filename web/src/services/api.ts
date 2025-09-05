@@ -12,15 +12,6 @@ export type DefaultResponse<T> = {
   response: T;
 };
 
-// Mensagens padronizadas
-const errorMessages: Record<number, string> = {
-  400: "Bad Request",
-  401: "Unauthorized",
-  403: "Forbidden",
-  404: "Not Found",
-  500: "Internal Server Error",
-};
-
 // Adiciona token automaticamente
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("rotineiro_access_token");
@@ -35,18 +26,16 @@ api.interceptors.response.use(
 
     if (!err.response) {
       console.error("Network Error:", err.message);
-      alert("Não foi possível conectar ao servidor. Verifique sua conexão.");
+      useNotificationStore().createNotification({
+        time: 2500,
+        title: "Não foi possível conectar ao servidor. Verifique sua conexão.",
+        type: NotificationEnum.error
+      })
       return Promise.reject(err);
     }
 
     const status = err.response?.status;
     if (!status) return Promise.reject(err);
-
-    useNotificationStore().createNotification({
-      time: 2500,
-      title: `${errorMessages[status]}: ${(err.response.data as DefaultResponse<undefined>).message}`,
-      type: NotificationEnum.error
-    })
 
     if (status === 401 || status === 403) {
       localStorage.removeItem("rotineiro_access_token")

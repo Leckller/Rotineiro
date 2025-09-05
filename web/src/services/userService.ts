@@ -1,4 +1,5 @@
 import api, { DefaultResponse } from "./api"
+import { RoutineEntity } from "./routineService"
 
 export type LoginRequest = {
   email: string,
@@ -16,6 +17,8 @@ export type RegisterRequest = {
 
 export type RegisterResponse = DefaultResponse<{ token: string }>
 
+export type getActualRoutineResponse = DefaultResponse<RoutineEntity>
+
 export const UserService = {
   async refreshToken() {
     // api.post("", )
@@ -30,4 +33,9 @@ export const UserService = {
     localStorage.setItem("rotineiro_access_token", (data as LoginResponse).response.token)
     return data as RegisterResponse
   },
+  async getActualRoutine(): Promise<getActualRoutineResponse> {
+    const { data } = await api.get("user/actualRoutine")
+    return data as getActualRoutineResponse
+  }
+
 }

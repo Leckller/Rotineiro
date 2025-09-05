@@ -1,8 +1,8 @@
 <template>
 
-  <TheModal title="Criar Rotina">
+  <TheModal title="Editar Rotina">
 
-    <form @submit="createRotuine($event)">
+    <form class="form" @submit="editRoutine($event)">
 
       <TheInput label="Nome da Rotina" :min="3" v-model="name" />
       <TheInput label="Descrição" :min="5" v-model="description" />
@@ -12,7 +12,7 @@
         label="Escolha uma prioridade:" />
 
       <button type="submit" class="confirm">
-        Criar Rotina
+        Salvar Alterações
       </button>
 
     </form>
@@ -27,23 +27,42 @@ import { defineComponent } from 'vue';
 import TheModal from '../TheModal.vue';
 import TheInput from '@/components/TheInput.vue';
 import TheSelect from '@/components/Forms/TheSelect.vue';
-import { PriorityEnum, RoutineService } from '@/services/routineService';
 import { useModalStore } from '@/stores/modals';
+import { useRoutineStore } from '@/stores/Routine';
+import { PriorityEnum, RoutineService } from '@/services/routineService';
 
 export default defineComponent({
-  name: "RoutineModal",
+  name: "EditRoutineModal",
   data() {
     return {
       name: "",
       selectedOption: 1,
       description: "",
-      modalStore: useModalStore()
+      modalStore: useModalStore(),
+      routineStore: useRoutineStore()
     }
   },
   components: { TheModal, TheInput, TheSelect },
+  created() {
+    this.name = this.routineStore.selectedRoutine.name;
+    this.description = this.routineStore.selectedRoutine.description;
+    let priority = 1
+    switch (this.routineStore.selectedRoutine.priority) {
+      case PriorityEnum.MEDIUM:
+        priority = 2
+        break;
+      case PriorityEnum.HIGH:
+        priority = 3
+        break;
+      default:
+        priority = 1
+        break;
+    }
+    this.selectedOption = priority;
+  },
   methods: {
-    async createRotuine(e: Event) {
-      e.preventDefault();
+    async editRoutine(e: Event) {
+      e.preventDefault()
 
       try {
         let priority = PriorityEnum.LOW
@@ -59,14 +78,14 @@ export default defineComponent({
             break;
         }
 
-        await RoutineService.createRoutine({ priority, name: this.name, description: this.description });
+        const routine = await RoutineService.editRoutine({ priority, name: this.name, description: this.description }, +this.$route.params.id);
+        this.routineStore.editRoutine(routine.response);
 
         this.modalStore.closeModal()
 
       } catch {
 
       }
-
     }
   }
 })
