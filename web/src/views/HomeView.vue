@@ -26,45 +26,48 @@
         <FontAwesomeIcon icon="plus" />
         Escolher Rotina
       </button>
-    </section>
 
 
-    <section>
+      <section class="routine">
 
-      <div class="routine-card">
-        <h2>
+        <h2 class="routine-card">
           <p>
             Progresso do dia
           </p>
           <span>
-            {{(routine.tasks.filter(t => t.completed).length / routine.tasks.length) * 100}}
+            {{((routine.tasks.filter(t => t.completed).length / routine.tasks.length) * 100).toFixed(1)}} %
           </span>
         </h2>
-      </div>
 
-      <div class="routine-task-cards">
-        <article class="task-card" v-for="task in routine.tasks" :key="task.id">
-          <input type="checkbox">
-          <div>
-            <p> {{ task.name }} </p>
-            <p> {{ task.estimate }} min</p>
-          </div>
-          <button>
-            <FontAwesomeIcon icon="play"/>
-          </button>
-        </article>
-      </div>
+        <div v-if="routine.id != 0" class="routine-task-cards">
+          <article class="task-card" v-for="task in routine.tasks" :key="task.id">
+            <input :checked="task.completed" type="checkbox" @click="toggleTask(task.id)">
+            <div>
+              <h4> {{ task.name }} </h4>
+              <p>
+                <small>
+                  {{ task.estimate }} min
+                </small>
+              </p>
+            </div>
+            <button @click="startTask(task.id)">
+              <FontAwesomeIcon icon="play" />
+            </button>
+          </article>
+        </div>
+
+      </section>
 
     </section>
-
-
   </TheLayout>
 
 </template>
 
 <script lang="ts">
+
 import TheLayout from '@/components/TheLayout.vue';
-import { PriorityEnum, Routine, RoutineService } from '@/services/routineService';
+import { PriorityEnum, Routine } from '@/services/routineService';
+import { TaskService } from '@/services/taskService';
 import { UserService } from '@/services/userService';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue'
@@ -90,6 +93,21 @@ export default defineComponent({
     this.routine = routine;
   },
   methods: {
+    async toggleTask(taskID: number) {
+      try {
+        const task = (await TaskService.toggleTask(taskID)).response;
+        this.routine.tasks = [...this.routine.tasks.filter(t => t.id != taskID), task];
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async startTask(taskID: number) {
+      try {
+        await TaskService.startTask(taskID);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     getActualDate() {
       const hoje = new Date();
       const opcoes = { weekday: 'long' as const, year: 'numeric' as const, month: 'long' as const, day: 'numeric' as const };
@@ -99,14 +117,6 @@ export default defineComponent({
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
     },
-    async getRoutines() {
-      try {
-        const routines = await RoutineService.getAllRoutines()
-        console.log(routines)
-      } catch {
-
-      }
-    }
   }
 })
 </script>
@@ -178,5 +188,37 @@ export default defineComponent({
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.routine {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.routine-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.routine-task-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.task-card {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px;
 }
 </style>
