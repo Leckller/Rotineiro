@@ -101,22 +101,33 @@ public class TaskService {
 
   public Task toggleTask(String username, Integer taskID) {
     Task task = this.getTaskById(username, taskID);
-    if(task.getCompleted()) {
+
+    if (task.getCompleted()) {
+      // resetar
       task.setStartedAt(null);
       task.setFinishedAt(null);
       task.setCompleted(false);
     } else {
+      // concluir
       task.setCompleted(true);
-      task.setStartedAt(task.getStartedAt() != null ? task.getStartedAt() : LocalDateTime.now().minusMinutes(Double.doubleToLongBits(task.getEstimate())));
+      if (task.getStartedAt() == null) {
+        task.setStartedAt(LocalDateTime.now().minusMinutes(task.getEstimate().longValue()));
+      }
       task.setFinishedAt(LocalDateTime.now());
     }
-    return task;
+
+    return taskRepo.save(task);
   }
 
   public Task startTask(String username, Integer taskID) {
     Task task = this.getTaskById(username, taskID);
+
     task.setStartedAt(LocalDateTime.now());
-    return task;
+    task.setCompleted(false);
+    task.setFinishedAt(null);
+
+    return taskRepo.save(task);
   }
+
 
 }
