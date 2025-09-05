@@ -65,9 +65,9 @@ public class UserController {
     Routine routine = this.userService.getActualRoutine(username);
 
     DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
-
+    RoutineDto routineDto = routine != null ? RoutineDto.fromEntity(routine) : null;
     response.setMessage("Um novo dia, mais uma rotina!");
-    response.setResult(RoutineDto.fromEntity(routine));
+    response.setResult(routineDto);
 
     return ResponseEntity.status(HttpStatus.OK).body(response);
 

@@ -98,4 +98,28 @@ public class TaskController {
     return  ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
+  @PatchMapping("/complete/{taskId}")
+  public ResponseEntity<DefaultResponse<TaskDto>> toggleCompleteTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.toggleTask(username, taskId);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Tarefa concluída com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PatchMapping("start/{taskId}")
+  public ResponseEntity<DefaultResponse<TaskDto>> startTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.startTask(username, taskId);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Tarefa iniciada com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
 }
