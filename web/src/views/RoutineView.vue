@@ -7,7 +7,7 @@
         <p><small>Gerencie e organize suas rotinas diárias</small></p>
       </div>
 
-      <button @click="selectRoutine" class="card" v-for="routine in getRoutines()" :key="routine.id">
+      <button @click="selectRoutine(routine.id)" class="card" v-for="routine in getRoutines()" :key="routine.id">
 
         <div class="card-header">
           <div class="card-title">
@@ -51,6 +51,7 @@ import TheLayout from '@/components/TheLayout.vue';
 import router from '@/router';
 import { RoutineService } from '@/services/routineService';
 import { useModalStore } from '@/stores/modals';
+import { NotificationEnum, NotificationType, useNotificationStore } from '@/stores/notification';
 import { useRoutineStore } from '@/stores/Routine';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue'
@@ -61,6 +62,7 @@ export default defineComponent({
     return {
       modalStore: useModalStore(),
       routineStore: useRoutineStore(),
+      notificationStore: useNotificationStore()
     }
   },
   components: {
@@ -71,7 +73,11 @@ export default defineComponent({
     this.setRoutines();
   },
   methods: {
-    selectRoutine() {
+    showNotification(notification: NotificationType) {
+      this.notificationStore.createNotification(notification);
+    },
+    selectRoutine(routineID: number) {
+      this.modalStore.setRoutine(routineID)
       this.modalStore.openAndSetModal("confirmSelectedRoutine")
     },
     getRoutines() {
@@ -84,8 +90,13 @@ export default defineComponent({
       this.modalStore.openAndSetModal("createRoutine");
     },
     async setRoutines() {
-      const routines = (await RoutineService.getAllRoutines()).response;
-      this.routineStore.setRoutines(routines);
+      try {
+        const routines = (await RoutineService.getAllRoutines()).response;
+        this.routineStore.setRoutines(routines);
+      } catch (error) {
+        console.log(error)
+        this.showNotification({ title: "Ocorreu um erro ao carregar as rotinas", time: 3000, type: NotificationEnum.error })
+      }
     }
   },
 })

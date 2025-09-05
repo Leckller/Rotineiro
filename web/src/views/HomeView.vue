@@ -3,12 +3,13 @@
   <TheLayout>
 
     <section class="content">
+
       <div class="content-header">
         <h3>Olá! 👋</h3>
         <p><small>{{ actualDate }}</small></p>
       </div>
 
-      <div class="empty-section">
+      <div v-if="routine.id == 0" class="empty-section">
         <img class="img" src="../assets/book.jpg" alt="livro">
         <p>Pronto para organizar seu dia?</p>
         <p><small>Comece criando sua rotina personalizada para aumentar sua produtividade!</small></p>
@@ -21,13 +22,13 @@
         </article>
       </div>
 
-      <button @click="() => $router.push('/routine') " class="btn">
+      <button v-if="routine.id == 0" @click="() => $router.push('/routine')" class="btn">
         <FontAwesomeIcon icon="plus" />
         Escolher Rotina
       </button>
     </section>
 
-    <article v-for="task in tasks" :key="task.id">
+    <article v-for="task in routine.tasks" :key="task.id">
       {{ task.name }}
     </article>
 
@@ -37,8 +38,8 @@
 
 <script lang="ts">
 import TheLayout from '@/components/TheLayout.vue';
-import { RoutineService } from '@/services/routineService';
-import { TaskEntity } from '@/services/taskService';
+import { PriorityEnum, Routine, RoutineService } from '@/services/routineService';
+import { UserService } from '@/services/userService';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue'
 
@@ -46,8 +47,8 @@ export default defineComponent({
   name: 'HomeView',
   data() {
     return {
-      tasks: [] as TaskEntity[],
-      actualDate: ""
+      actualDate: "",
+      routine: new Routine(0, "", [], PriorityEnum.LOW, "")
     }
   },
   components: {
@@ -55,7 +56,8 @@ export default defineComponent({
     FontAwesomeIcon
   },
   async created() {
-    await this.getRoutines()
+    const routine = (await UserService.getActualRoutine()).response;
+    this.routine = routine;
     this.getActualDate()
   },
   methods: {
