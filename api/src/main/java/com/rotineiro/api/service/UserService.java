@@ -28,7 +28,9 @@ public class UserService implements UserDetailsService {
 
   public Routine getActualRoutine(String username) {
     User user = this.findByUsername(username);
-    return user.getActiveRoutine();
+    Routine routine = user.getActiveRoutine();
+    if (routine == null) return null;
+    return routine;
   }
 
   public User createUser(CreateUserDto  userCreationDto) throws BadRequestException {

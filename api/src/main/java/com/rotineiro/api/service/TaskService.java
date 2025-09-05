@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +97,26 @@ public class TaskService {
     }
 
     return this.taskRepo.save(task);
+  }
+
+  public Task toggleTask(String username, Integer taskID) {
+    Task task = this.getTaskById(username, taskID);
+    if(task.getCompleted()) {
+      task.setStartedAt(null);
+      task.setFinishedAt(null);
+      task.setCompleted(false);
+    } else {
+      task.setCompleted(true);
+      task.setStartedAt(task.getStartedAt() != null ? task.getStartedAt() : LocalDateTime.now().minusMinutes(Double.doubleToLongBits(task.getEstimate())));
+      task.setFinishedAt(LocalDateTime.now());
+    }
+    return task;
+  }
+
+  public Task startTask(String username, Integer taskID) {
+    Task task = this.getTaskById(username, taskID);
+    task.setStartedAt(LocalDateTime.now());
+    return task;
   }
 
 }
