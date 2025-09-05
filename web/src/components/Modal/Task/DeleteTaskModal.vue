@@ -32,7 +32,7 @@ export default defineComponent({
       this.notificationStore.createNotification(notification)
     },
     handleCancelRmv() {
-      this.modalStore.infos.rmvTask = new Task(0, "", 0);
+      this.modalStore.infos.rmvTask = new Task(0, "", 0, false);
     },
     async handleRmvTask() {
       try {

@@ -56,6 +56,8 @@ export type EditRoutineResponse = DefaultResponse<RoutineEntity>
 
 export type getRoutineByIdResponse = DefaultResponse<RoutineEntity>
 
+export type SetActualRoutineResponse = DefaultResponse<RoutineEntity>
+
 export type GetAllRoutinesResponse = DefaultResponse<RoutineEntity[]>
 
 
@@ -76,6 +78,11 @@ export const RoutineService = {
   async getRoutineById(routineId: number): Promise<getRoutineByIdResponse> {
     const { data } = await api.get(`routine/${routineId}`);
     return data as getRoutineByIdResponse;
+  },
+
+  async startRoutine(routineID: number): Promise<SetActualRoutineResponse> {
+    const { data } = await api.patch(`routine/start/${routineID}`);
+    return data as SetActualRoutineResponse;
   }
 
 }

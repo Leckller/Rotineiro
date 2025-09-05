@@ -1,40 +1,48 @@
 <template>
   <TheLayout>
 
-    <button @click="selectRoutine" class="card" v-for="routine in getRoutines()" :key="routine.id">
-
-      <div class="card-header">
-        <div class="card-title">
-          <p>
-            {{ routine.name }}
-          </p>
-          <button class="edit-routine" @click.stop="editRoutine(routine.id)">
-            <FontAwesomeIcon icon="pen-to-square" />
-          </button>
-        </div>
-        <p>
-          {{ routine.description }}
-        </p>
+    <div class="content">
+      <div class="title">
+        <h2> Suas Rotinas </h2>
+        <p><small>Gerencie e organize suas rotinas diárias</small></p>
       </div>
 
-      <p>
-        <FontAwesomeIcon icon="clock" />
-        {{ routine.tasks.length }} Atividades
-      </p>
+      <button @click="selectRoutine" class="card" v-for="routine in getRoutines()" :key="routine.id">
 
-    </button>
+        <div class="card-header">
+          <div class="card-title">
+            <p>
+              {{ routine.name }}
+            </p>
+            <button class="edit-routine" @click.stop="editRoutine(routine.id)">
+              <FontAwesomeIcon icon="pen-to-square" />
+            </button>
+          </div>
+          <p>
+            {{ routine.description }}
+          </p>
+        </div>
 
-    <button class="card create-routine" @click="createRoutine()">
-      <FontAwesomeIcon icon="plus" class="plus-icon" />
-      <p>
-        Criar Nova Rotina
-      </p>
-      <p>
-        <small>
-          Monte uma rotina personalizada para seus objetivos
-        </small>
-      </p>
-    </button>
+        <p>
+          <FontAwesomeIcon icon="clock" />
+          {{ routine.tasks.length }} Atividades
+        </p>
+
+      </button>
+
+      <button class="card create-routine" @click="createRoutine()">
+        <FontAwesomeIcon icon="plus" class="plus-icon" />
+        <p>
+          Criar Nova Rotina
+        </p>
+        <p>
+          <small>
+            Monte uma rotina personalizada para seus objetivos
+          </small>
+        </p>
+      </button>
+    </div>
+
   </TheLayout>
 </template>
 
@@ -84,6 +92,21 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  gap: 8px;
+  padding: 8px 0;
+}
 
 .card-title {
   display: flex;

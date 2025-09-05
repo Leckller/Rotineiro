@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 export const useModalStore = defineStore("modals", {
     state: (): { actualModalName: string, open: boolean, infos: { editTask: TaskEntity, rmvTask: TaskEntity } } => (
-        { actualModalName: "", open: false, infos: { editTask: new Task(0, "", 0), rmvTask: new Task(0, "", 0) } }
+        { actualModalName: "", open: false, infos: { editTask: new Task(0, "", 0, false), rmvTask: new Task(0, "", 0, false) } }
     ),
     actions: {
         closeModal() {

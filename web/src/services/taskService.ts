@@ -1,21 +1,24 @@
 import api, { DefaultResponse } from "./api";
 
 export class Task {
-  constructor(id: number, name: string, estimate: number) {
+  constructor(id: number, name: string, estimate: number, completed: boolean) {
     this.id = id
     this.name = name;
     this.estimate = estimate;
+    this.completed = completed;
   }
 
   public id: number;
   public name: string;
   public estimate: number;
+  public completed: boolean;
 }
 
 export type TaskEntity = {
   id: number,
   name: string,
-  estimate: number
+  estimate: number,
+  completed: boolean
 }
 
 export type CreateTaskRequest = {
