@@ -82,10 +82,19 @@ public class RoutineController {
 
   }
 
-//  @PatchMapping("/start/{routineID}")
-//  public ResponseEntity<DefaultResponse<>> startRoutine(@PathVariable Integer routineID) {
-//
-//  }
+  @PatchMapping("/start/{routineID}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> startRoutine(@PathVariable Integer routineID) {
 
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.startRoutine(username, routineID);
+
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+
+    response.setMessage("Rotina selecionada com sucesso!");
+    response.setResult(RoutineDto.fromEntity(routine));
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+
+  }
 
 }

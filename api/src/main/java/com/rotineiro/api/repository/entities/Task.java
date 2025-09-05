@@ -33,6 +33,9 @@ public class Task {
   @Column(nullable = true)
   private LocalDateTime startedAt;
 
+  @Column(nullable = true)
+  private LocalDateTime finishedAt;
+
   @CreationTimestamp
   private LocalDateTime createdAt;
 

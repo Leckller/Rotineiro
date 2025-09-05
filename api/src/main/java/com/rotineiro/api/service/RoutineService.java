@@ -5,16 +5,17 @@ import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.RoutineRepository;
-import com.rotineiro.api.repository.entities.Routine;
-import com.rotineiro.api.repository.entities.Task;
-import com.rotineiro.api.repository.entities.User;
+import com.rotineiro.api.repository.UserRepository;
+import com.rotineiro.api.repository.entities.*;
 import com.rotineiro.api.security.exceptions.BadRequestException;
 import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,13 +23,15 @@ import java.util.Objects;
 public class RoutineService {
 
   private final RoutineRepository routineRepo;
+  private final UserRepository userRepository;
   private final RoutineHistoryRepository routineHistoryRepository;
   private final UserService userService;
   private final TaskService taskService;
 
   @Autowired
-  public RoutineService(RoutineRepository routineRepo, RoutineHistoryRepository routineHistoryRepository, UserService userService, @Lazy TaskService taskService) {
+  public RoutineService(RoutineRepository routineRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService, @Lazy TaskService taskService) {
     this.routineRepo = routineRepo;
+    this.userRepository = userRepository;
     this.routineHistoryRepository = routineHistoryRepository;
     this.userService = userService;
     this.taskService = taskService;
@@ -99,22 +102,70 @@ public class RoutineService {
 
   }
 
-  public Routine startRoutine(String username, Integer routineID) {
-
+  @Transactional
+  public Routine startRoutine(String username, Integer routineId) {
     User user = this.userService.findByUsername(username);
 
-    if(!user.hasActiveRoutine()) {
+    // Se já existe uma rotina ativa → mover para histórico
+    if (user.hasActiveRoutine()) {
+      Routine activeRoutine = user.getActiveRoutine();
 
+      // Criar RoutineHistory
+      RoutineHistory history = RoutineHistory.builder()
+          .name(activeRoutine.getName())
+          .priority(activeRoutine.getPriority())
+          .description(activeRoutine.getDescription())
+          .startedAt(activeRoutine.getStartedAt())
+          .finishedAt(LocalDateTime.now()) // rotina finalizada
+          .user(user)
+          .routine(activeRoutine)
+          .build();
+
+      // Criar TaskHistory para cada tarefa
+      List<TaskHistory> taskHistories = activeRoutine.getTasks().stream()
+          .map(task -> TaskHistory.builder()
+              .name(task.getName())
+              .estimate(task.getEstimate())
+              .completed(task.getCompleted())
+              .startedAt(task.getStartedAt())
+              .finishedAt(task.getFinishedAt())
+              .task(task)
+              .user(user)
+              .routineHistory(history)
+              .build()
+          ).toList();
+
+      history.setTasks(taskHistories);
+
+      // Salvar histórico
+      routineHistoryRepository.save(history);
+
+      // Resetar os dados da rotina ativa (template)
+      activeRoutine.setStartedAt(null);
+
+      activeRoutine.getTasks().forEach(task -> {
+        task.setStartedAt(null);
+        task.setFinishedAt(null);
+        task.setCompleted(false);
+      });
+
+      routineRepo.save(activeRoutine);
     }
 
-    Routine routine = this.getRoutinebyId(username, routineID);
+    // Buscar a nova rotina
+    Routine routine = this.getRoutinebyId(username, routineId);
 
     if (routine.getTasks().isEmpty()) {
       throw new BadRequestException("Adicione pelo menos uma Tarefa na Rotina para iniciar.");
     }
 
-    routine.setStartedAt(new LocaldateTime());
+    // Iniciar nova rotina
+    routine.setStartedAt(LocalDateTime.now());
+    user.setActiveRoutine(routine);
 
+    userRepository.save(user); // atualiza o usuário
+    return routineRepo.save(routine);
   }
+
 
 }
