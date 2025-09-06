@@ -50,6 +50,9 @@ export type EditRoutineRequest = {
   description: string
 }
 
+export type AssignTaskRequest = { tasks: number[] }
+
+
 export type CreateRoutineResponse = DefaultResponse<RoutineEntity>
 
 export type EditRoutineResponse = DefaultResponse<RoutineEntity>
@@ -60,6 +63,7 @@ export type SetActualRoutineResponse = DefaultResponse<RoutineEntity>
 
 export type GetAllRoutinesResponse = DefaultResponse<RoutineEntity[]>
 
+type AssignTaskResponse = DefaultResponse<RoutineEntity>
 
 export const RoutineService = {
 
@@ -79,7 +83,10 @@ export const RoutineService = {
     const { data } = await api.get(`routine/${routineId}`);
     return data as getRoutineByIdResponse;
   },
-
+  async assingTasksToRoutine(request: AssignTaskRequest, routineID: number): Promise<AssignTaskResponse> {
+    const { data } = await api.post(`routine/assign/${routineID}`, request);
+    return data as AssignTaskResponse;
+  },
   async startRoutine(routineID: number): Promise<SetActualRoutineResponse> {
     const { data } = await api.patch(`routine/start/${routineID}`);
     return data as SetActualRoutineResponse;

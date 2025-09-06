@@ -27,8 +27,6 @@ export type CreateTaskRequest = {
   routine_id?: number,
 };
 
-export type AssignTaskRequest = { routine_id: number, tasks: number[] }
-
 export type EditTaskRequest = { estimate: number, name: string }
 
 type CreateTaskResponse = DefaultResponse<TaskEntity>
@@ -37,8 +35,6 @@ type GetAllTasksResponse = DefaultResponse<TaskEntity[]>
 
 type GetAvailableTasksResponse = DefaultResponse<TaskEntity[]>
 
-type AssignTaskResponse = DefaultResponse<number>
-
 type DeleteTaskResponse = DefaultResponse<null>
 
 type EditTaskResponse = DefaultResponse<TaskEntity>
@@ -46,7 +42,6 @@ type EditTaskResponse = DefaultResponse<TaskEntity>
 type StartTaskResponse = DefaultResponse<TaskEntity>
 
 type ToggleTaskResponse = DefaultResponse<TaskEntity>
-
 
 
 export const TaskService = {
@@ -62,10 +57,6 @@ export const TaskService = {
   async getAvailableTasks(routineId: number): Promise<GetAvailableTasksResponse> {
     const { data } = await api.get(`task/${routineId}`);
     return data as GetAvailableTasksResponse;
-  },
-  async assingTasksToRoutine(request: AssignTaskRequest): Promise<AssignTaskResponse> {
-    const { data } = await api.post("task/assing", request);
-    return data as AssignTaskResponse;
   },
   async editTask(taskId: number, request: EditTaskRequest): Promise<EditTaskResponse> {
     const { data } = await api.patch(`task/${taskId}`, request);

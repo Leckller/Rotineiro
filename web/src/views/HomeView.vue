@@ -4,120 +4,60 @@
 
     <section class="content">
 
-      <div class="content-header">
-        <h3>Olá! 👋</h3>
-        <p><small>{{ actualDate }}</small></p>
-      </div>
+      <HomeRoutineHello />
 
-      <div v-if="routine.id == 0" class="empty-section">
-        <img class="img" src="../assets/book.jpg" alt="livro">
-        <p>Pronto para organizar seu dia?</p>
-        <p><small>Comece criando sua rotina personalizada para aumentar sua produtividade!</small></p>
-        <article class="empty-help">
-          <FontAwesomeIcon class="help-icon" icon="bullseye" />
-          <div class="empty-help-text">
-            <p><strong>Crie sua primeira rotina</strong></p>
-            <p>Organize suas atividades do dia</p>
-          </div>
-        </article>
-      </div>
+      <HomeRoutineEmpty v-if="routine.id == 0" />
 
-      <button v-if="routine.id == 0" @click="() => $router.push('/routine')" class="btn">
-        <FontAwesomeIcon icon="plus" />
-        Escolher Rotina
-      </button>
+      <section v-if="routine.id != 0" class="routine-section">
 
+        <HomeRoutineInfo />
 
-      <section class="routine">
+        <HomeRoutineProgress :routine="routine" />
 
-        <h2 class="routine-card">
-          <p>
-            Progresso do dia
-          </p>
-          <span>
-            {{((routine.tasks.filter(t => t.completed).length / routine.tasks.length) * 100).toFixed(1)}} %
-          </span>
-        </h2>
-
-        <div v-if="routine.id != 0" class="routine-task-cards">
-          <article class="task-card" v-for="task in routine.tasks" :key="task.id">
-            <input :checked="task.completed" type="checkbox" @click="toggleTask(task.id)">
-            <div>
-              <h4> {{ task.name }} </h4>
-              <p>
-                <small>
-                  {{ task.estimate }} min
-                </small>
-              </p>
-            </div>
-            <button @click="startTask(task.id)">
-              <FontAwesomeIcon icon="play" />
-            </button>
-          </article>
-        </div>
+        <HomeRoutineTask :routine="routine" />
 
       </section>
 
     </section>
+
   </TheLayout>
 
 </template>
 
 <script lang="ts">
 
+import HomeRoutineEmpty from '@/components/Home/HomeRoutineEmpty.vue';
+import HomeRoutineHello from '@/components/Home/HomeRoutineHello.vue';
+import HomeRoutineInfo from '@/components/Home/HomeRoutineInfo.vue';
+import HomeRoutineProgress from '@/components/Home/HomeRoutineProgress.vue';
+import HomeRoutineTask from '@/components/Home/HomeRoutineTask.vue';
 import TheLayout from '@/components/TheLayout.vue';
 import { PriorityEnum, Routine } from '@/services/routineService';
-import { TaskService } from '@/services/taskService';
 import { UserService } from '@/services/userService';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'HomeView',
   data() {
     return {
-      actualDate: "",
       routine: new Routine(0, "", [], PriorityEnum.LOW, "")
     }
   },
   components: {
     TheLayout,
-    FontAwesomeIcon
+    HomeRoutineInfo,
+    HomeRoutineProgress,
+    HomeRoutineEmpty,
+    HomeRoutineTask,
+    HomeRoutineHello
   },
   async created() {
     const routine = (await UserService.getActualRoutine()).response;
-    this.getActualDate()
     if (routine == null) {
       return
     }
     this.routine = routine;
   },
-  methods: {
-    async toggleTask(taskID: number) {
-      try {
-        const task = (await TaskService.toggleTask(taskID)).response;
-        this.routine.tasks = [...this.routine.tasks.filter(t => t.id != taskID), task];
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async startTask(taskID: number) {
-      try {
-        await TaskService.startTask(taskID);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    getActualDate() {
-      const hoje = new Date();
-      const opcoes = { weekday: 'long' as const, year: 'numeric' as const, month: 'long' as const, day: 'numeric' as const };
-
-      this.actualDate = hoje.toLocaleDateString('pt-BR', opcoes)
-        .split(" ")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-    },
-  }
 })
 </script>
 
@@ -132,93 +72,12 @@ export default defineComponent({
   width: 100%;
 }
 
-.empty-help {
-  display: flex;
-  font-size: small;
-  align-items: center;
-  padding: 16px;
-  border: solid 1px oklch(.809 .105 251.813);
-  gap: 8px;
-  border-radius: 8px;
-  background-color: oklch(.97 .014 254.604);
-}
-
-.help-icon {
-  background-color: oklch(.546 .245 262.881);
-  color: white;
-  padding: 8px;
-  height: 15px;
-  width: 15px;
-  border-radius: 999px;
-}
-
-.empty-help-text {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 4px;
-}
-
-.empty-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.content-header {
-  display: flex;
-  text-align: start;
-  flex-direction: column;
-}
-
-.btn {
-  color: white;
-  font-size: smaller;
-  background-color: oklch(.623 .214 259.815);
-  padding: 8px;
-  border-radius: 16px;
-  max-width: 200px;
-}
-
-.img {
-  width: 150px;
-  aspect-ratio: 1 / 1;
-  object-position: -30px center;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.routine {
+.routine-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
   width: 100%;
   height: 100%;
-}
-
-.routine-card {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.routine-task-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  align-items: center;
-}
-
-.task-card {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 300px;
 }
 </style>
