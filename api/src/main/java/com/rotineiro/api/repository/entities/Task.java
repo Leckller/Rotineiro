@@ -6,7 +6,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -45,9 +48,13 @@ public class Task {
   @OneToMany(mappedBy = "task")
   private List<TaskHistory> taskHistories;
 
-  @ManyToOne
-  @JoinColumn(name = "routine_id", nullable = false)
-  private Routine routine;
+  @ManyToMany
+  @JoinTable(
+      name = "task_routines",
+      joinColumns = @JoinColumn(name = "task_id"),
+      inverseJoinColumns = @JoinColumn(name = "routine_id")
+  )
+  private Set<Routine> routines = new HashSet<>();
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)

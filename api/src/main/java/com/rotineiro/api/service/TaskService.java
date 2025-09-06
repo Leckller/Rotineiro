@@ -62,7 +62,7 @@ public class TaskService {
 
     if(dto.routineId() != null) {
       Routine routine = this.routineService.getRoutinebyId(username, dto.routineId());
-      task.setRoutine(routine);
+      task.getRoutines().add(routine);
     }
 
     return this.taskRepo.save(task);
@@ -71,14 +71,6 @@ public class TaskService {
 
   public List<Task> availableTasksForRoutine (String username, Integer routineId) {
     return this.taskRepo.availableTasksForRoutine(routineId, username);
-  }
-
-  @Transactional
-  public void assingTasksToRoutine(String username, Integer routineId, List<Integer> taskIds ) {
-    int updated = this.taskRepo.assignTasksToRoutine(routineId, taskIds, username);
-    if (updated != taskIds.size()) {
-      System.out.println("Alguma das tarefas não existe.");
-    }
   }
 
   public void deleteTask(String username, Integer taskId) {
