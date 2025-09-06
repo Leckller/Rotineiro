@@ -1,15 +1,12 @@
 <template>
-
-  <div class="content-header">
-    <h3>Olá! 👋</h3>
-    <p><small>{{ actualDate }}</small></p>
+  <div class="hello-content">
+      <h3>Olá! 👋</h3>
+      <p><small>{{ actualDate }}</small></p>
   </div>
-
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 
 export default defineComponent({
   name: "HomeRoutineHello",
@@ -24,7 +21,12 @@ export default defineComponent({
   methods: {
     getActualDate() {
       const hoje = new Date();
-      const opcoes = { weekday: 'long' as const, year: 'numeric' as const, month: 'long' as const, day: 'numeric' as const };
+      const opcoes = {
+        weekday: 'long' as const,
+        year: 'numeric' as const,
+        month: 'long' as const,
+        day: 'numeric' as const
+      };
 
       this.actualDate = hoje.toLocaleDateString('pt-BR', opcoes)
         .split(" ")
@@ -33,13 +35,14 @@ export default defineComponent({
     },
   }
 })
-
 </script>
 
 <style scoped>
-.content-header {
+.hello-content {
   display: flex;
-  text-align: start;
+  align-items: start;
+  max-width: 300px;
+  width: 100%;
   flex-direction: column;
 }
 </style>
