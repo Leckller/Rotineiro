@@ -13,7 +13,6 @@ import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,14 +23,16 @@ import java.util.Objects;
 public class RoutineService {
 
   private final RoutineRepository routineRepo;
+  private final TaskService taskService;
   private final TaskRepository taskRepo;
   private final UserRepository userRepository;
   private final RoutineHistoryRepository routineHistoryRepository;
   private final UserService userService;
 
   @Autowired
-  public RoutineService(RoutineRepository routineRepo, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
+  public RoutineService(RoutineRepository routineRepo, TaskService taskService, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
     this.routineRepo = routineRepo;
+    this.taskService = taskService;
     this.taskRepo = taskRepo;
     this.userRepository = userRepository;
     this.routineHistoryRepository = routineHistoryRepository;
@@ -60,6 +61,33 @@ public class RoutineService {
   }
 
   @Transactional
+  public Routine deallocateTaskToRoutine(String username, Integer routineId, List<Integer> taskIds) {
+
+    Routine routine = routineRepo.findById(routineId)
+        .orElseThrow(() -> new NotFoundException("Rotina não encontrada"));
+
+    if (!routine.getUser().getUsername().equals(username)) {
+      throw new UnauthorizedException("Você não pode alterar esta rotina");
+    }
+
+    List<Task> tasks = taskRepo.findAllById(taskIds).stream()
+        .filter(task -> task.getUser().getUsername().equals(username))
+        .toList();
+
+    if (tasks.isEmpty()) {
+      throw new BadRequestException("Nenhuma das tarefas pertence a este usuário");
+    }
+
+    for (Task task : tasks) {
+      routine.getTasks().remove(task);
+      task.getRoutines().remove(routine);
+      taskRepo.save(task); // garante consistência imediata
+    }
+
+    return routineRepo.save(routine);
+  }
+
+  @Transactional
   public Routine assignTasksToRoutine(String username, Integer routineId, List<Integer> taskIds) {
     Routine routine = routineRepo.findById(routineId)
         .orElseThrow(() -> new NotFoundException("Rotina não encontrada"));
@@ -72,13 +100,11 @@ public class RoutineService {
         .filter(task -> task.getUser().getUsername().equals(username))
         .toList();
 
-    // adicionar relação dos dois lados
     for (Task task : tasks) {
       routine.getTasks().add(task);
       task.getRoutines().add(routine);
     }
 
-    // salva apenas a rotina (JPA sincroniza a tabela de junção)
     return routineRepo.save(routine);
   }
 

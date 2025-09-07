@@ -50,6 +50,9 @@ public class Routine {
   @OneToMany(mappedBy = "routine")
   private List<RoutineHistory> routineHistories = new ArrayList<RoutineHistory>();;
 
+  @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RoutineSchedule> schedules = new ArrayList<>();
+
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;

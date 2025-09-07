@@ -4,6 +4,7 @@ import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
 import com.rotineiro.api.controller.dtos.Task.AssignTaskDto;
+import com.rotineiro.api.controller.dtos.Task.DeallocateTaskDto;
 import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.security.SecurityConfig;
@@ -96,6 +97,17 @@ public class RoutineController {
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
+  @PostMapping("/deallocate/{routineID}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> deallocateTaskToRoutine(@PathVariable Integer routineID, @Valid @RequestBody DeallocateTaskDto dto) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.deallocateTaskToRoutine(username, routineID, dto.tasks());
+
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+    response.setResult(RoutineDto.fromEntity(routine));
+    response.setMessage("Tarefas removidas da rotina com sucesso!");
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
 
   @PatchMapping("/start/{routineID}")
   public ResponseEntity<DefaultResponse<RoutineDto>> startRoutine(@PathVariable Integer routineID) {
