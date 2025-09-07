@@ -3,6 +3,7 @@ package com.rotineiro.api.controller;
 import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
+import com.rotineiro.api.controller.dtos.Task.AssignTaskDto;
 import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.security.SecurityConfig;
@@ -11,6 +12,7 @@ import com.rotineiro.api.utils.DefaultResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,6 +83,19 @@ public class RoutineController {
     return ResponseEntity.status(HttpStatus.OK).body(response);
 
   }
+
+  @PostMapping("/assign/{routineID}")
+  public ResponseEntity<DefaultResponse<RoutineDto>> assignTaskToRoutine(@PathVariable Integer routineID, @Valid @RequestBody AssignTaskDto dto) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Routine routine = this.routineService.assignTasksToRoutine(username, routineID, dto.tasks());
+
+    DefaultResponse<RoutineDto> response = new DefaultResponse<RoutineDto>();
+    response.setResult(RoutineDto.fromEntity(routine));
+    response.setMessage("Tarefas adicionadas com sucesso!");
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
 
   @PatchMapping("/start/{routineID}")
   public ResponseEntity<DefaultResponse<RoutineDto>> startRoutine(@PathVariable Integer routineID) {

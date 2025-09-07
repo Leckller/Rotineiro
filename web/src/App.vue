@@ -18,6 +18,10 @@ button {
   transition: all 1s;
 }
 
+svg {
+  font-size: smaller;
+}
+
 * {
   padding: 0;
   margin: 0;

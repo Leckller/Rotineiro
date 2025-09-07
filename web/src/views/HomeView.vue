@@ -4,81 +4,66 @@
 
     <section class="content">
 
-      <div class="content-header">
-        <h3>Olá! 👋</h3>
-        <p><small>{{ actualDate }}</small></p>
-      </div>
+      <HomeRoutineHello />
 
-      <div v-if="routine.id == 0" class="empty-section">
-        <img class="img" src="../assets/book.jpg" alt="livro">
-        <p>Pronto para organizar seu dia?</p>
-        <p><small>Comece criando sua rotina personalizada para aumentar sua produtividade!</small></p>
-        <article class="empty-help">
-          <FontAwesomeIcon class="help-icon" icon="bullseye" />
-          <div class="empty-help-text">
-            <p><strong>Crie sua primeira rotina</strong></p>
-            <p>Organize suas atividades do dia</p>
-          </div>
-        </article>
-      </div>
+      <HomeRoutineEmpty v-if="routine.id == 0" />
 
-      <button v-if="routine.id == 0" @click="() => $router.push('/routine')" class="btn">
-        <FontAwesomeIcon icon="plus" />
-        Escolher Rotina
-      </button>
+      <section v-if="routine.id != 0" class="routine-section">
+
+        <HomeRoutineInfo :title="routine.name" />
+
+        <HomeRoutineProgress :routine="routine" />
+
+        <p>Tarefas de hoje</p>
+
+        <div class="routine-task-cards">
+          <article class="task-card" v-for="task in routine.tasks" :key="task.id">
+            <HomeRoutineTask :task="task" />
+          </article>
+        </div>
+
+      </section>
+
     </section>
-
-    <article v-for="task in routine.tasks" :key="task.id">
-      {{ task.name }}
-    </article>
 
   </TheLayout>
 
 </template>
 
 <script lang="ts">
+
+import HomeRoutineEmpty from '@/components/Home/HomeRoutineEmpty.vue';
+import HomeRoutineHello from '@/components/Home/HomeRoutineHello.vue';
+import HomeRoutineInfo from '@/components/Home/HomeRoutineInfo.vue';
+import HomeRoutineProgress from '@/components/Home/HomeRoutineProgress.vue';
+import HomeRoutineTask from '@/components/Home/HomeRoutineTask.vue';
 import TheLayout from '@/components/TheLayout.vue';
-import { PriorityEnum, Routine, RoutineService } from '@/services/routineService';
+import { PriorityEnum, Routine } from '@/services/routineService';
 import { UserService } from '@/services/userService';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'HomeView',
   data() {
     return {
-      actualDate: "",
       routine: new Routine(0, "", [], PriorityEnum.LOW, "")
     }
   },
   components: {
     TheLayout,
-    FontAwesomeIcon
+    HomeRoutineInfo,
+    HomeRoutineProgress,
+    HomeRoutineEmpty,
+    HomeRoutineTask,
+    HomeRoutineHello
   },
   async created() {
     const routine = (await UserService.getActualRoutine()).response;
-    this.routine = routine;
-    this.getActualDate()
-  },
-  methods: {
-    getActualDate() {
-      const hoje = new Date();
-      const opcoes = { weekday: 'long' as const, year: 'numeric' as const, month: 'long' as const, day: 'numeric' as const };
-
-      this.actualDate = hoje.toLocaleDateString('pt-BR', opcoes)
-        .split(" ")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-    },
-    async getRoutines() {
-      try {
-        const routines = await RoutineService.getAllRoutines()
-        console.log(routines)
-      } catch {
-
-      }
+    if (routine == null) {
+      return
     }
-  }
+    this.routine = routine;
+  },
 })
 </script>
 
@@ -93,61 +78,32 @@ export default defineComponent({
   width: 100%;
 }
 
-.empty-help {
+.routine-section {
   display: flex;
-  font-size: small;
+  flex-direction: column;
+  gap: 16px;
   align-items: center;
-  padding: 16px;
-  border: solid 1px oklch(.809 .105 251.813);
+  width: 100%;
+  height: 100%;
+}
+
+.routine-task-cards {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  border-radius: 8px;
-  background-color: oklch(.97 .014 254.604);
-}
-
-.help-icon {
-  background-color: oklch(.546 .245 262.881);
-  color: white;
-  padding: 8px;
-  height: 15px;
-  width: 15px;
-  border-radius: 999px;
-}
-
-.empty-help-text {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 4px;
-}
-
-.empty-section {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   align-items: center;
-  gap: 10px;
 }
 
-.content-header {
+.task-card {
   display: flex;
-  text-align: start;
-  flex-direction: column;
-}
-
-.btn {
-  color: white;
-  font-size: smaller;
-  background-color: oklch(.623 .214 259.815);
-  padding: 8px;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px;
+  border: solid 1px rgba(128, 128, 128, 0.421);
+  padding: 16px;
   border-radius: 16px;
-  max-width: 200px;
-}
-
-.img {
-  width: 150px;
-  aspect-ratio: 1 / 1;
-  object-position: -30px center;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 </style>

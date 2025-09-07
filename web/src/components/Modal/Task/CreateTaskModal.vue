@@ -112,7 +112,7 @@ export default defineComponent({
 
       try {
 
-        await TaskService.assingTasksToRoutine({ routine_id: +this.$route.params.id, tasks: this.selectedTasks })
+        await RoutineService.assingTasksToRoutine({ tasks: this.selectedTasks }, +this.$route.params.id)
         this.showNotification({ title: "Tarefas Adicionadas Com Sucesso!", time: 2000 })
 
         const attRoutine = await RoutineService.getRoutineById(+this.$route.params.id)
@@ -120,11 +120,11 @@ export default defineComponent({
 
         this.modalStore.closeModal()
 
-      } catch (error) {
-        console.log(error)
-        this.showNotification({ title: "Erro durante a adição das tarefas.", time: 2000, type: NotificationEnum.error })
+      } catch (error: any) {
+        this.showNotification({ title: error.response.data.message, time: 2000, type: NotificationEnum.error })
         this.modalStore.closeModal()
       }
+      
     },
     async createTask(e: Event) {
       e.preventDefault();

@@ -16,7 +16,7 @@ public record TaskDto(
     @JsonProperty("estimate")
     Double estimate,
 
-    @JsonProperty("estimate")
+    @JsonProperty("completed")
     Boolean completed
 
 ) {

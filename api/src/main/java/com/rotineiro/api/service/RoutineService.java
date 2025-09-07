@@ -5,6 +5,7 @@ import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.RoutineRepository;
+import com.rotineiro.api.repository.TaskRepository;
 import com.rotineiro.api.repository.UserRepository;
 import com.rotineiro.api.repository.entities.*;
 import com.rotineiro.api.security.exceptions.BadRequestException;
@@ -23,18 +24,18 @@ import java.util.Objects;
 public class RoutineService {
 
   private final RoutineRepository routineRepo;
+  private final TaskRepository taskRepo;
   private final UserRepository userRepository;
   private final RoutineHistoryRepository routineHistoryRepository;
   private final UserService userService;
-  private final TaskService taskService;
 
   @Autowired
-  public RoutineService(RoutineRepository routineRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService, @Lazy TaskService taskService) {
+  public RoutineService(RoutineRepository routineRepo, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
     this.routineRepo = routineRepo;
+    this.taskRepo = taskRepo;
     this.userRepository = userRepository;
     this.routineHistoryRepository = routineHistoryRepository;
     this.userService = userService;
-    this.taskService = taskService;
   }
 
   public Routine getRoutinebyId(String username, Integer routineId) throws NotFoundException, UnauthorizedException {
@@ -58,6 +59,30 @@ public class RoutineService {
 
   }
 
+  @Transactional
+  public Routine assignTasksToRoutine(String username, Integer routineId, List<Integer> taskIds) {
+    Routine routine = routineRepo.findById(routineId)
+        .orElseThrow(() -> new NotFoundException("Rotina não encontrada"));
+
+    if (!routine.getUser().getUsername().equals(username)) {
+      throw new UnauthorizedException("Você não pode alterar esta rotina");
+    }
+
+    List<Task> tasks = taskRepo.findAllById(taskIds).stream()
+        .filter(task -> task.getUser().getUsername().equals(username))
+        .toList();
+
+    // adicionar relação dos dois lados
+    for (Task task : tasks) {
+      routine.getTasks().add(task);
+      task.getRoutines().add(routine);
+    }
+
+    // salva apenas a rotina (JPA sincroniza a tabela de junção)
+    return routineRepo.save(routine);
+  }
+
+
   public Routine createRoutine(String username, CreateRoutineDto dto) {
 
     User user = this.userService.findByUsername(username);
@@ -75,7 +100,7 @@ public class RoutineService {
     this.routineRepo.save(routine);
 
     if(dto.tasks() != null && !dto.tasks().isEmpty()) {
-      this.taskService.assingTasksToRoutine(username, routine.getId(), dto.tasks());
+      this.assignTasksToRoutine(username, routine.getId(), dto.tasks());
     }
 
     return routine;

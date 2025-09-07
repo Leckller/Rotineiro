@@ -12,17 +12,15 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Integer> {
   List<Task> findAllByUser(User user);
   List<Task> findAllByUserUsername(String username);
-  @Modifying
-  @Query("update Task t set t.routine.id = :routineId " +
-         "where t.id in :taskIds and t.user.username = :username")
-  int assignTasksToRoutine(@Param("routineId") Integer routineId,
-                           @Param("taskIds") List<Integer> taskIds,
-                           @Param("username") String username);
+
   @Query("SELECT t FROM Task t " +
-         "WHERE (t.routine IS NULL OR t.routine.id <> :routineId) " +
-         "AND t.user.username = :username")
+      "WHERE t.user.username = :username " +
+      "AND NOT EXISTS (" +
+      "   SELECT 1 FROM t.routines r WHERE r.id = :routineId" +
+      ")")
   List<Task> availableTasksForRoutine(@Param("routineId") Integer routineId,
                                       @Param("username") String username);
+
 
   List<Task> findAllByIdInAndUserId(List<Integer> taskIds, Integer userId);
 }

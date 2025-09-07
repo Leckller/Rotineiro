@@ -32,6 +32,7 @@ export default defineComponent({
         const routineID = this.modalStore.infos.setTask;
         await RoutineService.startRoutine(routineID)
         this.showNotification({ title: "Rotina selecionada com sucesso!", time: 2000 })
+        this.$router.push("home")
       } catch (error: any) {
         this.showNotification({ title: error.response.data.message, time: 3000, type: NotificationEnum.error })
       }

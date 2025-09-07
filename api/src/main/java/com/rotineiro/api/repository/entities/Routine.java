@@ -8,7 +8,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,8 +44,8 @@ public class Routine {
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "routine")
-  private List<Task> tasks = new ArrayList<Task>();
+  @ManyToMany(mappedBy = "routines")
+  private Set<Task> tasks = new HashSet<>();
 
   @OneToMany(mappedBy = "routine")
   private List<RoutineHistory> routineHistories = new ArrayList<RoutineHistory>();;

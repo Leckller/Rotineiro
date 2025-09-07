@@ -1,0 +1,149 @@
+<!-- eslint-disable vue/no-mutating-props -->
+<template>
+  <input type="checkbox" v-model="task.completed" @change="onToggleTask" />
+  <div class="routine-task-info">
+    <h4>{{ task.name }}</h4>
+    <p class="timer">
+      <small>{{ task.estimate }} min</small>
+      <FontAwesomeIcon v-if="timer > 0" icon="circle" class="circle" />
+      <small v-if="timer > 0" class="timer-text" :class="{ tick: run }">
+        {{ formattedTimer }}
+        <span v-if="run">
+          <FontAwesomeIcon icon="circle"  class="circle"/>
+        </span>
+      </small>
+    </p>
+  </div>
+  <button @click="toggleStart(task)">
+    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" :icon="run ? 'pause' : 'play'" />
+  </button>
+  <button v-if="timer > 0" @click="resetTimer()">
+    <FontAwesomeIcon icon="stop" />
+  </button>
+</template>
+
+<script lang="ts">
+import { Task, TaskService } from '@/services/taskService';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: "HomeRoutineTask",
+  components: { FontAwesomeIcon },
+  data() {
+    return {
+      run: false,
+      timer: 0, // timer em segundos
+      intervalId: undefined as number | undefined
+    };
+  },
+  props: {
+    task: { required: true, type: Object as () => Task }
+  },
+  computed: {
+    formattedTimer(): string {
+      const minutes = Math.floor(this.timer / 60).toString().padStart(2, '0');
+      const seconds = (this.timer % 60).toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
+    }
+  },
+  methods: {
+    async onToggleTask() {
+      try {
+        await TaskService.toggleTask(this.task.id);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    resetTimer() {
+      if (this.timer <= 0) return;
+      this.timer = 0;
+      this.run = false;
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = undefined;
+      }
+    },
+    async toggleStart(task: Task) {
+      try {
+        await TaskService.startTask(task.id);
+        this.run = !this.run;
+
+        if (this.run) {
+          // inicia o cronômetro
+          this.intervalId = window.setInterval(() => {
+            this.timer++;
+          }, 1000);
+        } else {
+          // pausa o cronômetro
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = undefined;
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  },
+  beforeUnmount() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = undefined;
+    }
+  }
+});
+</script>
+
+<style scoped>
+.routine-task-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: start;
+  align-items: start;
+}
+
+/* Animação do número do timer */
+.timer-text {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+  color: #958acd;
+}
+
+.timer-text.tick {
+  animation: tickPulse 2s infinite;
+}
+
+.timer {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  font-size: 6px;
+}
+
+@keyframes tickPulse {
+  0% {
+    transform: scale(1);
+    color: #958acd;
+  }
+
+  50% {
+    transform: scale(1.1);
+    color: #482ecc;
+  }
+
+  100% {
+    transform: scale(1);
+    color: #958acd;
+  }
+}
+</style>

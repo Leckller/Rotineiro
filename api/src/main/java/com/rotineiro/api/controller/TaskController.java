@@ -1,12 +1,14 @@
 package com.rotineiro.api.controller;
 
 import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
+import com.rotineiro.api.controller.dtos.Task.AssignTaskDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
 import com.rotineiro.api.controller.dtos.Task.EditTaskDto;
 import com.rotineiro.api.controller.dtos.Task.TaskDto;
 import com.rotineiro.api.repository.entities.Routine;
 import com.rotineiro.api.repository.entities.Task;
 import com.rotineiro.api.security.SecurityConfig;
+import com.rotineiro.api.service.RoutineService;
 import com.rotineiro.api.service.TaskService;
 import com.rotineiro.api.utils.DefaultResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,6 +96,30 @@ public class TaskController {
 
     DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
     response.setMessage("Tarefa editada com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PatchMapping("/complete/{taskId}")
+  public ResponseEntity<DefaultResponse<TaskDto>> toggleCompleteTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.toggleTask(username, taskId);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Tarefa concluída com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PatchMapping("start/{taskId}")
+  public ResponseEntity<DefaultResponse<TaskDto>> startTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.startTask(username, taskId);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Tarefa iniciada com sucesso!");
     response.setResult(TaskDto.fromEntity(task));
 
     return  ResponseEntity.status(HttpStatus.OK).body(response);
