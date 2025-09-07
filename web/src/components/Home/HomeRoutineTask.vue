@@ -3,15 +3,22 @@
   <input type="checkbox" v-model="task.completed" @change="onToggleTask" />
   <div class="routine-task-info">
     <h4>{{ task.name }}</h4>
-    <p>
+    <p class="timer">
       <small>{{ task.estimate }} min</small>
-      <small v-if="run">
+      <FontAwesomeIcon v-if="timer > 0" icon="circle" class="circle" />
+      <small v-if="timer > 0" class="timer-text" :class="{ tick: run }">
         {{ formattedTimer }}
+        <span v-if="run">
+          <FontAwesomeIcon icon="circle"  class="circle"/>
+        </span>
       </small>
     </p>
   </div>
   <button @click="toggleStart(task)">
-    <FontAwesomeIcon :icon="run ? 'stop' : 'play'" />
+    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" :icon="run ? 'pause' : 'play'" />
+  </button>
+  <button v-if="timer > 0" @click="resetTimer()">
+    <FontAwesomeIcon icon="stop" />
   </button>
 </template>
 
@@ -48,6 +55,15 @@ export default defineComponent({
         console.error(error);
       }
     },
+    resetTimer() {
+      if (this.timer <= 0) return;
+      this.timer = 0;
+      this.run = false;
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = undefined;
+      }
+    },
     async toggleStart(task: Task) {
       try {
         await TaskService.startTask(task.id);
@@ -71,7 +87,6 @@ export default defineComponent({
     }
   },
   beforeUnmount() {
-    // limpa intervalo quando o componente sair
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
@@ -87,5 +102,48 @@ export default defineComponent({
   width: 100%;
   justify-content: start;
   align-items: start;
+}
+
+/* Animação do número do timer */
+.timer-text {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+  color: #958acd;
+}
+
+.timer-text.tick {
+  animation: tickPulse 2s infinite;
+}
+
+.timer {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  font-size: 6px;
+}
+
+@keyframes tickPulse {
+  0% {
+    transform: scale(1);
+    color: #958acd;
+  }
+
+  50% {
+    transform: scale(1.1);
+    color: #482ecc;
+  }
+
+  100% {
+    transform: scale(1);
+    color: #958acd;
+  }
 }
 </style>
