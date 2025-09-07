@@ -31,12 +31,10 @@ import java.util.List;
 public class TaskController {
 
   private final TaskService taskService;
-  private final RoutineService routineService;
 
   @Autowired
-  public TaskController(TaskService taskService, @Lazy RoutineService routineService) {
+  public TaskController(TaskService taskService) {
     this.taskService = taskService;
-    this.routineService = routineService;
   }
 
   @GetMapping("/all")
@@ -79,19 +77,6 @@ public class TaskController {
     return  ResponseEntity.status(HttpStatus.OK).body(response);
 
   }
-
-  @PostMapping("/assign/{routineID}")
-  public ResponseEntity<DefaultResponse<Null>> assignTaskToRoutine(@PathVariable Integer routineID, @Valid @RequestBody AssignTaskDto dto) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-    this.routineService.assignTasksToRoutine(username, routineID, dto.tasks());
-
-    DefaultResponse<Null> response = new DefaultResponse<Null>();
-    response.setMessage("Tarefas adicionadas com sucesso!");
-
-    return ResponseEntity.status(HttpStatus.OK).body(response);
-  }
-
 
   @DeleteMapping("/{taskId}")
   public ResponseEntity<DefaultResponse<Null>> deleteTask(@PathVariable Integer taskId) {
