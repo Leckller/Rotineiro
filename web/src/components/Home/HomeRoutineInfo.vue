@@ -4,7 +4,7 @@
     <div class="routine-applied">
       <p>Rotina aplicada:</p>
       <p class="routine-applied-title">
-        Workout Intenso
+        {{ title }}
         <span>
           <FontAwesomeIcon icon="check" />
           Ativa
@@ -32,6 +32,9 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: "HomeRoutineInfo",
   components: { FontAwesomeIcon },
+  props: {
+    title: { required: true, type: String, default: "" }
+  },
   methods: {
     toggleFullscreen() {
       if (!document.fullscreenElement) {
@@ -71,6 +74,9 @@ export default defineComponent({
 
 .routine-applied-title {
   color: forestgreen;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .routine-applied-title span {

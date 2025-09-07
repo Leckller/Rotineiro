@@ -10,11 +10,17 @@
 
       <section v-if="routine.id != 0" class="routine-section">
 
-        <HomeRoutineInfo />
+        <HomeRoutineInfo :title="routine.name" />
 
         <HomeRoutineProgress :routine="routine" />
 
-        <HomeRoutineTask :routine="routine" />
+        <p>Tarefas de hoje</p>
+
+        <div class="routine-task-cards">
+          <article class="task-card" v-for="task in routine.tasks" :key="task.id">
+            <HomeRoutineTask :task="task" />
+          </article>
+        </div>
 
       </section>
 
@@ -79,5 +85,25 @@ export default defineComponent({
   align-items: center;
   width: 100%;
   height: 100%;
+}
+
+.routine-task-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.task-card {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 300px;
+  border: solid 1px rgba(128, 128, 128, 0.421);
+  padding: 16px;
+  border-radius: 16px;
 }
 </style>
