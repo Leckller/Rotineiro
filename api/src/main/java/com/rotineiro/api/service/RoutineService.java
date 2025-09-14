@@ -53,6 +53,11 @@ public class RoutineService {
 
   }
 
+  public void deleteRoutine(String username, Integer routineID) {
+    Routine routine = this.getRoutinebyId(username, routineID);
+    this.routineRepo.delete(routine);
+  }
+
   public List<Routine> getAllRoutines(String username) {
 
     User user = this.userService.findByUsername(username);
@@ -154,53 +159,64 @@ public class RoutineService {
   }
 
   @Transactional
+  public void finishRoutine(String username) {
+    User user = this.userService.findByUsername(username);
+
+    if (!user.hasActiveRoutine()) {
+      throw new BadRequestException("Você não tem uma rotina ativa.");
+    }
+
+    Routine activeRoutine = user.getActiveRoutine();
+
+    // Criar RoutineHistory
+    RoutineHistory history = RoutineHistory.builder()
+        .name(activeRoutine.getName())
+        .priority(activeRoutine.getPriority())
+        .description(activeRoutine.getDescription())
+        .startedAt(activeRoutine.getStartedAt())
+        .finishedAt(LocalDateTime.now()) // rotina finalizada
+        .user(user)
+        .routine(activeRoutine)
+        .build();
+
+    // Criar TaskHistory para cada tarefa
+    List<TaskHistory> taskHistories = activeRoutine.getTasks().stream()
+        .map(task -> TaskHistory.builder()
+            .name(task.getName())
+            .estimate(task.getEstimate())
+            .completed(task.getCompleted())
+            .startedAt(task.getStartedAt())
+            .finishedAt(task.getFinishedAt())
+            .task(task)
+            .user(user)
+            .routineHistory(history)
+            .build()
+        ).toList();
+
+    history.setTasks(taskHistories);
+
+    // Salvar histórico
+    routineHistoryRepository.save(history);
+
+    // Resetar os dados da rotina ativa (template) - Acho q isso aq vai gerar algum bug
+    activeRoutine.setStartedAt(null);
+
+    activeRoutine.getTasks().forEach(task -> {
+      task.setStartedAt(null);
+      task.setFinishedAt(null);
+      task.setCompleted(false);
+    });
+
+    routineRepo.save(activeRoutine);
+  }
+
+  @Transactional
   public Routine startRoutine(String username, Integer routineId) {
     User user = this.userService.findByUsername(username);
 
     // Se já existe uma rotina ativa → mover para histórico
     if (user.hasActiveRoutine()) {
-      Routine activeRoutine = user.getActiveRoutine();
-
-      // Criar RoutineHistory
-      RoutineHistory history = RoutineHistory.builder()
-          .name(activeRoutine.getName())
-          .priority(activeRoutine.getPriority())
-          .description(activeRoutine.getDescription())
-          .startedAt(activeRoutine.getStartedAt())
-          .finishedAt(LocalDateTime.now()) // rotina finalizada
-          .user(user)
-          .routine(activeRoutine)
-          .build();
-
-      // Criar TaskHistory para cada tarefa
-      List<TaskHistory> taskHistories = activeRoutine.getTasks().stream()
-          .map(task -> TaskHistory.builder()
-              .name(task.getName())
-              .estimate(task.getEstimate())
-              .completed(task.getCompleted())
-              .startedAt(task.getStartedAt())
-              .finishedAt(task.getFinishedAt())
-              .task(task)
-              .user(user)
-              .routineHistory(history)
-              .build()
-          ).toList();
-
-      history.setTasks(taskHistories);
-
-      // Salvar histórico
-      routineHistoryRepository.save(history);
-
-      // Resetar os dados da rotina ativa (template)
-      activeRoutine.setStartedAt(null);
-
-      activeRoutine.getTasks().forEach(task -> {
-        task.setStartedAt(null);
-        task.setFinishedAt(null);
-        task.setCompleted(false);
-      });
-
-      routineRepo.save(activeRoutine);
+     this.finishRoutine(username);
     }
 
     // Buscar a nova rotina
