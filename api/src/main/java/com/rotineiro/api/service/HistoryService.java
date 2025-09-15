@@ -2,6 +2,7 @@ package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.History.AmountRoutineUseDto;
 import com.rotineiro.api.controller.dtos.History.AmountTaskUseDto;
+import com.rotineiro.api.controller.dtos.History.CompleteHistoryDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.entities.*;
@@ -28,10 +29,17 @@ public class HistoryService {
     this.userService = userService;
   }
 
-  public List<AmountRoutineUseDto> amountOfRoutineUse(String username) {
+  public CompleteHistoryDto completeHistory(String username, LocalDateTime start, LocalDateTime end) {
+    User user = userService.findByUsername(username);
+    List<AmountTaskUseDto> amountTaskUseDto = this.amountOfTaskUseBetweenDate(user, start, end);
+    List<AmountRoutineUseDto> amountRoutineUseDto = this.amountOfRoutineUse(user, start, end);
+    AmountRoutineUseDto mostUsedRoutineDto  = this.mostUsedRoutine(user, start, end);
+    return new CompleteHistoryDto(mostUsedRoutineDto, amountRoutineUseDto, amountTaskUseDto);
+  }
 
-    User user = this.userService.findByUsername(username);
-    List<RoutineHistory> routines = routineHistoryRepo.findAllByUser(user);
+  public List<AmountRoutineUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
+
+    List<RoutineHistory> routines = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
     Map<Routine, Long> routineUsage = routines.stream()
         .collect(Collectors.groupingBy(
@@ -49,9 +57,8 @@ public class HistoryService {
         .collect(Collectors.toList());
   }
 
-  public List<AmountTaskUseDto> amountOfTaskUseBetweenDate(String username, LocalDateTime start, LocalDateTime end) {
+  public List<AmountTaskUseDto> amountOfTaskUseBetweenDate(User user, LocalDateTime start, LocalDateTime end) {
 
-    User user = this.userService.findByUsername(username);
     List<TaskHistory> tasks = taskHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
     Map<Task, Long> taskUsage = tasks.stream()
@@ -71,9 +78,8 @@ public class HistoryService {
 
   }
 
-  public AmountRoutineUseDto mostUsedRoutine(String username, LocalDateTime start, LocalDateTime end) {
+  public AmountRoutineUseDto mostUsedRoutine(User user, LocalDateTime start, LocalDateTime end) {
 
-    User user = this.userService.findByUsername(username);
     List<RoutineHistory> histories = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
     Optional<AmountRoutineUseDto> mostUsedRoutine = histories.stream()
