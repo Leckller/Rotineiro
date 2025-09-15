@@ -5,6 +5,7 @@ import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
 import com.rotineiro.api.security.SecurityConfig;
 import com.rotineiro.api.service.HistoryService;
 import com.rotineiro.api.utils.DefaultResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class HistoryController {
   }
 
   @GetMapping("{start}/{end}")
+  @Operation(summary = "Carrega o Histórico das rotinas e tarefas")
   public ResponseEntity<DefaultResponse<CompleteHistoryDto>> getCompleteHistory(
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
