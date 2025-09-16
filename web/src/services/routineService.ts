@@ -99,7 +99,7 @@ export const RoutineService = {
     return data as SetActualRoutineResponse;
   },
   async finishRoutine(): Promise<FinishRoutineResponse> {
-    const { data } = await api.patch(`routine/finish}`);
+    const { data } = await api.patch(`routine/finish`);
     return data as FinishRoutineResponse;
   },
   async getAllRoutines(): Promise<GetAllRoutinesResponse> {

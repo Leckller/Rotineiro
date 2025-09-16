@@ -36,14 +36,10 @@ export default defineComponent({
   props: {
     task: { required: true, type: Object as () => Task },
   },
-  mounted() {
-    this.timer = this.task.timer;
-    console.log(this.task);
-  },
   data() {
     return {
       run: false,
-      timer: 0,
+      timer: this.task.timer,
       intervalId: undefined as number | undefined,
     };
   },
