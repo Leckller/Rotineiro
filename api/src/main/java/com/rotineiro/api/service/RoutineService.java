@@ -205,7 +205,12 @@ public class RoutineService {
       task.setStartedAt(null);
       task.setFinishedAt(null);
       task.setCompleted(false);
+      task.setTimer(0);
     });
+
+    user.setActiveRoutine(null);
+
+    this.userRepository.save(user);
 
     routineRepo.save(activeRoutine);
   }
