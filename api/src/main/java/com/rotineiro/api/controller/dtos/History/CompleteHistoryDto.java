@@ -8,11 +8,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CompleteHistoryDto (
     @JsonProperty("most_used_routine")
-    AmountRoutineUseDto mostUsedRoutine,
+    AmountUseDto mostUsedRoutine,
 
     @JsonProperty("amount_of_routine_use")
-    List<AmountRoutineUseDto> amountOfRoutineUse,
+    List<AmountUseDto> amountOfRoutineUse,
 
     @JsonProperty("amount_of_task_use")
-    List<AmountTaskUseDto> amountOfTaskUse
+    List<AmountUseDto> amountOfTaskUse
 ) {}

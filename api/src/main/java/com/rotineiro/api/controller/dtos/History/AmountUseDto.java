@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AmountTaskUseDto (
+public record AmountUseDto(
 
     @JsonProperty("id")
     Integer id,
 
-    @JsonProperty("task_name")
-    String taskName,
+    @JsonProperty("routine_name")
+    String name,
 
     @JsonProperty("uses")
     Integer uses
 
-) { }
+) {
+}

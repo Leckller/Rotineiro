@@ -1,12 +1,12 @@
 package com.rotineiro.api.service;
 
-import com.rotineiro.api.controller.dtos.History.AmountRoutineUseDto;
-import com.rotineiro.api.controller.dtos.History.AmountTaskUseDto;
+import com.rotineiro.api.controller.dtos.History.AmountUseDto;
 import com.rotineiro.api.controller.dtos.History.CompleteHistoryDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,13 +31,13 @@ public class HistoryService {
 
   public CompleteHistoryDto completeHistory(String username, LocalDateTime start, LocalDateTime end) {
     User user = userService.findByUsername(username);
-    List<AmountTaskUseDto> amountTaskUseDto = this.amountOfTaskUseBetweenDate(user, start, end);
-    List<AmountRoutineUseDto> amountRoutineUseDto = this.amountOfRoutineUse(user, start, end);
-    AmountRoutineUseDto mostUsedRoutineDto  = this.mostUsedRoutine(user, start, end);
-    return new CompleteHistoryDto(mostUsedRoutineDto, amountRoutineUseDto, amountTaskUseDto);
+    List<AmountUseDto> amountTaskUseDto = this.amountOfTaskUseBetweenDate(user, start, end);
+    List<AmountUseDto> amountUseDto = this.amountOfRoutineUse(user, start, end);
+    AmountUseDto mostUsedRoutineDto  = this.mostUsedRoutine(user, start, end);
+    return new CompleteHistoryDto(mostUsedRoutineDto, amountUseDto, amountTaskUseDto);
   }
 
-  public List<AmountRoutineUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
+  public List<AmountUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
 
     List<RoutineHistory> routines = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
@@ -48,7 +48,7 @@ public class HistoryService {
         ));
 
     return routineUsage.entrySet().stream()
-        .map(entry -> new AmountRoutineUseDto(
+        .map(entry -> new AmountUseDto(
             entry.getKey().getId(),
             entry.getKey().getName(),
             entry.getValue().intValue()
@@ -57,7 +57,7 @@ public class HistoryService {
         .collect(Collectors.toList());
   }
 
-  public List<AmountTaskUseDto> amountOfTaskUseBetweenDate(User user, LocalDateTime start, LocalDateTime end) {
+  public List<AmountUseDto> amountOfTaskUseBetweenDate(User user, LocalDateTime start, LocalDateTime end) {
 
     List<TaskHistory> tasks = taskHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
@@ -68,7 +68,7 @@ public class HistoryService {
         ));
 
     return taskUsage.entrySet().stream()
-        .map(entry -> new AmountTaskUseDto(
+        .map(entry -> new AmountUseDto(
             entry.getKey().getId(),
             entry.getKey().getName(),
             entry.getValue().intValue()
@@ -78,22 +78,26 @@ public class HistoryService {
 
   }
 
-  public AmountRoutineUseDto mostUsedRoutine(User user, LocalDateTime start, LocalDateTime end) {
+  public AmountUseDto mostUsedRoutine(User user, LocalDateTime start, LocalDateTime end) {
 
     List<RoutineHistory> histories = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
-    Optional<AmountRoutineUseDto> mostUsedRoutine = histories.stream()
+    Optional<AmountUseDto> mostUsedRoutine = histories.stream()
         .collect(Collectors.groupingBy(RoutineHistory::getRoutine, Collectors.counting()))
         .entrySet().stream()
         .max(Map.Entry.comparingByValue()) // pega o maior
-        .map(entry -> new AmountRoutineUseDto(
+        .map(entry -> new AmountUseDto(
             entry.getKey().getId(),
             entry.getKey().getName(),
             entry.getValue().intValue()
         ));
 
-    return mostUsedRoutine.orElseGet(() -> new AmountRoutineUseDto(0, "", 0));
+    return mostUsedRoutine.orElseGet(() -> new AmountUseDto(0, "", 0));
 
+  }
+
+  public Integer getSequency(User user) {
+    return this.userService.getSequency();
   }
 
 }

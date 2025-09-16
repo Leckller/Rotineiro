@@ -42,6 +42,15 @@ public class User implements UserDetails {
   @JsonIgnore
   private String password;
 
+  @Column
+  private Integer streak = 1;
+
+  @Column
+  private Integer bestStreak = 1;
+
+  @Column
+  private LocalDateTime lastActivity;
+
   @CreationTimestamp
   private LocalDateTime createdAt;
 
