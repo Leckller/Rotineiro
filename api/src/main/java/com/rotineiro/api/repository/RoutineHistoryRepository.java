@@ -10,8 +10,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RoutineHistoryRepository extends JpaRepository<RoutineHistory, Integer> {
-  List<RoutineHistory> findAllByUserAndSort(User user, Sort sort);
-
-  List<RoutineHistory> findAllByUser(User user);
   List<RoutineHistory> findAllByUserAndCreatedAtBetween (User user, LocalDateTime start, LocalDateTime end);
 }
