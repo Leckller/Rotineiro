@@ -123,7 +123,7 @@ public class TaskController {
     return  ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
-  @PatchMapping("start/{taskId}")
+  @PatchMapping("timer/start/{taskId}")
   @Operation(summary = "Inicia uma tarefa", description = "Seta o horário em que a tarefa foi iniciada")
   public ResponseEntity<DefaultResponse<TaskDto>> startTask(@PathVariable Integer taskId) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -135,5 +135,33 @@ public class TaskController {
 
     return  ResponseEntity.status(HttpStatus.OK).body(response);
   }
+
+  @PatchMapping("timer/reset/{taskId}")
+  @Operation(summary = "Reseta o tempo de uma tarefa", description = "Reseta o tempo de uma tarefa")
+  public ResponseEntity<DefaultResponse<TaskDto>> resetTimerTask(@PathVariable Integer taskId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.resetTaskTimer(username, taskId);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Timer da tarefa resetado com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PatchMapping("timer/pause/{taskId}/{timer}")
+  @Operation(summary = "Pausa o tempo de uma tarefa", description = "Pausa o tempo de uma tarefa")
+  public ResponseEntity<DefaultResponse<TaskDto>> pauseTimerTask(@PathVariable Integer taskId, @PathVariable Integer timer) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Task task = this.taskService.pauseTaskTimer(username, taskId, timer);
+
+    DefaultResponse<TaskDto> response = new DefaultResponse<TaskDto>();
+    response.setMessage("Timer da tarefa pausado com sucesso!");
+    response.setResult(TaskDto.fromEntity(task));
+
+    return  ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+
 
 }

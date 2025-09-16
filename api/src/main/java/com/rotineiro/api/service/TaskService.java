@@ -96,7 +96,6 @@ public class TaskService {
 
     if (task.getCompleted()) {
       // resetar
-      task.setStartedAt(null);
       task.setFinishedAt(null);
       task.setCompleted(false);
     } else {
@@ -111,8 +110,24 @@ public class TaskService {
     return taskRepo.save(task);
   }
 
+  public Task pauseTaskTimer(String username, Integer taskID, Integer timer) {
+    Task task = this.getTaskById(username, taskID);
+    task.setTimer(timer);
+    return this.taskRepo.save(task);
+  }
+
+  public Task resetTaskTimer(String username, Integer taskID) {
+    Task task = this.getTaskById(username, taskID);
+    task.setTimer(0);
+    return this.taskRepo.save(task);
+  }
+
   public Task startTask(String username, Integer taskID) {
     Task task = this.getTaskById(username, taskID);
+
+    if (task.getStartedAt() != null) {
+      return task;
+    }
 
     task.setStartedAt(LocalDateTime.now());
     task.setCompleted(false);
