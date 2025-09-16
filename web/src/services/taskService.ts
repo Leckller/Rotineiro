@@ -50,6 +50,14 @@ export const TaskService = {
     const { data } = await api.post("task", request);
     return data as CreateTaskResponse;
   },
+  async deleteTask(taskId: number): Promise<DeleteTaskResponse> {
+    const { data } = await api.delete(`task/${taskId}`);
+    return data as DeleteTaskResponse;
+  },
+  async editTask(taskId: number, request: EditTaskRequest): Promise<EditTaskResponse> {
+    const { data } = await api.patch(`task/${taskId}`, request);
+    return data as EditTaskResponse;
+  },
   async getAllTasks(): Promise<GetAllTasksResponse> {
     const { data } = await api.get("task/all");
     return data as GetAllTasksResponse;
@@ -57,14 +65,6 @@ export const TaskService = {
   async getAvailableTasks(routineId: number): Promise<GetAvailableTasksResponse> {
     const { data } = await api.get(`task/${routineId}`);
     return data as GetAvailableTasksResponse;
-  },
-  async editTask(taskId: number, request: EditTaskRequest): Promise<EditTaskResponse> {
-    const { data } = await api.patch(`task/${taskId}`, request);
-    return data as EditTaskResponse;
-  },
-  async deleteTask(taskId: number): Promise<DeleteTaskResponse> {
-    const { data } = await api.delete(`task/${taskId}`);
-    return data as DeleteTaskResponse;
   },
   async startTask(taskId: number): Promise<StartTaskResponse> {
     const { data } = await api.patch(`task/start/${taskId}`);
