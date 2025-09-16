@@ -9,43 +9,52 @@
       <small v-if="timer > 0" class="timer-text" :class="{ tick: run }">
         {{ formattedTimer }}
         <span v-if="run">
-          <FontAwesomeIcon icon="circle"  class="circle"/>
+          <FontAwesomeIcon icon="circle" class="circle" />
         </span>
       </small>
     </p>
   </div>
-  <button @click="toggleStart(task)">
-    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" :icon="run ? 'pause' : 'play'" />
+  <button v-if="!run" @click="startTimer(task)">
+    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" icon="play" />
   </button>
-  <button v-if="timer > 0" @click="resetTimer()">
+  <button v-if="run" @click="pauseTimer">
+    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" icon="pause" />
+  </button>
+  <button v-if="timer > 0" @click="resetTimer">
     <FontAwesomeIcon icon="stop" />
   </button>
 </template>
 
 <script lang="ts">
-import { Task, TaskService } from '@/services/taskService';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { defineComponent } from 'vue';
+import { Task, TaskService } from "@/services/taskService";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "HomeRoutineTask",
   components: { FontAwesomeIcon },
+  props: {
+    task: { required: true, type: Object as () => Task },
+  },
+  mounted() {
+    this.timer = this.task.timer;
+    console.log(this.task);
+  },
   data() {
     return {
       run: false,
-      timer: 0, // timer em segundos
-      intervalId: undefined as number | undefined
+      timer: 0,
+      intervalId: undefined as number | undefined,
     };
-  },
-  props: {
-    task: { required: true, type: Object as () => Task }
   },
   computed: {
     formattedTimer(): string {
-      const minutes = Math.floor(this.timer / 60).toString().padStart(2, '0');
-      const seconds = (this.timer % 60).toString().padStart(2, '0');
+      const minutes = Math.floor(this.timer / 60)
+        .toString()
+        .padStart(2, "0");
+      const seconds = (this.timer % 60).toString().padStart(2, "0");
       return `${minutes}:${seconds}`;
-    }
+    },
   },
   methods: {
     async onToggleTask() {
@@ -55,43 +64,57 @@ export default defineComponent({
         console.error(error);
       }
     },
-    resetTimer() {
-      if (this.timer <= 0) return;
-      this.timer = 0;
-      this.run = false;
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-        this.intervalId = undefined;
+    async resetTimer() {
+      try {
+        if (this.timer <= 0) return;
+        await TaskService.resetTimerTask(this.task.id);
+        this.timer = 0;
+        this.run = false;
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = undefined;
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-    async toggleStart(task: Task) {
+    async startTimer(task: Task) {
       try {
-        await TaskService.startTask(task.id);
-        this.run = !this.run;
+        if (this.timer <= 0) {
+          await TaskService.startTimerTask(task.id);
+        }
+        this.run = true;
 
         if (this.run) {
           // inicia o cronômetro
           this.intervalId = window.setInterval(() => {
             this.timer++;
           }, 1000);
-        } else {
-          // pausa o cronômetro
-          if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = undefined;
-          }
         }
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+    async pauseTimer() {
+      try {
+        this.run = false;
+        await TaskService.pauseTimerTask(this.task.id, this.timer);
+        // pausa o cronômetro
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = undefined;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
   beforeUnmount() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
     }
-  }
+  },
 });
 </script>
 
