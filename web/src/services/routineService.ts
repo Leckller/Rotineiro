@@ -52,6 +52,7 @@ export type EditRoutineRequest = {
 
 export type AssignTaskRequest = { tasks: number[] }
 
+export type DeallocateTaskRequest = { tasks: number[] }
 
 export type CreateRoutineResponse = DefaultResponse<RoutineEntity>
 
@@ -63,7 +64,13 @@ export type SetActualRoutineResponse = DefaultResponse<RoutineEntity>
 
 export type GetAllRoutinesResponse = DefaultResponse<RoutineEntity[]>
 
-type AssignTaskResponse = DefaultResponse<RoutineEntity>
+export type AssignTaskResponse = DefaultResponse<RoutineEntity>
+
+export type DeallocateTaskResponse = DefaultResponse<null>
+
+export type DeleteRoutineResponse = DefaultResponse<null>
+
+export type FinishRoutineResponse = DefaultResponse<null>
 
 export const RoutineService = {
 
@@ -71,9 +78,29 @@ export const RoutineService = {
     const { data } = await api.post("routine", request);
     return data as CreateRoutineResponse;
   },
+  async assingTasksToRoutine(request: AssignTaskRequest, routineID: number): Promise<AssignTaskResponse> {
+    const { data } = await api.post(`routine/assign/${routineID}`, request);
+    return data as AssignTaskResponse;
+  },
+  async deallocateTasksToRoutine(request: DeallocateTaskRequest, routineID: number): Promise<DeallocateTaskResponse> {
+    const { data } = await api.post(`routine/deallocate/${routineID}`, request);
+    return data as DeallocateTaskResponse;
+  },
+  async deleteRoutine(routineID: number): Promise<DeleteRoutineResponse> {
+    const { data } = await api.delete(`routine/${routineID}`);
+    return data as DeleteRoutineResponse;
+  },
   async editRoutine(request: EditRoutineRequest, routineID: number): Promise<EditRoutineResponse> {
     const { data } = await api.patch(`routine/${routineID}`, request);
     return data as EditRoutineResponse;
+  },
+  async startRoutine(routineID: number): Promise<SetActualRoutineResponse> {
+    const { data } = await api.patch(`routine/start/${routineID}`);
+    return data as SetActualRoutineResponse;
+  },
+  async finishRoutine(): Promise<FinishRoutineResponse> {
+    const { data } = await api.patch(`routine/finish`);
+    return data as FinishRoutineResponse;
   },
   async getAllRoutines(): Promise<GetAllRoutinesResponse> {
     const { data } = await api.get("routine/all");
@@ -83,13 +110,5 @@ export const RoutineService = {
     const { data } = await api.get(`routine/${routineId}`);
     return data as getRoutineByIdResponse;
   },
-  async assingTasksToRoutine(request: AssignTaskRequest, routineID: number): Promise<AssignTaskResponse> {
-    const { data } = await api.post(`routine/assign/${routineID}`, request);
-    return data as AssignTaskResponse;
-  },
-  async startRoutine(routineID: number): Promise<SetActualRoutineResponse> {
-    const { data } = await api.patch(`routine/start/${routineID}`);
-    return data as SetActualRoutineResponse;
-  }
 
 }

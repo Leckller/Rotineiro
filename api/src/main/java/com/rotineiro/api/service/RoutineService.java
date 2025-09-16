@@ -13,7 +13,6 @@ import com.rotineiro.api.security.exceptions.NotFoundException;
 import com.rotineiro.api.security.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,14 +23,16 @@ import java.util.Objects;
 public class RoutineService {
 
   private final RoutineRepository routineRepo;
+  private final TaskService taskService;
   private final TaskRepository taskRepo;
   private final UserRepository userRepository;
   private final RoutineHistoryRepository routineHistoryRepository;
   private final UserService userService;
 
   @Autowired
-  public RoutineService(RoutineRepository routineRepo, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
+  public RoutineService(RoutineRepository routineRepo, TaskService taskService, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
     this.routineRepo = routineRepo;
+    this.taskService = taskService;
     this.taskRepo = taskRepo;
     this.userRepository = userRepository;
     this.routineHistoryRepository = routineHistoryRepository;
@@ -52,11 +53,43 @@ public class RoutineService {
 
   }
 
+  public void deleteRoutine(String username, Integer routineID) {
+    Routine routine = this.getRoutinebyId(username, routineID);
+    this.routineRepo.delete(routine);
+  }
+
   public List<Routine> getAllRoutines(String username) {
 
     User user = this.userService.findByUsername(username);
     return this.routineRepo.findAllByUser(user);
 
+  }
+
+  @Transactional
+  public Routine deallocateTaskToRoutine(String username, Integer routineId, List<Integer> taskIds) {
+
+    Routine routine = routineRepo.findById(routineId)
+        .orElseThrow(() -> new NotFoundException("Rotina não encontrada"));
+
+    if (!routine.getUser().getUsername().equals(username)) {
+      throw new UnauthorizedException("Você não pode alterar esta rotina");
+    }
+
+    List<Task> tasks = taskRepo.findAllById(taskIds).stream()
+        .filter(task -> task.getUser().getUsername().equals(username))
+        .toList();
+
+    if (tasks.isEmpty()) {
+      throw new BadRequestException("Nenhuma das tarefas pertence a este usuário");
+    }
+
+    for (Task task : tasks) {
+      routine.getTasks().remove(task);
+      task.getRoutines().remove(routine);
+      taskRepo.save(task); // garante consistência imediata
+    }
+
+    return routineRepo.save(routine);
   }
 
   @Transactional
@@ -72,13 +105,11 @@ public class RoutineService {
         .filter(task -> task.getUser().getUsername().equals(username))
         .toList();
 
-    // adicionar relação dos dois lados
     for (Task task : tasks) {
       routine.getTasks().add(task);
       task.getRoutines().add(routine);
     }
 
-    // salva apenas a rotina (JPA sincroniza a tabela de junção)
     return routineRepo.save(routine);
   }
 
@@ -128,53 +159,69 @@ public class RoutineService {
   }
 
   @Transactional
+  public void finishRoutine(String username) {
+    User user = this.userService.findByUsername(username);
+
+    if (!user.hasActiveRoutine()) {
+      throw new BadRequestException("Você não tem uma rotina ativa.");
+    }
+
+    Routine activeRoutine = user.getActiveRoutine();
+
+    // Criar RoutineHistory
+    RoutineHistory history = RoutineHistory.builder()
+        .name(activeRoutine.getName())
+        .priority(activeRoutine.getPriority())
+        .description(activeRoutine.getDescription())
+        .startedAt(activeRoutine.getStartedAt())
+        .finishedAt(LocalDateTime.now()) // rotina finalizada
+        .user(user)
+        .routine(activeRoutine)
+        .build();
+
+    // Criar TaskHistory para cada tarefa
+    List<TaskHistory> taskHistories = activeRoutine.getTasks().stream()
+        .map(task -> TaskHistory.builder()
+            .name(task.getName())
+            .estimate(task.getEstimate())
+            .completed(task.getCompleted())
+            .startedAt(task.getStartedAt())
+            .finishedAt(task.getFinishedAt())
+            .task(task)
+            .user(user)
+            .routineHistory(history)
+            .build()
+        ).toList();
+
+    history.setTasks(taskHistories);
+
+    // Salvar histórico
+    routineHistoryRepository.save(history);
+
+    // Resetar os dados da rotina ativa (template) - Acho q isso aq vai gerar algum bug
+    activeRoutine.setStartedAt(null);
+
+    activeRoutine.getTasks().forEach(task -> {
+      task.setStartedAt(null);
+      task.setFinishedAt(null);
+      task.setCompleted(false);
+      task.setTimer(0);
+    });
+
+    user.setActiveRoutine(null);
+
+    this.userRepository.save(user);
+
+    routineRepo.save(activeRoutine);
+  }
+
+  @Transactional
   public Routine startRoutine(String username, Integer routineId) {
     User user = this.userService.findByUsername(username);
 
     // Se já existe uma rotina ativa → mover para histórico
     if (user.hasActiveRoutine()) {
-      Routine activeRoutine = user.getActiveRoutine();
-
-      // Criar RoutineHistory
-      RoutineHistory history = RoutineHistory.builder()
-          .name(activeRoutine.getName())
-          .priority(activeRoutine.getPriority())
-          .description(activeRoutine.getDescription())
-          .startedAt(activeRoutine.getStartedAt())
-          .finishedAt(LocalDateTime.now()) // rotina finalizada
-          .user(user)
-          .routine(activeRoutine)
-          .build();
-
-      // Criar TaskHistory para cada tarefa
-      List<TaskHistory> taskHistories = activeRoutine.getTasks().stream()
-          .map(task -> TaskHistory.builder()
-              .name(task.getName())
-              .estimate(task.getEstimate())
-              .completed(task.getCompleted())
-              .startedAt(task.getStartedAt())
-              .finishedAt(task.getFinishedAt())
-              .task(task)
-              .user(user)
-              .routineHistory(history)
-              .build()
-          ).toList();
-
-      history.setTasks(taskHistories);
-
-      // Salvar histórico
-      routineHistoryRepository.save(history);
-
-      // Resetar os dados da rotina ativa (template)
-      activeRoutine.setStartedAt(null);
-
-      activeRoutine.getTasks().forEach(task -> {
-        task.setStartedAt(null);
-        task.setFinishedAt(null);
-        task.setCompleted(false);
-      });
-
-      routineRepo.save(activeRoutine);
+     this.finishRoutine(username);
     }
 
     // Buscar a nova rotina

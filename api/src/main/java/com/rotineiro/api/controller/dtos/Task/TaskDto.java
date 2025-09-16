@@ -17,12 +17,15 @@ public record TaskDto(
     Double estimate,
 
     @JsonProperty("completed")
-    Boolean completed
+    Boolean completed,
+
+    @JsonProperty("timer")
+    Integer timer
 
 ) {
 
   public static TaskDto fromEntity (Task task) {
-    return new TaskDto(task.getId(), task.getName(), task.getEstimate(), task.getCompleted());
+    return new TaskDto(task.getId(), task.getName(), task.getEstimate(), task.getCompleted(), task.getTimer());
   }
 
 }

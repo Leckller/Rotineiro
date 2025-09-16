@@ -2,34 +2,51 @@
   <div class="routine-progress">
     <p>
       Progresso do dia
-      <span class="percent">
-        {{ getPercent() }} %
-      </span>
+      <span class="percent"> {{ getPercent() }} % </span>
     </p>
-    <ProgressBar :color="'black'" :value="getPercent()" />
-    <p class="qtd-tasks-status">
-        {{ getCompletedTasks() }} de {{ routine.tasks.length }} tarefas concluídas
-    </p>
+    <ProgressBar :color="'black'" :value="+getPercent()" />
+    <div class="qtd-tasks-status">
+      <p>
+        {{ getCompletedTasks() }} de {{ routine.tasks.length }} tarefas
+        concluídas
+      </p>
+      <button
+        class="btn-finish"
+        @click="finishRoutine"
+        v-if="getPercent() == '100'"
+      >
+        Finalizar rotina
+        <FontAwesomeIcon icon="check" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Routine } from '@/services/routineService';
-import { TaskEntity } from '@/services/taskService';
-import { defineComponent } from 'vue';
-import ProgressBar from '../ProgressBar.vue';
+import { Routine, RoutineService } from "@/services/routineService";
+import { TaskEntity } from "@/services/taskService";
+import { defineComponent, h } from "vue";
+import ProgressBar from "../ProgressBar.vue";
+import { HistoryService } from "@/services/historyService";
 
 export default defineComponent({
   name: "HomeRoutineProgress",
   components: {
-    ProgressBar
+    ProgressBar,
   },
   props: {
-    routine: { required: true, type: Routine }
+    routine: { required: true, type: Routine },
   },
   methods: {
     getCompletedTasks() {
-      return this.routine.tasks.filter((t: TaskEntity) => t.completed).length
+      return this.routine.tasks.filter((t: TaskEntity) => t.completed).length;
+    },
+    async finishRoutine() {
+      try {
+        await RoutineService.finishRoutine();
+      } catch (error) {
+        console.error(error);
+      }
     },
     getPercent() {
       if (!this.routine.tasks.length) return 0;
@@ -38,14 +55,28 @@ export default defineComponent({
           this.routine.tasks.length) *
         100
       ).toFixed(0);
-    }
-  }
+    },
+  },
 });
 </script>
 
 <style scoped>
+.btn-finish {
+  border: solid 1px rgb(163, 163, 255);
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.btn-finish:hover {
+  background: #acd8ff5b;
+}
+
 .qtd-tasks-status {
   font-size: 12px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
   color: rgb(100, 100, 100);
 }
 

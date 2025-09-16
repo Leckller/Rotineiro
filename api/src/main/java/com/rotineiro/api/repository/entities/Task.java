@@ -33,6 +33,9 @@ public class Task {
   @Column(nullable = false)
   private Boolean completed = false;
 
+  @Column
+  private Integer timer = 0;
+
   @Column(nullable = true)
   private LocalDateTime startedAt;
 
