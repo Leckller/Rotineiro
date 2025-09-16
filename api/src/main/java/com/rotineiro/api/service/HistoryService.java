@@ -2,6 +2,8 @@ package com.rotineiro.api.service;
 
 import com.rotineiro.api.controller.dtos.History.AmountUseDto;
 import com.rotineiro.api.controller.dtos.History.CompleteHistoryDto;
+import com.rotineiro.api.controller.dtos.History.HistoryTasksCountDto;
+import com.rotineiro.api.controller.dtos.History.SequencyDto;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.entities.*;
@@ -31,10 +33,22 @@ public class HistoryService {
 
   public CompleteHistoryDto completeHistory(String username, LocalDateTime start, LocalDateTime end) {
     User user = userService.findByUsername(username);
-    List<AmountUseDto> amountTaskUseDto = this.amountOfTaskUseBetweenDate(user, start, end);
-    List<AmountUseDto> amountUseDto = this.amountOfRoutineUse(user, start, end);
-    AmountUseDto mostUsedRoutineDto  = this.mostUsedRoutine(user, start, end);
-    return new CompleteHistoryDto(mostUsedRoutineDto, amountUseDto, amountTaskUseDto);
+
+    List<AmountUseDto> amountTaskUse = this.amountOfTaskUseBetweenDate(user, start, end);
+    List<AmountUseDto> amountUse = this.amountOfRoutineUse(user, start, end);
+    AmountUseDto mostUsedRoutine  = this.mostUsedRoutine(user, start, end);
+    HistoryTasksCountDto historyTasksCount = this.getTaskCount(user, start, end);
+    SequencyDto actualSequency = this.userService.getSequency();
+
+    return new CompleteHistoryDto(mostUsedRoutine, amountUse, amountTaskUse, historyTasksCount, actualSequency);
+  }
+
+  public HistoryTasksCountDto getTaskCount(User user, LocalDateTime start, LocalDateTime end) {
+    Object[] counts = this.taskHistoryRepo.countTotalAndCompletedByDate(user, start, end);
+    Long total = (Long) counts[0];
+    Long completed = (Long) counts[1];
+
+    return new HistoryTasksCountDto(total.intValue(), completed.intValue());
   }
 
   public List<AmountUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
@@ -94,10 +108,6 @@ public class HistoryService {
 
     return mostUsedRoutine.orElseGet(() -> new AmountUseDto(0, "", 0));
 
-  }
-
-  public Integer getSequency(User user) {
-    return this.userService.getSequency();
   }
 
 }

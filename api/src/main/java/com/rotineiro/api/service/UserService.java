@@ -1,5 +1,6 @@
 package com.rotineiro.api.service;
 
+import com.rotineiro.api.controller.dtos.History.SequencyDto;
 import com.rotineiro.api.controller.dtos.user.CreateUserDto;
 import com.rotineiro.api.repository.UserRepository;
 import com.rotineiro.api.repository.entities.Routine;
@@ -37,10 +38,10 @@ public class UserService implements UserDetailsService {
     return routine;
   }
 
-  public Integer getSequency() {
+  public SequencyDto getSequency() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = this.findByUsername(username);
-    return user.getStreak();
+    return new SequencyDto(user.getBestStreak(), user.getStreak());
   }
 
   public void updateStreak(User user, LocalDate today) {

@@ -14,5 +14,11 @@ public record CompleteHistoryDto (
     List<AmountUseDto> amountOfRoutineUse,
 
     @JsonProperty("amount_of_task_use")
-    List<AmountUseDto> amountOfTaskUse
+    List<AmountUseDto> amountOfTaskUse,
+
+    @JsonProperty("history_task_count")
+    HistoryTasksCountDto historyTaskCount,
+
+    @JsonProperty("sequency")
+    SequencyDto sequency
 ) {}
