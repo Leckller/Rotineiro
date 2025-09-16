@@ -25,9 +25,8 @@
 <script lang="ts">
 import { Routine, RoutineService } from "@/services/routineService";
 import { TaskEntity } from "@/services/taskService";
-import { defineComponent, h } from "vue";
+import { defineComponent } from "vue";
 import ProgressBar from "../ProgressBar.vue";
-import { HistoryService } from "@/services/historyService";
 
 export default defineComponent({
   name: "HomeRoutineProgress",
