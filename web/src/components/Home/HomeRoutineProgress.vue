@@ -13,7 +13,6 @@
       <button
         class="btn-finish"
         @click="finishRoutine"
-        v-if="getPercent() == '100'"
       >
         Finalizar rotina
         <FontAwesomeIcon icon="check" />
@@ -27,11 +26,19 @@ import { Routine, RoutineService } from "@/services/routineService";
 import { TaskEntity } from "@/services/taskService";
 import { defineComponent } from "vue";
 import ProgressBar from "../ProgressBar.vue";
+import { NotificationEnum, NotificationType, useNotificationStore } from "@/stores/notification";
+import { useModalStore } from "@/stores/modals";
 
 export default defineComponent({
   name: "HomeRoutineProgress",
   components: {
     ProgressBar,
+  },
+  data() {
+    return {
+      notificationStore: useNotificationStore(),
+      modalStore: useModalStore(),
+    };
   },
   props: {
     routine: { required: true, type: Routine },
@@ -40,10 +47,19 @@ export default defineComponent({
     getCompletedTasks() {
       return this.routine.tasks.filter((t: TaskEntity) => t.completed).length;
     },
+    showMessage(notification: NotificationType) {
+      this.notificationStore.createNotification(notification)
+    },
     async finishRoutine() {
+      if(+this.getPercent() < 100) {
+        this.modalStore.openAndSetModal("forceFinishRoutine");
+        return;
+      }
       try {
         await RoutineService.finishRoutine();
-      } catch (error) {
+        window.location.reload();
+      } catch (error: any) {
+        this.showMessage({type: NotificationEnum.error, title: error.response.data.message, time: 4000})
         console.error(error);
       }
     },

@@ -2,7 +2,14 @@ import api, { DefaultResponse } from "./api"
 
 export type AmountOfUse = { id: number, name: string, uses: number }
 
-export type CompleteHistoryResponse = DefaultResponse<{ most_used_routine: AmountOfUse, amount_of_routine_use: AmountOfUse, amount_of_task_use: AmountOfUse }>
+export type Sequency = { actual_sequency: number, best_sequency: number }
+
+export type HistoryTaskCount = { total: number, completed: number }
+
+export type CompleteHistoryResponse = {
+    most_used_routine: AmountOfUse, amount_of_routine_use: AmountOfUse, amount_of_task_use: AmountOfUse,
+    sequency: Sequency, history_task_count: HistoryTaskCount
+}
 
 export const HistoryService = {
 
