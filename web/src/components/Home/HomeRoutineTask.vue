@@ -20,7 +20,7 @@
   <button v-if="run" @click="pauseTimer">
     <FontAwesomeIcon class="timer-btn" :class="{ running: run }" icon="pause" />
   </button>
-  <button v-if="timer > 0" @click="resetTimer">
+  <button v-if="timer > 0 && !task.completed" @click="resetTimer">
     <FontAwesomeIcon icon="stop" />
   </button>
 </template>
@@ -56,6 +56,7 @@ export default defineComponent({
     async onToggleTask() {
       try {
         await TaskService.toggleTask(this.task.id);
+        this.pauseTimer();
       } catch (error) {
         console.error(error);
       }

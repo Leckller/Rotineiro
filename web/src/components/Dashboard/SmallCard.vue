@@ -76,12 +76,14 @@ export default defineComponent({
 }
 
 .icon-and-value {
+  margin-bottom: 8px;
   display: flex;
   align-content: center;
   justify-content: space-between;
 }
 
 .text {
+  text-align: start;
   font-size: 14px;
   color: black;
 }

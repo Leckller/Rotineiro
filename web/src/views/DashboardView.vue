@@ -14,12 +14,10 @@
 
         <SmallCard
           icon="bullseye"
-          :value="
-            getPercent(
-              history.history_task_count.total,
-              history.history_task_count.completed
-            )
-          "
+          :value="`${getPercent(
+            history.history_task_count.total,
+            history.history_task_count.completed
+          )}%`"
           text="Taxa de Conclusão"
           color="#008000"
         />
@@ -120,5 +118,4 @@ export default defineComponent({
   justify-content: center;
   gap: 8px;
 }
-
 </style>
