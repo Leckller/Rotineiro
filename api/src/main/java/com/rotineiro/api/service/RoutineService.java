@@ -3,10 +3,7 @@ package com.rotineiro.api.service;
 import com.rotineiro.api.controller.dtos.Routine.CreateRoutineDto;
 import com.rotineiro.api.controller.dtos.Routine.EditRoutineDto;
 import com.rotineiro.api.controller.dtos.Task.CreateTaskDto;
-import com.rotineiro.api.repository.RoutineHistoryRepository;
-import com.rotineiro.api.repository.RoutineRepository;
-import com.rotineiro.api.repository.TaskRepository;
-import com.rotineiro.api.repository.UserRepository;
+import com.rotineiro.api.repository.*;
 import com.rotineiro.api.repository.entities.*;
 import com.rotineiro.api.security.exceptions.BadRequestException;
 import com.rotineiro.api.security.exceptions.NotFoundException;
@@ -28,15 +25,17 @@ public class RoutineService {
   private final TaskRepository taskRepo;
   private final UserRepository userRepository;
   private final RoutineHistoryRepository routineHistoryRepository;
+  private final TaskHistoryRepository taskHistoryRepository;
   private final UserService userService;
 
   @Autowired
-  public RoutineService(RoutineRepository routineRepo, TaskService taskService, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, UserService userService) {
+  public RoutineService(RoutineRepository routineRepo, TaskService taskService, TaskRepository taskRepo, UserRepository userRepository, RoutineHistoryRepository routineHistoryRepository, TaskHistoryRepository taskHistoryRepository, UserService userService) {
     this.routineRepo = routineRepo;
     this.taskService = taskService;
     this.taskRepo = taskRepo;
     this.userRepository = userRepository;
     this.routineHistoryRepository = routineHistoryRepository;
+    this.taskHistoryRepository = taskHistoryRepository;
     this.userService = userService;
   }
 
@@ -200,6 +199,7 @@ public class RoutineService {
 
     // Salvar histórico
     routineHistoryRepository.save(history);
+    taskHistoryRepository.saveAll(taskHistories);
 
     // Resetar os dados da rotina ativa (template) - Acho q isso aq vai gerar algum bug
     activeRoutine.setStartedAt(null);

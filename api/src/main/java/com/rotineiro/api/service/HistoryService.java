@@ -43,11 +43,11 @@ public class HistoryService {
   }
 
   public HistoryTasksCountDto getTaskCount(User user, LocalDateTime start, LocalDateTime end) {
-    Object[] counts = this.taskHistoryRepo.countTotalAndCompletedByDate(user, start, end);
+    Object[] counts = this.taskHistoryRepo.countTotalAndCompletedByDate(user, start, end).getFirst();
     Long total = (Long) counts[0];
-    Long completed = (Long) counts[1];
+    long completed = counts[1] == null ? 0L : (Long) counts[1];
 
-    return new HistoryTasksCountDto(total.intValue(), completed.intValue());
+    return new HistoryTasksCountDto(total.intValue(), (int) completed);
   }
 
   public List<AmountUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {

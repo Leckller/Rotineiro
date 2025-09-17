@@ -15,7 +15,7 @@ public interface TaskHistoryRepository extends JpaRepository<TaskHistory, Intege
       "FROM TaskHistory t " +
       "WHERE t.user = :user " +
       "AND t.createdAt BETWEEN :startDate AND :endDate")
-  Object[] countTotalAndCompletedByDate(
+  List<Object[]> countTotalAndCompletedByDate(
       @Param("user") User user,
       @Param("startDate") LocalDateTime startDate,
       @Param("endDate") LocalDateTime endDate);
