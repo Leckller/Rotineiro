@@ -1,6 +1,6 @@
 import api, { DefaultResponse } from "./api"
 
-export type AmountOfUse = { id: number, name: string, uses: number }
+export type AmountOfUse = { id: number, name: string, uses: number, created_at: Date }
 
 export type Sequency = { actual_sequency: number, best_sequency: number }
 

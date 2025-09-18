@@ -3,12 +3,13 @@
     <HeaderDashboard />
 
     <div class="main-dashboard">
+
       <FrequencyStatus />
 
       <div class="small-cards">
         <SmallCard
           icon="bullseye"
-          :value="history.history_task_count.total"
+          :value="history.history_task_count.completed"
           text="Tarefas Concluídas"
         />
 
@@ -37,7 +38,10 @@
         />
       </div>
 
-      <MostUsedRoutine />
+      <MostUsedRoutine
+        :routine="history.most_used_routine.name"
+        :quantity="history.most_used_routine.uses"
+      />
 
       <FrequencyRoutine />
     </div>
