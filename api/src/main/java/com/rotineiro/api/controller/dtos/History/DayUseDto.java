@@ -3,19 +3,17 @@ package com.rotineiro.api.controller.dtos.History;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AmountUseDto(
+public record DayUseDto(
 
-    @JsonProperty("id")
-    Integer id,
+    @JsonProperty("date")
+    LocalDate date,
 
-    @JsonProperty("name")
-    String name,
-
-    @JsonProperty("created_at")
-    LocalDateTime createdAt
+    @JsonProperty("entities")
+    List<AmountUseDto> entities
 
 ) {
 }

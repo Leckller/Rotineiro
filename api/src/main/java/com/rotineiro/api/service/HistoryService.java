@@ -1,9 +1,6 @@
 package com.rotineiro.api.service;
 
-import com.rotineiro.api.controller.dtos.History.AmountUseDto;
-import com.rotineiro.api.controller.dtos.History.CompleteHistoryDto;
-import com.rotineiro.api.controller.dtos.History.HistoryTasksCountDto;
-import com.rotineiro.api.controller.dtos.History.SequencyDto;
+import com.rotineiro.api.controller.dtos.History.*;
 import com.rotineiro.api.repository.RoutineHistoryRepository;
 import com.rotineiro.api.repository.TaskHistoryRepository;
 import com.rotineiro.api.repository.entities.*;
@@ -33,13 +30,13 @@ public class HistoryService {
   public CompleteHistoryDto completeHistory(String username, LocalDateTime start, LocalDateTime end) {
     User user = userService.findByUsername(username);
 
-    List<AmountUseDto> amountTaskUse = this.amountOfTaskUseBetweenDate(user, start, end);
-    List<AmountUseDto> amountUse = this.amountOfRoutineUse(user, start, end);
-    AmountUseDto mostUsedRoutine  = this.mostUsedRoutine(user, start, end);
+    List<DayUseDto> amountTaskUse = this.amountOfTaskUse(user, start, end);
+    List<DayUseDto> amountRoutineUse = this.amountOfRoutineUse(user, start, end);
+    MostUsedDto mostUsedRoutine = this.mostUsedRoutine(user, start, end);
     HistoryTasksCountDto historyTasksCount = this.getTaskCount(user, start, end);
     SequencyDto actualSequency = this.userService.getSequency();
 
-    return new CompleteHistoryDto(mostUsedRoutine, amountUse, amountTaskUse, historyTasksCount, actualSequency);
+    return new CompleteHistoryDto(mostUsedRoutine, amountRoutineUse, amountTaskUse, historyTasksCount, actualSequency);
   }
 
   public HistoryTasksCountDto getTaskCount(User user, LocalDateTime start, LocalDateTime end) {
@@ -50,62 +47,47 @@ public class HistoryService {
     return new HistoryTasksCountDto(total.intValue(), (int) completed);
   }
 
-  public List<AmountUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
+  public List<DayUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
 
     List<RoutineHistory> routines = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
-    Map<Routine, Long> routineUsage = routines.stream()
-        .collect(Collectors.groupingBy(
-            RoutineHistory::getRoutine, // chave: a rotina
-            Collectors.counting()       // valor: quantidade de usos
-        ));
-
-    return routineUsage.entrySet().stream()
-        .map(entry -> new AmountUseDto(
-            entry.getKey().getId(),
-            entry.getKey().getName(),
-            entry.getValue().intValue()
-        ))
-        .sorted((a, b) -> Long.compare(b.uses(), a.uses()))
+    return routines.stream()
+        .collect(Collectors.groupingBy(r -> r.getCreatedAt().toLocalDate()))
+        .entrySet().stream()
+        .map(entry -> new DayUseDto(entry.getKey(),
+            entry.getValue().stream().map(routine -> new AmountUseDto(routine.getId(), routine.getName(), routine.getCreatedAt() )).toList()))
         .collect(Collectors.toList());
   }
 
-  public List<AmountUseDto> amountOfTaskUseBetweenDate(User user, LocalDateTime start, LocalDateTime end) {
+  public List<DayUseDto> amountOfTaskUse(User user, LocalDateTime start, LocalDateTime end) {
 
     List<TaskHistory> tasks = taskHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
-    Map<Task, Long> taskUsage = tasks.stream()
-        .collect(Collectors.groupingBy(
-            TaskHistory::getTask, // chave: a rotina
-            Collectors.counting()       // valor: quantidade de usos
-        ));
-
-    return taskUsage.entrySet().stream()
-        .map(entry -> new AmountUseDto(
-            entry.getKey().getId(),
-            entry.getKey().getName(),
-            entry.getValue().intValue()
-        ))
-        .sorted((a, b) -> Long.compare(b.uses(), a.uses()))
+    return tasks.stream()
+        .collect(Collectors.groupingBy(r -> r.getCreatedAt().toLocalDate()))
+        .entrySet().stream()
+        .map(entry -> new DayUseDto(entry.getKey(),
+            entry.getValue().stream().map(routine -> new AmountUseDto(routine.getId(), routine.getName(), routine.getCreatedAt() )).toList()))
         .collect(Collectors.toList());
 
   }
 
-  public AmountUseDto mostUsedRoutine(User user, LocalDateTime start, LocalDateTime end) {
+  public MostUsedDto mostUsedRoutine(User user, LocalDateTime start, LocalDateTime end) {
 
     List<RoutineHistory> histories = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
-    Optional<AmountUseDto> mostUsedRoutine = histories.stream()
+    Optional<MostUsedDto> mostUsedRoutine = histories.stream()
         .collect(Collectors.groupingBy(RoutineHistory::getRoutine, Collectors.counting()))
         .entrySet().stream()
         .max(Map.Entry.comparingByValue()) // pega o maior
-        .map(entry -> new AmountUseDto(
+        .map(entry -> new MostUsedDto(
             entry.getKey().getId(),
             entry.getKey().getName(),
-            entry.getValue().intValue()
+            entry.getValue().intValue(),
+            entry.getKey().getCreatedAt()
         ));
 
-    return mostUsedRoutine.orElseGet(() -> new AmountUseDto(0, "", 0));
+    return mostUsedRoutine.orElseGet(() -> new MostUsedDto(0, "", 0, null));
 
   }
 
