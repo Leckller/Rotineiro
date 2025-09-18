@@ -30,7 +30,7 @@ export default defineComponent({
   },
   setup(props) {
     const chartData = computed(() => ({
-      labels: props.frequency.map(f => f.name), // nome da tarefa
+      labels: props.frequency.map(f => f.date), // nome da tarefa
       datasets: [
         {
           data: props.frequency.map(f => f.entities.length), // quantidade
