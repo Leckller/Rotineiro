@@ -70,7 +70,7 @@ export default defineComponent({
   flex-grow: 1;
   padding: 16px;
   width: 100%;
-  max-width: 150px;
+  max-width: 320px;
   white-space: nowrap;
   border-radius: 8px;
 }

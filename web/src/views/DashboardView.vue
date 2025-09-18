@@ -43,13 +43,13 @@
         :quantity="history.most_used_routine.uses"
       />
 
-      <FrequencyRoutine />
+      <FrequencyRoutine :frequency="history.amount_of_task_use" />
     </div>
   </TheLayout>
 </template>
 
 <script lang="ts">
-import FrequencyRoutine from "@/components/Dashboard/FrequencyRoutine.vue";
+import FrequencyRoutine from "@/components/Dashboard/FrequencyTasks.vue";
 import FrequencyStatus from "@/components/Dashboard/FrequencyStatus.vue";
 import HeaderDashboard from "@/components/Dashboard/HeaderDashboard.vue";
 import MostUsedRoutine from "@/components/Dashboard/MostUsedRoutine.vue";
@@ -74,9 +74,9 @@ export default defineComponent({
   data() {
     return {
       history: {
-        most_used_routine: { id: 0, name: "", uses: 0 },
-        amount_of_routine_use: { id: 0, name: "", uses: 0 },
-        amount_of_task_use: { id: 0, name: "", uses: 0 },
+        most_used_routine: { id: 0, name: "", uses: 0, created_at: new Date() },
+        amount_of_routine_use: [{date: new Date(), entities: [{ id: 0, name: ""}]}],
+        amount_of_task_use: [{date: new Date(), entities: [{ id: 0, name: ""}]}],
         sequency: { actual_sequency: 0, best_sequency: 0 },
         history_task_count: { total: 0, completed: 0 },
       } as CompleteHistoryResponse,
