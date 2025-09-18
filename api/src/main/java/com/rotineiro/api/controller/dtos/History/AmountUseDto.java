@@ -12,10 +12,7 @@ public record AmountUseDto(
     Integer id,
 
     @JsonProperty("name")
-    String name,
-
-    @JsonProperty("created_at")
-    LocalDateTime createdAt
+    String name
 
 ) {
 }

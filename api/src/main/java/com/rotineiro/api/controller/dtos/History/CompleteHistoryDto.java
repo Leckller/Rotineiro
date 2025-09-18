@@ -11,7 +11,7 @@ public record CompleteHistoryDto (
     MostUsedDto mostUsedRoutine,
 
     @JsonProperty("amount_of_routine_use")
-    List<DayUseDto> amountOfRoutineUse,
+    List<DayUseRoutine> amountOfRoutineUse,
 
     @JsonProperty("amount_of_task_use")
     List<DayUseDto> amountOfTaskUse,

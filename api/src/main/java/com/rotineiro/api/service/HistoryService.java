@@ -31,7 +31,7 @@ public class HistoryService {
     User user = userService.findByUsername(username);
 
     List<DayUseDto> amountTaskUse = this.amountOfTaskUse(user, start, end);
-    List<DayUseDto> amountRoutineUse = this.amountOfRoutineUse(user, start, end);
+    List<DayUseRoutine> amountRoutineUse = this.amountOfRoutineUse(user, start, end);
     MostUsedDto mostUsedRoutine = this.mostUsedRoutine(user, start, end);
     HistoryTasksCountDto historyTasksCount = this.getTaskCount(user, start, end);
     SequencyDto actualSequency = this.userService.getSequency();
@@ -47,16 +47,14 @@ public class HistoryService {
     return new HistoryTasksCountDto(total.intValue(), (int) completed);
   }
 
-  public List<DayUseDto> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
+  public List<DayUseRoutine> amountOfRoutineUse(User user, LocalDateTime start, LocalDateTime end) {
 
     List<RoutineHistory> routines = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
     return routines.stream()
-        .collect(Collectors.groupingBy(r -> r.getCreatedAt().toLocalDate()))
-        .entrySet().stream()
-        .map(entry -> new DayUseDto(entry.getKey(),
-            entry.getValue().stream().map(routine -> new AmountUseDto(routine.getId(), routine.getName(), routine.getCreatedAt() )).toList()))
-        .collect(Collectors.toList());
+        .collect(Collectors.groupingBy(RoutineHistory::getName))
+        .keySet().stream()
+        .map(DayUseRoutine::new).toList();
   }
 
   public List<DayUseDto> amountOfTaskUse(User user, LocalDateTime start, LocalDateTime end) {
@@ -67,7 +65,7 @@ public class HistoryService {
         .collect(Collectors.groupingBy(r -> r.getCreatedAt().toLocalDate()))
         .entrySet().stream()
         .map(entry -> new DayUseDto(entry.getKey(),
-            entry.getValue().stream().map(routine -> new AmountUseDto(routine.getId(), routine.getName(), routine.getCreatedAt() )).toList()))
+            entry.getValue().stream().map(task -> new AmountUseDto(task.getId(), task.getName() )).toList()))
         .collect(Collectors.toList());
 
   }
