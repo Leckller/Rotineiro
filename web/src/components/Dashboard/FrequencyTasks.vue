@@ -44,7 +44,7 @@ export default defineComponent({
       ),
       datasets: [
         {
-          label: "Usos",
+          label: "Tarefas Feitas",
           data: props.frequency.map((f) => f.entities.length),
           backgroundColor: "rgba(66, 165, 245, 0.8)", // azul suave
           borderRadius: 6, // arredondado

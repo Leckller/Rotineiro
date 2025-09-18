@@ -1,6 +1,6 @@
 <template>
   <article class="frequency-tasks">
-    <h3>Tarefas por Tipo</h3>
+    <h3>Frequência das Rotinas</h3>
     <Doughnut :data="chartData" :options="chartOptions" />
   </article>
 </template>
@@ -15,7 +15,7 @@ import {
   ArcElement
 } from "chart.js";
 import { Doughnut } from "vue-chartjs";
-import { DayUse } from "@/services/historyService";
+import { DayUseRoutine } from "@/services/historyService";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -24,16 +24,16 @@ export default defineComponent({
   components: { Doughnut },
   props: {
     frequency: {
-      type: Array as PropType<DayUse[]>,
+      type: Array as PropType<DayUseRoutine[]>,
       required: true,
     },
   },
   setup(props) {
     const chartData = computed(() => ({
-      labels: props.frequency.map(f => f.date), // nome da tarefa
+      labels: props.frequency.map(f => f.name), // nome da tarefa
       datasets: [
         {
-          data: props.frequency.map(f => f.entities.length), // quantidade
+          data: props.frequency.map(f => f.uses), // quantidade
           backgroundColor: [
             "#42A5F5", // azul
             "#66BB6A", // verde
@@ -51,7 +51,7 @@ export default defineComponent({
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: "bottom",
+          position: 'bottom',
         },
         tooltip: {
           callbacks: {
