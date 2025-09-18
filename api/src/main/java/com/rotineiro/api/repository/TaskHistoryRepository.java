@@ -10,7 +10,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskHistoryRepository extends JpaRepository<TaskHistory, Integer> {
-  List<TaskHistory> findAllByUserAndCreatedAtBetween (User user, LocalDateTime start, LocalDateTime end);
+  @Query("SELECT t FROM TaskHistory t " +
+      "WHERE t.user = :user " +
+      "AND t.completed = true " +
+      "AND t.createdAt BETWEEN :startDate AND :endDate")
+  List<TaskHistory> findAllByUserAndCompleted (
+      @Param("user") User user,
+      @Param("startDate") LocalDateTime startDate,
+      @Param("endDate") LocalDateTime endDate);
+
   @Query("SELECT COUNT(t), SUM(CASE WHEN t.completed = true THEN 1 ELSE 0 END) " +
       "FROM TaskHistory t " +
       "WHERE t.user = :user " +

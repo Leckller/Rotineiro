@@ -51,15 +51,21 @@ public class HistoryService {
 
     List<RoutineHistory> routines = routineHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
 
+    Map<Routine, Long> routineUsage = routines.stream()
+        .collect(Collectors.groupingBy(
+            RoutineHistory::getRoutine, // chave: a rotina
+            Collectors.counting()       // valor: quantidade de usos
+        ));
+
     return routines.stream()
         .collect(Collectors.groupingBy(RoutineHistory::getName))
-        .keySet().stream()
-        .map(DayUseRoutine::new).toList();
+        .entrySet().stream()
+        .map(r -> new DayUseRoutine(r.getKey(), r.getValue().size())).toList();
   }
 
   public List<DayUseDto> amountOfTaskUse(User user, LocalDateTime start, LocalDateTime end) {
 
-    List<TaskHistory> tasks = taskHistoryRepo.findAllByUserAndCreatedAtBetween(user, start, end);
+    List<TaskHistory> tasks = taskHistoryRepo.findAllByUserAndCompleted(user, start, end);
 
     return tasks.stream()
         .collect(Collectors.groupingBy(r -> r.getCreatedAt().toLocalDate()))

@@ -6,5 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DayUseRoutine (
     @JsonProperty("name")
-    String name
+    String name,
+
+    @JsonProperty("uses")
+    Integer uses
 ) { }
