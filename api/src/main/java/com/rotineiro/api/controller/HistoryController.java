@@ -1,7 +1,6 @@
 package com.rotineiro.api.controller;
 
 import com.rotineiro.api.controller.dtos.History.CompleteHistoryDto;
-import com.rotineiro.api.controller.dtos.Routine.RoutineDto;
 import com.rotineiro.api.security.SecurityConfig;
 import com.rotineiro.api.service.HistoryService;
 import com.rotineiro.api.utils.DefaultResponse;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/history")
@@ -42,7 +39,7 @@ public class HistoryController {
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
   ) {
 
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     CompleteHistoryDto historyDto = historyService.completeHistory(username, start, end);
 
     DefaultResponse<CompleteHistoryDto> response = new DefaultResponse<CompleteHistoryDto>();
