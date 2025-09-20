@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { NotificationEnum, useNotificationStore } from "@/stores/notification";
 
 const api = axios.create({
-  baseURL: "http://localhost:8095/",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8095/",
   timeout: 5000,
   headers: { "Content-Type": "application/json" },
 });
