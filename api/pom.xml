@@ -14,6 +14,16 @@
 	<name>rotineiro</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
+	<profiles>
+		<profile>
+			<id>production</id>
+			<properties>
+				<!-- isso define o profile Spring ativo quando usar Maven -->
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
 	<licenses>
 		<license/>
 	</licenses>
@@ -79,6 +89,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
