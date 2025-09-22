@@ -4,7 +4,7 @@
 
     <div class="main-dashboard">
 
-      <FrequencyStatus />
+      <FrequencyStatus :start="useDate.startDate" :end="useDate.endDate"/>
 
       <div class="small-cards">
         <SmallCard
@@ -63,6 +63,7 @@ import {
 } from "@/services/historyService";
 import { defineComponent } from "vue";
 import FrequencyRoutine from "@/components/Dashboard/FrequencyRoutine.vue";
+import { useDateStore } from "@/stores/date";
 
 export default defineComponent({
   name: "DashboardView",
@@ -77,6 +78,7 @@ export default defineComponent({
   },
   data() {
     return {
+      useDate: useDateStore(),
       history: {
         most_used_routine: { id: 0, name: "", uses: 0, created_at: new Date() },
         amount_of_routine_use: [{name: "", uses: 0}],
@@ -94,12 +96,8 @@ export default defineComponent({
       return total === 0 ? 0 : Math.round((value / total) * 100);
     },
     async getCompleteHistory() {
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 1); // ontem
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + 1); // amanhã
       const response = (
-        await HistoryService.completeHistory(startDate, endDate)
+        await HistoryService.completeHistory(this.useDate.startDate, this.useDate.endDate)
       ).response;
       this.history = response;
       console.log(this.history);

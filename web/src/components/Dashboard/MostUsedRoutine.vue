@@ -1,7 +1,7 @@
 <template>
   <article class="most-used-box">
     <p class="most-used-title">
-      <FontAwesomeIcon :style="{color: 'goldenrod'}" icon="trophy" />
+      <FontAwesomeIcon :style="{ color: 'goldenrod' }" icon="trophy" />
       Rotina mais Repetida
     </p>
 
@@ -10,7 +10,7 @@
         <h4>{{ routine }}</h4>
         <small
           >{{ quantity }} {{ quantity > 1 ? "vezes" : "vez" }} entre
-          {{ start }} e {{ end }}</small
+          {{ useDate.startDate.toLocaleDateString() }} e {{ useDate.endDate.toLocaleDateString() }}</small
         >
       </div>
       <FontAwesomeIcon icon="book" />
@@ -19,34 +19,23 @@
 </template>
 
 <script>
+import { useDateStore } from "@/stores/date";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "MostUsedRoutine",
   components: { FontAwesomeIcon },
+  data() {
+    return {
+      useDate: useDateStore(),
+    };
+  },
   props: {
     routine: {
       type: String,
       required: true,
       default: "",
-    },
-    start: {
-      type: Date,
-      default: () => {
-        const date = new Date();
-        date.setMonth(date.getMonth() - 1); // subtrai 1 mês
-        return date.toLocaleDateString();
-      },
-      required: true,
-    },
-    end: {
-      type: Date,
-      default: () => {
-        const date = new Date();
-        return date.toLocaleDateString();
-      },
-      required: true,
     },
     quantity: {
       type: Number,
@@ -58,7 +47,6 @@ export default defineComponent({
 </script>
 
 <style>
-
 .most-used-box {
   display: flex;
   gap: 16px;
@@ -92,5 +80,4 @@ export default defineComponent({
   justify-content: start;
   text-align: start;
 }
-
 </style>

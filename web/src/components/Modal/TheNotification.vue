@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { NotificationEnum } from "@/stores/notification";
 import { useNotificationStore } from "@/stores/notification";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -30,11 +31,11 @@ export default {
     };
   },
   methods: {
-    getNotificationColorClass(type) {
+    getNotificationColorClass(type = NotificationEnum.default) {
       switch (type) {
-        case "important":
+        case NotificationEnum.important:
           return "important-color";
-        case "error":
+        case NotificationEnum.error:
           return "error-color";
         default:
           return "default-color";
@@ -43,7 +44,7 @@ export default {
     getNotifications() {
       return this.notificationStore.notifications;
     },
-    closeNotificiation(notificationId) {
+    closeNotificiation(notificationId = 0) {
       this.notificationStore.closeNotification(notificationId);
     },
   },
@@ -56,7 +57,7 @@ export default {
 }
 
 .error-color {
-  background-color: rgb(255, 230, 207);
+  background-color: rgb(255, 214, 207);
 }
 
 .important-color {
