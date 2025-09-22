@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  application:
+    container_name: app
+    build: .
+    restart: always
+    ports:
+      - "8090:8080"
+    environment:
+      - API_SECURITY_TOKEN_SECRET=prod
+      - SPRING_PROFILES_ACTIVE=prod
+      - APP_FRONTEND_URL=http://localhost:8080
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/rotineiro?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: db
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3366:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
