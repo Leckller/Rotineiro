@@ -2,7 +2,7 @@
   <TheLayout>
     <article>
       <span>
-        <FontAwesomeIcon icon="" />
+        <FontAwesomeIcon />
       </span>
 
       <h2>Rotineiro</h2>
@@ -23,19 +23,19 @@
     <div>
       <article>
         <span>
-          <FontAwesomeIcon icon="" />
+          <FontAwesomeIcon />
         </span>
         <small>Metas Claras</small>
       </article>
       <article>
         <span>
-          <FontAwesomeIcon icon="" />
+          <FontAwesomeIcon />
         </span>
         <small>Rotinas Organizadas</small>
       </article>
       <article>
         <span>
-          <FontAwesomeIcon icon="" />
+          <FontAwesomeIcon />
         </span>
         <small>Progresso Visual</small>
       </article>
@@ -69,7 +69,6 @@ export default defineComponent({
   components: {
     TheLayout,
     TheInput,
-    FontAwesomeIcon,
   },
   methods: {
     showMessage(notification: NotificationType) {
@@ -107,7 +106,7 @@ export default defineComponent({
       }
     },
     handleToggleForm() {
-      this.$router.push("/register");
+      this.login = !this.login;
     },
   },
 });

@@ -1,45 +1,20 @@
 <template>
   <TheLayout>
-    <article>
-      <span>
-        <FontAwesomeIcon icon="" />
-      </span>
-
-      <h2>Rotineiro</h2>
-      <p>Organize sua vida, alcance seus objetivos</p>
-    </article>
     <form class="form" @submit="handleSubmit($event)">
-      <h3>Entrar</h3>
-      <p>Digite suas credenciais para acessar sua conta</p>
-
       <TheInput v-model="email" label="Email" />
       <TheInput v-model="password" label="Senha" />
+      <TheInput v-if="!login" v-model="name" label="Nome" />
+      <TheInput v-if="!login" v-model="username" label="Nome de Usuário" />
 
-      <button type="submit">Entrar</button>
+      <button type="submit">{{ login ? "Logar!" : "Cadastrar!" }}</button>
       <button type="button" @click="handleToggleForm">
-        Não possui uma conta? Cadastre-se
+        {{
+          login
+            ? "Não possui uma conta? Crie agora!"
+            : "Já possui uma conta? Faça o login!"
+        }}
       </button>
     </form>
-    <div>
-      <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Metas Claras</small>
-      </article>
-      <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Rotinas Organizadas</small>
-      </article>
-      <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Progresso Visual</small>
-      </article>
-    </div>
   </TheLayout>
 </template>
 
@@ -53,7 +28,6 @@ import {
   NotificationType,
   useNotificationStore,
 } from "@/stores/notification";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -64,12 +38,17 @@ export default defineComponent({
       login: false,
       email: "",
       password: "",
+      name: "",
+      username: "",
     };
   },
   components: {
     TheLayout,
     TheInput,
-    FontAwesomeIcon,
+  },
+  mounted() {
+    const url = router.currentRoute.value.path;
+    this.login = url == "login";
   },
   methods: {
     showMessage(notification: NotificationType) {
@@ -79,12 +58,12 @@ export default defineComponent({
       e.preventDefault();
 
       try {
-        if (this.login) {
-          await UserService.login({
-            email: this.email,
-            password: this.password,
-          });
-        }
+        await UserService.register({
+          email: this.email,
+          password: this.password,
+          name: this.name,
+          username: this.username,
+        });
         router.push("/home");
       } catch (error: any) {
         if (!error.response) return;
@@ -107,7 +86,7 @@ export default defineComponent({
       }
     },
     handleToggleForm() {
-      this.$router.push("/register");
+      this.login = !this.login;
     },
   },
 });

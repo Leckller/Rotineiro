@@ -5,39 +5,28 @@
         <FontAwesomeIcon icon="" />
       </span>
 
-      <h2>Rotineiro</h2>
-      <p>Organize sua vida, alcance seus objetivos</p>
+      <h2>Criar Conta</h2>
+      <p>Comece sua jornada de produtividade</p>
     </article>
     <form class="form" @submit="handleSubmit($event)">
-      <h3>Entrar</h3>
-      <p>Digite suas credenciais para acessar sua conta</p>
-
       <TheInput v-model="email" label="Email" />
       <TheInput v-model="password" label="Senha" />
+      <TheInput v-model="name" label="Nome" />
+      <TheInput v-model="username" label="Nome de Usuário" />
 
-      <button type="submit">Entrar</button>
+      <button type="submit">Criar Conta</button>
       <button type="button" @click="handleToggleForm">
-        Não possui uma conta? Cadastre-se
+        Já tem uma conta? Faça login
       </button>
     </form>
     <div>
       <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Metas Claras</small>
-      </article>
-      <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Rotinas Organizadas</small>
-      </article>
-      <article>
-        <span>
-          <FontAwesomeIcon icon="" />
-        </span>
-        <small>Progresso Visual</small>
+        <h4>Com o Rotineiro você pode:</h4>
+        <p><FontAwesomeIcon icon="check" /> Criar rotinas personalizadas</p>
+        <p>Acompanhar <FontAwesomeIcon icon="check" /> seu progresso diário</p>
+        <p>
+          <FontAwesomeIcon icon="check" /> Visualizar estatísticas motivacionais
+        </p>
       </article>
     </div>
   </TheLayout>
@@ -64,12 +53,18 @@ export default defineComponent({
       login: false,
       email: "",
       password: "",
+      name: "",
+      username: "",
     };
   },
   components: {
     TheLayout,
-    TheInput,
     FontAwesomeIcon,
+    TheInput,
+  },
+  mounted() {
+    const url = router.currentRoute.value.path;
+    this.login = url == "login";
   },
   methods: {
     showMessage(notification: NotificationType) {
@@ -79,12 +74,12 @@ export default defineComponent({
       e.preventDefault();
 
       try {
-        if (this.login) {
-          await UserService.login({
-            email: this.email,
-            password: this.password,
-          });
-        }
+        await UserService.register({
+          email: this.email,
+          password: this.password,
+          name: this.name,
+          username: this.username,
+        });
         router.push("/home");
       } catch (error: any) {
         if (!error.response) return;
@@ -107,7 +102,7 @@ export default defineComponent({
       }
     },
     handleToggleForm() {
-      this.$router.push("/register");
+      this.$router.push("/");
     },
   },
 });
