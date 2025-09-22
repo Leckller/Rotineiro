@@ -60,7 +60,6 @@ export default defineComponent({
         window.location.reload();
       } catch (error: any) {
         this.showMessage({type: NotificationEnum.error, title: error.response.data.message, time: 4000})
-        console.error(error);
       }
     },
     getPercent() {
