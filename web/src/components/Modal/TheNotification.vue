@@ -15,8 +15,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { NotificationEnum, NotificationType } from "@/stores/notification";
+<script>
+import { NotificationEnum } from "@/stores/notification";
 import { useNotificationStore } from "@/stores/notification";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -31,7 +31,7 @@ export default {
     };
   },
   methods: {
-    getNotificationColorClass(type: NotificationEnum) {
+    getNotificationColorClass(type = NotificationEnum.default) {
       switch (type) {
         case NotificationEnum.important:
           return "important-color";
@@ -41,10 +41,10 @@ export default {
           return "default-color";
       }
     },
-    getNotifications(): NotificationType[] {
+    getNotifications() {
       return this.notificationStore.notifications;
     },
-    closeNotificiation(notificationId: number) {
+    closeNotificiation(notificationId = 0) {
       this.notificationStore.closeNotification(notificationId);
     },
   },

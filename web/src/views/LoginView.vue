@@ -73,14 +73,15 @@ export default defineComponent({
         }
         router.push("/home");
       } catch (error: any) {
+        if(!error.response) return;
         this.showMessage({
           type: NotificationEnum.error,
-          title: error.response.data.message,
+          title: error.response?.data?.message,
           time: 3000,
         });
         if (error.response.data.response) {
           for (const [index, message] of Object.values(
-            error.response.data.response
+            error.response?.data?.response
           ).entries()) {
             this.showMessage({
               type: NotificationEnum.important,
