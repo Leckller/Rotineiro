@@ -4,12 +4,18 @@ import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import EditRoutineView from '@/views/EditRoutineView.vue'
 import RoutineView from '@/views/RoutineView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   },
   {
     path: '/home',
@@ -41,12 +47,9 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const isAuthenticated = localStorage.getItem("rotineiro_access_token");
   if (
-    // make sure the user is authenticated
     !isAuthenticated &&
-    // ❗️ Avoid an infinite redirect
-    to.name !== 'login'
+    to.name !== 'login' && to.name !== 'register'
   ) {
-    // redirect the user to the login page
     return { name: 'login' }
   }
 })
