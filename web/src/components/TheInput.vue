@@ -82,6 +82,7 @@ export default defineComponent({
 .input {
   outline: none;
   border: none;
+  width: 100%;
   background-color: transparent;
 }
 
