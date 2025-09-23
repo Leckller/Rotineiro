@@ -29,7 +29,10 @@ export default defineComponent({
 .footer {
   display: flex;
   flex-wrap: wrap;
+  background-color: white;
   gap: 16px;
+  position: fixed;
+  bottom: 0;
   border-top: solid 1px darkgray;
   padding: 16px;
   width: 100%;
