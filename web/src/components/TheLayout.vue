@@ -1,6 +1,6 @@
 <template>
 
-  <TheHeader v-if="$route.path != '/'" />
+  <TheHeader v-if="($route.path != '/' && $route.path != '/register')" />
 
   <main class="main">
 
@@ -15,12 +15,15 @@
     <EditTaskModal v-if="modalStore.open && getActiveModal() == 'editTask'" />
     <DeleteTaskModal v-if="modalStore.open && getActiveModal() == 'rmvTask'" />
 
+    <!-- Dashboard -->
+    <SelectDateModal v-if="modalStore.open && getActiveModal() == 'selectDate'" />
+
     <TheNotification />
 
     <slot />
   </main>
 
-  <TheFooter v-if="$route.path != '/'" />
+  <TheFooter v-if="($route.path != '/' && $route.path != '/register')" />
 
 </template>
 
@@ -37,6 +40,7 @@ import CreateRoutineModal from './Modal/Routine/CreateRoutineModal.vue';
 import EditRoutineModal from './Modal/Routine/EditRoutineModal.vue';
 import SetRoutineModalConfirm from './Modal/Routine/SetRoutineModalConfirm.vue';
 import ForceFinishRoutine from './Modal/Routine/ForceFinishRoutine.vue';
+import SelectDateModal from './Modal/Dashboard/SelectDateModal.vue';
 
 
 export default defineComponent({
@@ -56,7 +60,8 @@ export default defineComponent({
     DeleteTaskModal,
     CreateRoutineModal,
     ForceFinishRoutine,
-    SetRoutineModalConfirm
+    SetRoutineModalConfirm,
+    SelectDateModal,
   },
   methods: {
     getActiveModal() {

@@ -6,55 +6,59 @@
           <FontAwesomeIcon icon="calendar" />
         </span>
 
-        <h2>Rotineiro</h2>
-        <p>Organize sua vida, alcance seus objetivos</p>
+        <h2>Criar Conta</h2>
+        <p>Comece sua jornada de produtividade</p>
       </article>
       <form class="form" @submit="handleSubmit($event)">
-        <h3>Entrar</h3>
-        <p>Digite suas credenciais para acessar sua conta</p>
-
         <TheInput placeholder="seu@email.com" v-model="email" label="Email" />
         <TheInput
           placeholder="Sua Senha"
-          type="Password"
           v-model="password"
+          type="Password"
           label="Senha"
         />
+        <TheInput
+          placeholder="Nome Único"
+          v-model="username"
+          label="Nome de Usuário"
+        />
+        <TheInput placeholder="Seu Nome" v-model="name" label="Nome" />
 
         <button
           class="entrar"
-          :style="{
-            backgroundColor:
-              email.length > 6 && password.length > 8 ? '#1A65FE' : '#8BB0FE',
-          }"
+          :disabled="
+            !(
+              email.length > 6 &&
+              password.length > 8 &&
+              username.length > 4 &&
+              name.length > 4
+            )
+          "
           type="submit"
         >
-          Entrar
+          Criar Conta
         </button>
-        <button :style="{color: '#2B89FD'}" type="button" @click="handleToggleForm">
-          Não possui uma conta? Cadastre-se
+        <button
+          :style="{ color: '#00A63E' }"
+          type="button"
+          @click="handleToggleForm"
+        >
+          Já tem uma conta? Faça login
         </button>
       </form>
-      <div class="lista-de-propaganda">
-        <article class="propaganda">
-          <span :style="{ backgroundColor: '#DBEAFE', color: '#155DFC' }">
-            <FontAwesomeIcon icon="bullseye" />
-          </span>
-          <small>Metas Claras</small>
-        </article>
-        <article class="propaganda">
-          <span :style="{ backgroundColor: '#DBFCE7', color: '#12AD4C' }">
-            <FontAwesomeIcon icon="calendar" />
-          </span>
-          <small>Rotinas Organizadas</small>
-        </article>
-        <article class="propaganda">
-          <span :style="{ backgroundColor: '#F3E8FF', color: '#9810FA' }">
-            <FontAwesomeIcon icon="arrow-trend-up" />
-          </span>
-          <small>Progresso Visual</small>
-        </article>
-      </div>
+
+      <article class="lista-propagandas">
+        <h4>Com o Rotineiro você pode:</h4>
+        <p class="propaganda">
+          <FontAwesomeIcon icon="check" /> Criar rotinas personalizadas
+        </p>
+        <p class="propaganda">
+          <FontAwesomeIcon icon="check" /> Acompanhar seu progresso diário
+        </p>
+        <p class="propaganda">
+          <FontAwesomeIcon icon="check" /> Visualizar estatísticas motivacionais
+        </p>
+      </article>
     </div>
   </TheLayout>
 </template>
@@ -79,12 +83,14 @@ export default defineComponent({
       useNotification: useNotificationStore(),
       email: "",
       password: "",
+      name: "",
+      username: "",
     };
   },
   components: {
     TheLayout,
-    TheInput,
     FontAwesomeIcon,
+    TheInput,
   },
   methods: {
     showMessage(notification: NotificationType) {
@@ -94,9 +100,11 @@ export default defineComponent({
       e.preventDefault();
 
       try {
-        await UserService.login({
+        await UserService.register({
           email: this.email,
           password: this.password,
+          name: this.name,
+          username: this.username,
         });
         router.push("/home");
       } catch (error: any) {
@@ -120,7 +128,7 @@ export default defineComponent({
       }
     },
     handleToggleForm() {
-      this.$router.push("/register");
+      this.$router.push("/");
     },
   },
 });
@@ -137,17 +145,33 @@ export default defineComponent({
   height: 100%;
 }
 
-.form {
+.lista-propagandas {
   display: flex;
-  width: 100%;
   flex-direction: column;
   gap: 16px;
-  align-items: center;
   max-width: 350px;
-  border-radius: 8px;
-  justify-content: center;
-  padding: 16px 8px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  padding: 16px 8px;
+  border-radius: 8px;
+}
+
+.propaganda {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  justify-content: start;
+  width: 100%;
+  gap: 16px;
+}
+
+.propaganda svg {
+    color: #7FD7A1;
+    border: solid 1px #7FD7A1;
+    border-radius: 999px;
+    width: 10px;
+    height: 10px;
+    padding: 4px
 }
 
 .logo {
@@ -169,28 +193,17 @@ export default defineComponent({
   align-items: center;
 }
 
-.propaganda {
+.form {
   display: flex;
+  width: 100%;
   flex-direction: column;
-  width: 33%;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
-}
-
-.propaganda span {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  font-size: 24px;
+  max-width: 350px;
   border-radius: 8px;
   justify-content: center;
-  align-items: center;
-}
-
-.lista-de-propaganda {
-  display: flex;
-  gap: 16px;
-  font-size: 14px;
+  padding: 16px 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
 .entrar {
@@ -199,5 +212,11 @@ export default defineComponent({
   color: white;
   padding: 8px;
   border-radius: 8px;
+  background-color: #00b143;
+}
+
+.entrar:disabled {
+  background-color: #7fd7a1;
+  cursor: not-allowed;
 }
 </style>
