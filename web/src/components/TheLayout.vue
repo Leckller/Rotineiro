@@ -1,6 +1,6 @@
 <template>
 
-  <TheHeader v-if="$route.path != '/'" />
+  <TheHeader v-if="($route.path != '/' && $route.path != '/register')" />
 
   <main class="main">
 
@@ -23,7 +23,7 @@
     <slot />
   </main>
 
-  <TheFooter v-if="$route.path != '/'" />
+  <TheFooter v-if="($route.path != '/' && $route.path != '/register')" />
 
 </template>
 
