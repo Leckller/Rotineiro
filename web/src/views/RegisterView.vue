@@ -29,7 +29,7 @@
           :disabled="
             !(
               email.length > 6 &&
-              password.length > 8 &&
+              password.length > 7 &&
               username.length > 4 &&
               name.length > 4
             )

@@ -25,7 +25,7 @@
           class="entrar"
           :style="{
             backgroundColor:
-              email.length > 6 && password.length > 8 ? '#1A65FE' : '#8BB0FE',
+              email.length > 6 && password.length > 7 ? '#1A65FE' : '#8BB0FE',
           }"
           type="submit"
         >
