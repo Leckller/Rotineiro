@@ -79,6 +79,7 @@ export default defineComponent({
   align-items: center;
   padding: 25px 0;
   width: 100%;
+  padding-bottom: 100px;
   height: 100%;
   overflow-y: scroll;
   gap: 8px;

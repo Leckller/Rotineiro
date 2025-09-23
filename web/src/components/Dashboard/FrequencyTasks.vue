@@ -1,7 +1,14 @@
 <template>
   <article class="frequency-tasks">
     <h3>Tarefas por Dia</h3>
-    <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+    <p class="empty" v-if="frequency.length <= 0">
+      Você ainda não concluiu uma Tarefa 😕
+    </p>
+    <Bar
+      v-if="frequency.length > 0"
+      :options="chartOptions"
+      :data="chartData"
+    />
   </article>
 </template>
 
@@ -78,18 +85,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.empty {
+  padding: 8px 0;
+  white-space: nowrap;
+}
 .frequency-tasks {
-  text-align: start;
   width: 100%;
-  max-width: 1300px !important;
-  height: 300px;
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-  width: 100%;
-  border: solid 1px lightgray;
-  padding: 16px 16px 46px 16px;
-  border-radius: 8px;
   max-width: 320px;
+  max-height: 350px;
+  border: solid 1px lightgray;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: start;
 }
 </style>
