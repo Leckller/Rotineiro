@@ -3,6 +3,51 @@
 </template>
 
 <style>
+:root {
+  --strong-blue: #25527e;
+  --medium-2-blue: #1e90ff;
+  --medium-blue: #009fe6;
+  --light-blue: #edf6ff;
+
+  --strong-red: #cf0404;
+  --medium-red: #f20505;
+  --light-red: #ffaaaa;
+
+  --strong-green: #458108;
+  --medium-green: #64bf0a;
+  --light-green: #e0f8c8;
+
+
+  --medium-yellow: #f2cb05;
+
+  --medium-orange: #f97316;
+
+  --primary-text-color: #1b2128;
+  --secondary-text-color: #323232;
+  --tertiary-text-color: #656a6e;
+
+  --strong-gray: #323232;
+  --medium-2-gray: #4b5563;
+  --medium-gray: #8a8a8a;
+  --light-2-gray: #b8b8b8;
+  --light-gray: #e2e5e9;
+
+  --white: #ffffff;
+
+  --small: 12px;
+  --base: 14px;
+  --medium: 16px;
+  --large: 20px;
+  --x-large: 24px;
+  --xx-large: 30px;
+  --xx-large: 34px;
+
+  --padding-base: 16px;
+  --padding-small: 8px;
+  --gap-base: 16px;
+  --gap-small: 8px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -25,10 +70,11 @@ svg {
 * {
   padding: 0;
   margin: 0;
+  font-size: var(--base);
   box-sizing: border-box;
 }
 
-html{
+html {
   width: 100vw;
   height: 100vh;
 }
@@ -46,7 +92,6 @@ small {
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 </style>
