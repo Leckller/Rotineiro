@@ -1,9 +1,13 @@
 <template>
   <TheLayout>
     <section class="content">
-      <HomeRoutineHello />
+      <div :style="{ width: '100%', maxWidth: '900px', marginBottom: '16px', display: 'flex', alignItems: 'center' }">
+        <HomeRoutineHello />
+      </div>
 
-      <HomeRoutineEmpty v-if="routine.id == 0" />
+      <div :style="{ width: '100%', maxWidth: '900px', display: 'flex', alignItems: 'center' }">
+        <HomeRoutineEmpty v-if="routine.id == 0" />
+      </div>
 
       <section v-if="routine.id != 0" class="routine-section">
         <HomeRoutineInfo :title="routine.name" />
@@ -76,6 +80,12 @@ export default defineComponent({
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+@media (max-width: 900px) {
+  #barra-lateral {
+    display: none;
+  }
 }
 
 .routine-section {
