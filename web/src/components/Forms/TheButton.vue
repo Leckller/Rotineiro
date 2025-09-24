@@ -2,7 +2,7 @@
   <button
     :type="type"
     :disabled="disabled"
-    :class="['btn', variant, `align-${align}`]"
+    :class="['btn', variant, `align-${align}`, sizeClass]"
     @click="$emit('click', $event)"
   >
     <slot />
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   name: "TheButton",
@@ -34,6 +34,17 @@ export default defineComponent({
       default: "center",
       validator: (value: string) => ["start", "center", "end"].includes(value),
     },
+    size: {
+      type: String as () => "full" | "medium" | "",
+      default: "",
+      validator: (value: string) => ["full", "medium", ""].includes(value),
+    },
+  },
+  setup(props) {
+    const sizeClass = computed(() => {
+      return props.size ? `btn-${props.size}` : "";
+    });
+    return { sizeClass };
   },
 });
 </script>
@@ -42,10 +53,10 @@ export default defineComponent({
 .btn {
   padding: var(--padding-small);
   border-radius: var(--padding-small);
-  width: 100%;
+  width: auto;
+  max-width: 300px;
   gap: var(--gap-small);
   color: var(--secondary-text-color);
-  max-width: 300px;
   border: none;
   cursor: pointer;
   font-weight: 500;
@@ -65,12 +76,21 @@ export default defineComponent({
   justify-content: flex-end;
 }
 
+/* Tamanhos */
+.btn-full {
+  width: 100%;
+}
+.btn-medium {
+  width: 40%;
+}
+
+/* Variantes */
 .btn.primary {
-  background-color: #3b82f6;
+  background-color: var(--medium-2-blue);
   color: white;
 }
 .btn.primary:hover {
-  background-color: #2563eb;
+  background-color: var(--strong-blue);
 }
 
 .btn.secondary {

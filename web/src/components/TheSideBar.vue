@@ -59,6 +59,7 @@ export default defineComponent({
       </article> -->
       <TheButton
         align="start"
+        size="full"
         variant="secondary"
         @click="() => $router.push('/')"
       >

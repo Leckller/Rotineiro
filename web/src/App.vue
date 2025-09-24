@@ -42,10 +42,15 @@
   --xx-large: 30px;
   --xx-large: 34px;
 
+  --tablet: 900px;
+  --phone: 500px;
+
   --padding-base: 16px;
   --padding-small: 8px;
   --gap-base: 16px;
   --gap-small: 8px;
+  --gap-large: 24px;
+  --gap-giant: 64px;
 }
 
 #app {
