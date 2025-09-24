@@ -9,7 +9,7 @@
     <div class="logout">
       <TheButton
       @click="() => $router.push('/')"
-      variant="secondary"
+      variant="tertiary"
     >
       <FontAwesomeIcon icon="right-from-bracket" />
     </TheButton>

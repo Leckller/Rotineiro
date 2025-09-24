@@ -1,7 +1,5 @@
 <template>
-
   <article class="card-task">
-
     <div class="icon-content">
       <FontAwesomeIcon icon="book" />
     </div>
@@ -9,50 +7,43 @@
     <div class="info-content">
       <p>{{ task.name }}</p>
       <p>Descrição</p>
-      <div class="sub-info">
-        <p>
-          Category
-        </p>
-        <p>
-          {{ task.estimate }}m
-        </p>
-      </div>
+      <p>{{ task.estimate }}m</p>
     </div>
 
     <div class="btn-content">
-      <button @click="handleEditTask(task)">
+      <TheButton variant="tertiary" @click="handleEditTask(task)">
         <FontAwesomeIcon icon="pencil" />
-      </button>
-      <button @click="handleRmvTask(task)">
+      </TheButton>
+      <TheButton variant="tertiary" @click="handleRmvTask(task)">
         <FontAwesomeIcon icon="trash" />
-      </button>
+      </TheButton>
     </div>
-
   </article>
-
 </template>
 
 <script lang="ts">
-import { Task, TaskEntity } from '@/services/taskService';
-import { useModalStore } from '@/stores/modals';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { defineComponent } from 'vue';
+import { Task, TaskEntity } from "@/services/taskService";
+import { useModalStore } from "@/stores/modals";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { defineComponent } from "vue";
+import TheButton from "../Forms/TheButton.vue";
 
 export default defineComponent({
   name: "TaskCard",
   components: {
-    FontAwesomeIcon
+    FontAwesomeIcon,
+    TheButton,
   },
   data() {
     return {
-      modalStore: useModalStore()
-    }
+      modalStore: useModalStore(),
+    };
   },
   props: {
     task: {
       type: Task,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     handleEditTask(task: TaskEntity) {
@@ -62,10 +53,9 @@ export default defineComponent({
     handleRmvTask(task: TaskEntity) {
       this.modalStore.setRmvTaskInfos(task);
       this.modalStore.openAndSetModal("rmvTask");
-    }
-  }
-})
-
+    },
+  },
+});
 </script>
 
 <style scoped>
@@ -80,6 +70,11 @@ export default defineComponent({
   border-radius: 8px;
   justify-content: space-between;
   align-items: start;
+}
+
+.info-content p:first-child {
+  font-size: var(--medium);
+  font-weight: 600;
 }
 
 .info-content {
@@ -107,8 +102,13 @@ export default defineComponent({
 
 .icon-content {
   display: flex;
-  background-color: rgb(215, 215, 215);
+  background-color: var(--white-gray);
   border-radius: 666px;
+  align-items: center;
+  font-size: var(--large);
+  justify-content: center;
+  height: 40px;
+  width: 40px;
   padding: 8px;
 }
 
@@ -117,7 +117,11 @@ export default defineComponent({
   gap: 12px;
 }
 
+.btn-content button:first-child {
+  color: var(--primary-text-color);
+}
+
 .btn-content button:last-child {
-  color: red;
+  color: var(--medium-red);
 }
 </style>

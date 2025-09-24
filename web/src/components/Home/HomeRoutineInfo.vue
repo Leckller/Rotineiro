@@ -54,7 +54,6 @@ export default defineComponent({
 .routine-info {
   display: flex;
   justify-content: space-between;
-  max-width: 300px;
   width: 100%;
   align-items: center;
   font-size: small;

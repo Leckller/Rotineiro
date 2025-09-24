@@ -38,11 +38,11 @@ export default defineComponent({
         Escolher Rotina
       </TheButton>
 
-      <span :style="{ width: '100%', borderTop: 'solid 1px var(--light-gray)' }" />
+      <span
+        :style="{ width: '100%', borderTop: 'solid 1px var(--light-gray)' }"
+      />
 
-      <small
-        :style="{ fontSize: 'var(--small)' }"
-      >
+      <small :style="{ fontSize: 'var(--small)' }">
         "O primeiro passo para organizar sua vida é organizar seu dia."
       </small>
     </div>
@@ -67,8 +67,14 @@ export default defineComponent({
 }
 
 @media (max-width: 900px) {
-  .img-desktop {
+  .img-desktop, .img-desktop-content {
     display: none !important;
+  }
+  #routine-empty {
+    justify-content: center;
+  }
+  .empty-section {
+    align-items: center !important;
   }
 }
 .img-desktop {

@@ -1,29 +1,43 @@
 <template>
   <TheLayout>
     <section class="content">
-      <div :style="{ width: '100%', maxWidth: '900px', marginBottom: '16px', display: 'flex', alignItems: 'center' }">
+      <div
+        :style="{
+          width: '100%',
+          maxWidth: '900px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+        }"
+      >
         <HomeRoutineHello />
       </div>
 
-      <div :style="{ width: '100%', maxWidth: '900px', display: 'flex', alignItems: 'center' }">
+      <div
+        :style="{
+          width: '100%',
+          maxWidth: '900px',
+          display: 'flex',
+          alignItems: 'center',
+        }"
+      >
         <HomeRoutineEmpty v-if="routine.id == 0" />
       </div>
 
       <section v-if="routine.id != 0" class="routine-section">
         <HomeRoutineInfo :title="routine.name" />
 
-        <HomeRoutineProgress :routine="routine" />
+        <div id="tasks-board">
+          <HomeRoutineProgress :routine="routine" />
 
-        <p>Tarefas de hoje</p>
-
-        <div class="routine-task-cards">
-          <article
-            class="task-card"
-            v-for="task in routine.tasks"
-            :key="task.id"
-          >
-            <HomeRoutineTask :task="task" />
-          </article>
+          <div class="routine-task-cards">
+            <p>Tarefas de hoje</p>
+              <HomeRoutineTask
+                v-for="task in routine.tasks"
+                :key="task.id"
+                :task="task"
+              />
+          </div>
         </div>
       </section>
     </section>
@@ -82,9 +96,15 @@ export default defineComponent({
   width: 100%;
 }
 
+#tasks-board {
+  display: flex;
+  width: 100%;
+  gap: var(--gap-base);
+}
+
 @media (max-width: 900px) {
-  #barra-lateral {
-    display: none;
+  #tasks-board {
+    flex-direction: column;
   }
 }
 
@@ -93,6 +113,7 @@ export default defineComponent({
   flex-direction: column;
   gap: 16px;
   align-items: center;
+  max-width: 900px;
   width: 100%;
   height: 100%;
 }
@@ -100,20 +121,9 @@ export default defineComponent({
 .routine-task-cards {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 8px;
-  width: 100%;
-  align-items: center;
+  align-items: start;
 }
 
-.task-card {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 300px;
-  border: solid 1px rgba(128, 128, 128, 0.421);
-  padding: 16px;
-  border-radius: 16px;
-}
 </style>
