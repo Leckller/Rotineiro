@@ -1,38 +1,66 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <input type="checkbox" v-model="task.completed" @change="onToggleTask" />
-  <div class="routine-task-info">
-    <h4>{{ task.name }}</h4>
-    <p class="timer">
-      <small>{{ task.estimate }} min</small>
-      <FontAwesomeIcon v-if="timer > 0" icon="circle" class="circle" />
-      <small v-if="timer > 0" class="timer-text" :class="{ tick: run }">
-        {{ formattedTimer }}
-        <span v-if="run">
-          <FontAwesomeIcon icon="circle" class="circle" />
-        </span>
-      </small>
-    </p>
-  </div>
-  <button v-if="!run" @click="startTimer(task)">
-    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" icon="play" />
-  </button>
-  <button v-if="run" @click="pauseTimer">
-    <FontAwesomeIcon class="timer-btn" :class="{ running: run }" icon="pause" />
-  </button>
-  <button v-if="timer > 0 && !task.completed" @click="resetTimer">
-    <FontAwesomeIcon icon="stop" />
-  </button>
+  <article class="task-card" :class="task.completed ? 'task-completed' : ''">
+    <input
+      :style="{ cursor: 'pointer' }"
+      type="checkbox"
+      v-model="task.completed"
+      @change="onToggleTask"
+    />
+    <div class="routine-task-info">
+      <h4 :style="{ textDecoration: task.completed ? 'line-through' : '' }">
+        {{ task.name }}
+      </h4>
+      <p class="timer">
+        <small>{{ task.estimate }} min</small>
+        <FontAwesomeIcon v-if="timer > 0" icon="circle" class="circle" />
+        <small v-if="timer > 0" class="timer-text" :class="{ tick: run }">
+          {{ formattedTimer }}
+          <span v-if="run">
+            <FontAwesomeIcon icon="circle" class="circle" />
+          </span>
+        </small>
+      </p>
+    </div>
+    <TheButton
+      variant="tertiary"
+      v-if="!run"
+      :disabled="task.completed"
+      @click="startTimer(task)"
+    >
+      <FontAwesomeIcon
+        class="timer-btn"
+        :class="{ running: run }"
+        icon="play"
+      />
+    </TheButton>
+    <TheButton variant="tertiary" v-if="run" @click="pauseTimer">
+      <FontAwesomeIcon
+        class="timer-btn"
+        :class="{ running: run }"
+        icon="pause"
+      />
+    </TheButton>
+    <TheButton
+      variant="tertiary"
+      :disabled="task.completed"
+      v-if="timer > 0"
+      @click="resetTimer"
+    >
+      <FontAwesomeIcon :icon="task.completed ? 'check' : 'stop'" />
+    </TheButton>
+  </article>
 </template>
 
 <script lang="ts">
 import { Task, TaskService } from "@/services/taskService";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { defineComponent } from "vue";
+import TheButton from "../Forms/TheButton.vue";
 
 export default defineComponent({
   name: "HomeRoutineTask",
-  components: { FontAwesomeIcon },
+  components: { FontAwesomeIcon, TheButton },
   props: {
     task: { required: true, type: Object as () => Task },
   },
@@ -82,12 +110,15 @@ export default defineComponent({
         }
         this.run = true;
 
-        if (this.run) {
-          // inicia o cronômetro
-          this.intervalId = window.setInterval(() => {
-            this.timer++;
-          }, 1000);
+        // limpa qualquer intervalo anterior antes de criar um novo
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = undefined;
         }
+
+        this.intervalId = window.setInterval(() => {
+          this.timer++;
+        }, 1000);
       } catch (error) {
         console.error(error);
       }
@@ -116,12 +147,27 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.task-card {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border: solid 1px rgba(128, 128, 128, 0.421);
+  padding: 16px;
+  border-radius: 16px;
+}
+
 .routine-task-info {
   display: flex;
   flex-direction: column;
   width: 100%;
   justify-content: start;
   align-items: start;
+}
+
+.task-completed {
+  background-color: var(--light-green);
 }
 
 /* Animação do número do timer */

@@ -27,7 +27,7 @@ export default defineComponent({
     },
     variant: {
       type: String,
-      default: "primary", // primary, secondary, danger, etc
+      default: "primary", // primary, secondary, tertiary, danger, etc
     },
     align: {
       type: String as () => "start" | "center" | "end",
@@ -101,12 +101,24 @@ export default defineComponent({
   background-color: #d1d5db;
 }
 
+.btn.tertiary {
+  background-color: transparent;
+  color: #111827;
+}
+.btn.tertiary:hover {
+  background-color: var(--light-gray);
+}
+
 .btn.danger {
   background-color: #ef4444;
   color: white;
 }
 .btn.danger:hover {
   background-color: #b91c1c;
+}
+
+.btn:hover:disabled {
+  background-color: transparent;
 }
 
 .btn:disabled {

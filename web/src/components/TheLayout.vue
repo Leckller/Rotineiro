@@ -84,7 +84,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 25px 0;
+  padding: var(--gap-small) 0 var(--gap-giant) 0;
   width: 100%;
   padding-bottom: 100px;
   height: 100%;

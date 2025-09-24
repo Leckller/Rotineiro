@@ -1,92 +1,112 @@
 <template>
-
   <TheLayout>
-
     <div class="content">
-
       <section class="header">
-        <button>
-          <FontAwesomeIcon icon="arrow-left" />
-        </button>
-        <div class="header-title">
-          <h2>{{ routineStore.selectedRoutine.name }}</h2>
-          <p>{{ routineStore.selectedRoutine.description }}</p>
+        <div
+          :style="{
+            display: 'flex',
+            gap: 'var(--gap-base)',
+            alignItems: 'center',
+          }"
+        >
+          <TheButton variant="tertiary" @click="() => $router.back()">
+            <FontAwesomeIcon icon="arrow-left" />
+          </TheButton>
+          <div id="routine-title">
+            <h2>{{ routineStore.selectedRoutine.name }}</h2>
+            <p>{{ routineStore.selectedRoutine.description }}</p>
+          </div>
         </div>
-        <button @click="editRoutine()">
+        <TheButton variant="tertiary" @click="editRoutine()">
           <FontAwesomeIcon icon="pencil" />
-        </button>
+        </TheButton>
       </section>
 
       <section class="routine-info">
-        <article class="card info">
-          <p>
-            <strong>
-              <FontAwesomeIcon icon="clock" />
-              Duração Total
-            </strong>
+        <article class="card info info-blue">
+          <p
+            :style="{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--gap-small)',
+            }"
+          >
+            <FontAwesomeIcon
+              :style="{ fontSize: 'var(--large)' }"
+              icon="clock"
+            />
+            Duração Total
           </p>
-          <p>
-            {{routineStore.selectedRoutine.tasks.reduce((pv, curr) => {
-              return pv + curr.estimate
-            }, 0)}}
-          </p>
+          <strong>
+            {{
+              routineStore.selectedRoutine.tasks.reduce((pv, curr) => {
+                return pv + curr.estimate;
+              }, 0)
+            }}
+          </strong>
         </article>
-        <article class="card info">
-          <p>
-            <strong>
-              <FontAwesomeIcon icon="bullseye" />
-              Atividades
-            </strong>
+        <article class="card info info-green">
+          <p
+            :style="{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--gap-small)',
+            }"
+          >
+            <FontAwesomeIcon
+              :style="{ fontSize: 'var(--large)' }"
+              icon="bullseye"
+            />
+            Atividades
           </p>
-          <p>
+          <strong>
             {{ routineStore.selectedRoutine.tasks.length }}
-          </p>
+          </strong>
         </article>
       </section>
 
       <section class="tasks">
-
         <div class="task-header">
-          <h3>
-            Atividades da Rotina
-          </h3>
-          <button class="add-task" @click="createTask">
-            + Adicionar
-          </button>
+          <h3>Atividades da Rotina</h3>
+          <button class="add-task" @click="createTask">+ Adicionar</button>
         </div>
 
-        <TaskCard v-for="task in routineStore.selectedRoutine.tasks" :key="task.id" :task="task" />
-
+        <TaskCard
+          v-for="task in routineStore.selectedRoutine.tasks"
+          :key="task.id"
+          :task="task"
+        />
       </section>
     </div>
-
   </TheLayout>
-
 </template>
 
 <script lang="ts">
-import TaskCard from '@/components/Task/TaskCard.vue';
-import TheLayout from '@/components/TheLayout.vue';
-import { RoutineService } from '@/services/routineService';
-import { useModalStore } from '@/stores/modals';
-import { useRoutineStore } from '@/stores/Routine';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { defineComponent } from 'vue';
-
+import TheButton from "@/components/Forms/TheButton.vue";
+import TaskCard from "@/components/Task/TaskCard.vue";
+import TheLayout from "@/components/TheLayout.vue";
+import { RoutineService } from "@/services/routineService";
+import { useModalStore } from "@/stores/modals";
+import { useRoutineStore } from "@/stores/Routine";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "EditRoutineView",
   components: {
-    TheLayout, FontAwesomeIcon, TaskCard
+    TheLayout,
+    FontAwesomeIcon,
+    TheButton,
+    TaskCard,
   },
   data() {
     return {
       modalStore: useModalStore(),
-      routineStore: useRoutineStore()
-    }
+      routineStore: useRoutineStore(),
+    };
   },
   async created() {
-    this.getRoutine()
+    this.getRoutine();
   },
   methods: {
     createTask() {
@@ -100,12 +120,10 @@ export default defineComponent({
         const id = this.$route.params.id as string;
         const routine = (await RoutineService.getRoutineById(+id)).response;
         this.routineStore.selectRoutine(routine);
-      } catch (error) {
-      }
+      } catch (error) {}
     },
-  }
-})
-
+  },
+});
 </script>
 
 <style scoped>
@@ -115,6 +133,7 @@ export default defineComponent({
   flex-direction: column;
   gap: 8px;
   align-items: center;
+  max-width: 900px;
   height: 100%;
   width: 100%;
   padding: 16px;
@@ -124,17 +143,24 @@ export default defineComponent({
   display: flex;
   gap: 16px;
   text-align: center;
+  align-items: center;
   width: 100%;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
-.header-title {
+#routine-title {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
+  align-items: start;
+  text-align: start;
+  gap: var(--gap-small);
+}
+#routine-title p {
+  font-size: var(--medium);
+}
+#routine-title h2 {
+  font-size: var(--x-large);
 }
 
 .routine-info {
@@ -143,6 +169,7 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
+  width: 100%;
   justify-content: center;
 }
 
@@ -155,11 +182,28 @@ export default defineComponent({
   gap: 8px;
 }
 
+.info-blue {
+  background-color: var(--light-blue);
+  border: solid 1px var(--medium-blue);
+  color: var(--strong-blue);
+}
+
+.info-green {
+  background-color: var(--light-green);
+  border: solid 1px var(--medium-green);
+  color: var(--strong-green);
+}
+
 .info {
   align-items: center !important;
+  font-size: var(--medium);
   font-size: large;
   width: 40%;
   flex-grow: 1;
+}
+
+.info strong {
+  font-size: var(--large);
 }
 
 .tasks {
@@ -181,7 +225,7 @@ export default defineComponent({
 .add-task {
   color: white;
   font-size: smaller;
-  background-color: oklch(.623 .214 259.815);
+  background-color: oklch(0.623 0.214 259.815);
   padding: 8px;
   border-radius: 8px;
   max-width: 200px;

@@ -31,6 +31,7 @@
   --medium-gray: #8a8a8a;
   --light-2-gray: #b8b8b8;
   --light-gray: #e2e5e9;
+  --white-gray: #f2f4f7;
 
   --white: #ffffff;
 
@@ -66,6 +67,10 @@ button {
   border: none;
   cursor: pointer;
   transition: all 1s;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 svg {

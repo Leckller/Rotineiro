@@ -90,15 +90,23 @@ export default defineComponent({
   font-size: 12px;
   align-items: center;
   display: flex;
+  width: 100%;
+  text-align: start;
   justify-content: space-between;
   color: rgb(100, 100, 100);
+}
+
+.routine-progress p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .routine-progress {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 300px;
+  align-items: start;
   gap: 8px;
   border: solid 1px rgb(163, 163, 255);
   border-radius: 8px;
