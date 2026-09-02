@@ -14,25 +14,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String state = AuthStates().WELCOME;
+  String pageState = AuthStates().WELCOME;
 
-  bool _isWelcome() => state == AuthStates().WELCOME;
-  bool _isLogin() => state == AuthStates().LOGIN;
+  void setPageState(String newState) {
+    setState(() {
+      pageState = newState;
+    });
+  }
+
+  bool _isWelcome() => pageState == AuthStates().WELCOME;
+  bool _isLogin() => pageState == AuthStates().LOGIN;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isWelcome()
-          ? Welcome()
+          ? Welcome(setPageState: setPageState)
           : _isLogin()
-          ? Login()
-          : Register(),
+          ? Login(setPageState: setPageState)
+          : Register(setPageState: setPageState),
     );
   }
 }
 
 class Welcome extends StatelessWidget {
-  const Welcome({super.key});
+  final Function setPageState;
+  const Welcome({super.key, required this.setPageState});
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +56,18 @@ class Welcome extends StatelessWidget {
         ),
         Column(
           children: [
-            ElevatedButton(onPressed: () {}, child: Text("Login")),
-            ElevatedButton(onPressed: () {}, child: Text("Cadastro")),
+            ElevatedButton(
+              onPressed: () {
+                setPageState(AuthStates().LOGIN);
+              },
+              child: Text("Login"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setPageState(AuthStates().REGISTER);
+              },
+              child: Text("Cadastro"),
+            ),
           ],
         ),
       ],
@@ -59,15 +76,51 @@ class Welcome extends StatelessWidget {
 }
 
 class Login extends StatelessWidget {
+  final Function setPageState;
+  const Login({super.key, required this.setPageState});
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [Form(child: Column())]);
+    return Column(
+      children: [
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                setPageState(AuthStates().WELCOME);
+              },
+              icon: Icon(Icons.keyboard_arrow_left_sharp),
+            ),
+            Text("Login"),
+          ],
+        ),
+        Form(child: Column()),
+      ],
+    );
   }
 }
 
 class Register extends StatelessWidget {
+  final Function setPageState;
+  const Register({super.key, required this.setPageState});
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [Form(child: Column())]);
+    return Column(
+      children: [
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                setPageState(AuthStates().WELCOME);
+              },
+              icon: Icon(Icons.keyboard_arrow_left_sharp),
+            ),
+            Text("Cadastro"),
+          ],
+        ),
+        Form(child: Column()),
+      ],
+    );
   }
 }
