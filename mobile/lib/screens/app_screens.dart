@@ -1,4 +1,6 @@
 class Appscreens {
-  final AUTH = "/auth";
+  final WELCOME = "/auth/welcome";
+  final LOGIN = "/auth/login";
+  final REGISTER = "/auth/register";
   final HOME = "/";
 }

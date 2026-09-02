@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/auth_provider.dart';
-import 'package:mobile/screens/login_page.dart';
+import 'package:mobile/screens/app_screens.dart';
+import 'package:mobile/screens/auth/login_page.dart';
+import 'package:mobile/screens/auth/register_page.dart';
+import 'package:mobile/screens/auth/welcome_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -19,9 +22,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 89, 212, 199)),
         ),
-        home: LoginPage()
+        home: WelcomePage(),
+        routes: {
+          Appscreens().WELCOME: (ctx) => WelcomePage(),
+          Appscreens().LOGIN: (ctx) => LoginPage(),
+          Appscreens().REGISTER: (ctx) => RegisterPage(),
+        },
       ),
     );
   }
