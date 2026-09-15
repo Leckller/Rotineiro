@@ -4,6 +4,7 @@ import 'package:mobile/screens/app_screens.dart';
 import 'package:mobile/screens/auth/login_page.dart';
 import 'package:mobile/screens/auth/register_page.dart';
 import 'package:mobile/screens/auth/welcome_page.dart';
+import 'package:mobile/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,11 +21,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => AuthProvider())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 89, 212, 199)),
         ),
-        home: WelcomePage(),
+        home: HomeScreen(),
         routes: {
           Appscreens().WELCOME: (ctx) => WelcomePage(),
           Appscreens().LOGIN: (ctx) => LoginPage(),

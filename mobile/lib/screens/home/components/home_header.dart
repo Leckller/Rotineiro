@@ -6,17 +6,22 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Boa noite!"),
+            Text("Boa dia, Ruy!"),
             Text(
               "Minhas Rotinas",
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
             ),
           ],
         ),
-        IconButton(onPressed: () {}, icon: Text("R")),
+        CircleAvatar(
+          backgroundColor: Colors.deepPurple,
+          child: Text("R", style: TextStyle(color: Colors.white)),
+        ),
       ],
     );
   }

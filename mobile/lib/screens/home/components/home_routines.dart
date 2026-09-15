@@ -21,7 +21,12 @@ class HomeStartRoutine extends StatelessWidget {
         child: Row(
           children: [
             ColoredBox(color: Colors.green, child: Icon(Icons.sunny)),
-            Column(children: [Text(routineName), Text("${taskCount} tarefas - ${taskCount}")]),
+            Column(
+              children: [
+                Text(routineName),
+                Text("${taskCount} tarefas - ${taskCount}"),
+              ],
+            ),
           ],
         ),
       ),
@@ -37,11 +42,26 @@ class HomeRoutines extends StatelessWidget {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Suas rotinas"),
             TextButton(onPressed: () {}, child: Text("Ver Todas")),
-            HomeStartRoutine(routineName: routineName, estimatedTime: estimatedTime, taskCount: taskCount)
           ],
+        ),
+        HomeStartRoutine(
+          routineName: "Rotina matinal",
+          estimatedTime: "3",
+          taskCount: '45 min',
+        ),
+        HomeStartRoutine(
+          routineName: "Rotina matinal",
+          estimatedTime: "3",
+          taskCount: '45 min',
+        ),
+        HomeStartRoutine(
+          routineName: "Rotina matinal",
+          estimatedTime: "3",
+          taskCount: '45 min',
         ),
       ],
     );
