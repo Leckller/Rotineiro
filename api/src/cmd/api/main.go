@@ -6,6 +6,7 @@ import (
 	"api/src/internal/routine"
 	"api/src/internal/task"
 	"api/src/internal/user"
+	"api/src/middleware"
 	"api/src/utils"
 
 	"github.com/gin-gonic/gin"
@@ -28,11 +29,15 @@ func main() {
 
 	router := gin.Default()
 
-	{
-		v1 := router.Group("/v1")
-		user.RegisterRoutes(v1, *user.Wird(db))
-		task.RegisterRoutes(v1, *task.Wird(db))
-	}
+	v1 := router.Group("/v1")
+	v1.Use(middleware.Logger())
+
+	user.RegisterRoutes(v1, *user.Wird(db))
+
+	auth := v1.Group("")
+	auth.Use(middleware.AuthRequired())
+
+	task.RegisterRoutes(auth, *task.Wird(db))
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
