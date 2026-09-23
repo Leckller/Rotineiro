@@ -1,7 +1,12 @@
 package user
 
+import (
+	"api/src/internal/database"
+	"api/src/utils"
+)
+
 type Service interface {
-	Create(user *User) error
+	Create(user *User) (string, error)
 	Login(email string, password string) (string, error)
 }
 
@@ -15,9 +20,24 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s service) Create(user *User) error {
+func (s service) Create(user *User) (string, error) {
 
-	return s.repository.Create(user)
+	err := s.repository.Create(user)
+
+	if err != nil {
+		if database.IsUniqueViolation(err) {
+			return "", ErrEmailAlreadyExists
+		}
+		return "", err
+	}
+
+	token, err := utils.CreateToken(user.Email)
+
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 
 }
 
@@ -30,9 +50,15 @@ func (s service) Login(email string, password string) (string, error) {
 	}
 
 	if password != user.Password {
+		return "", ErrInvalidCredentials
+	}
+
+	token, err := utils.CreateToken(user.Email)
+
+	if err != nil {
 		return "", err
 	}
 
-	return "token", nil
+	return token, nil
 
 }

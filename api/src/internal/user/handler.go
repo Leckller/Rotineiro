@@ -35,7 +35,7 @@ func (h *handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	err := h.service.Create(&User{
+	token, err := h.service.Create(&User{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -46,7 +46,7 @@ func (h *handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(201, gin.H{"message": "User created successfully"})
+	ctx.JSON(201, gin.H{token: token, "message": "User created successfully"})
 
 }
 
