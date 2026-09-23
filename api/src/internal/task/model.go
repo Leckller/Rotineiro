@@ -8,9 +8,9 @@ import (
 
 type Task struct {
 	gorm.Model
-	Title       string
+	Title       string `gorm:"uniqueIndex:idx_tasks_user_title"`
 	Description string
 	startedAt   time.Time
 	completedAt time.Time
-	UserID      uint
+	UserID      uint `gorm:"uniqueIndex:idx_tasks_user_title"`
 }

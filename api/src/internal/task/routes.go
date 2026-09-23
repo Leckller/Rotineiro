@@ -6,5 +6,5 @@ import (
 
 func RegisterRoutes(rg *gin.RouterGroup, h Handler) {
 	rg.GET("/tasks")
-	rg.POST("/tasks")
+	rg.POST("/tasks", h.Create)
 }

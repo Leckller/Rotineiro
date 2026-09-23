@@ -3,6 +3,11 @@ package task
 import "gorm.io/gorm"
 
 type Repository interface {
+	Create(t *Task) error
+	FindByID(id uint) (*Task, error)
+	FindAllByUser(userID uint) ([]Task, error)
+	Update(t *Task) error
+	Delete(id uint) error
 }
 
 type repository struct {
