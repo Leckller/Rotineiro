@@ -39,10 +39,7 @@ func main() {
 
 	task.RegisterRoutes(auth, *task.Wird(db))
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	router.GET("/ping", utils.Ping)
+
 	router.Run()
 }
