@@ -1,0 +1,40 @@
+
+GET http://localhost:8080/v1/tasks HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
+
+###
+
+POST http://localhost:8080/v1/tasks HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
+content-type: application/json
+
+{
+    "title": "sad",
+    "description": "sss"
+}
+
+###
+
+PATCH http://localhost:8080/v1/tasks HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
+content-type: application/json
+
+{
+    "id": 3,
+    "title": "tesss"
+}
+
+###
+
+PATCH http://localhost:8080/v1/tasks/start/33 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
+
+###
+
+PATCH http://localhost:8080/v1/tasks/complete/3 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
+
+###
+
+DELETE http://localhost:8080/v1/tasks/delete/5 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY

@@ -31,7 +31,7 @@ func (s service) Create(user *User) (string, error) {
 		return "", err
 	}
 
-	token, err := utils.CreateToken(user.Email)
+	token, err := utils.CreateToken(user.ID)
 
 	if err != nil {
 		return "", err
@@ -53,7 +53,7 @@ func (s service) Login(email string, password string) (string, error) {
 		return "", ErrInvalidCredentials
 	}
 
-	token, err := utils.CreateToken(user.Email)
+	token, err := utils.CreateToken(user.ID)
 
 	if err != nil {
 		return "", err
