@@ -11,7 +11,7 @@ type Repository interface {
 	FindByID(id uint) (*Task, error)
 	FindAllByUser(userID uint, page, pageSize int) ([]Task, int64, error)
 	Update(userID uint, task *Task) (int64, error)
-	Delete(id uint) error
+	Delete(userID uint, task *Task) (int64, error)
 }
 
 type repository struct {
@@ -79,6 +79,20 @@ func (r *repository) Update(userID uint, task *Task) (int64, error) {
 
 }
 
-func (r *repository) Delete(id uint) error {
-	return r.db.Delete(&Task{}, id).Error
+func (r *repository) Delete(userID uint, task *Task) (int64, error) {
+
+	tx := r.db.
+		Model(&Task{}).
+		Where("user_id = ?", userID).
+		Unscoped().
+		Delete(&task, task.ID)
+
+	err := tx.Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return tx.RowsAffected, nil
+
 }

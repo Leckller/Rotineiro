@@ -11,7 +11,8 @@ type Service interface {
 	Create(userID uint, createDTO CreateTaskDTO) (uint, error)
 	Update(userID uint, updateDTO UpdateTaskDTO) error
 	StartTask(userID, taskID uint) error
-	CompleteTask() error
+	CompleteTask(userID, taskID uint) error
+	Delete(userID, taskID uint) error
 	FindAllByUser(
 		userID uint,
 		page,
@@ -27,6 +28,46 @@ func NewService(repository Repository) Service {
 	return &service{
 		repository: repository,
 	}
+}
+
+func (s *service) Create(userID uint, createDTO CreateTaskDTO) (uint, error) {
+
+	var task Task = Task{
+		UserID:      userID,
+		Title:       createDTO.Title,
+		Description: createDTO.Title,
+	}
+
+	err := s.repository.Create(&task)
+
+	if err != nil {
+		if database.IsUniqueViolation(err) {
+			return 0, ErrTaskAlreadyExists
+		}
+		return 0, err
+	}
+
+	return task.ID, nil
+
+}
+
+func (s *service) Delete(userID, taskID uint) error {
+
+	var task Task = Task{}
+	task.ID = taskID
+
+	rowsAffected, err := s.repository.Delete(userID, &task)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrTaskNotFound
+	}
+
+	return nil
+
 }
 
 func (s service) FindAllByUser(
@@ -55,27 +96,6 @@ func (s service) FindAllByUser(
 	}
 
 	return tasks, meta, nil
-}
-
-func (s *service) Create(userID uint, createDTO CreateTaskDTO) (uint, error) {
-
-	var task Task = Task{
-		UserID:      userID,
-		Title:       createDTO.Title,
-		Description: createDTO.Title,
-	}
-
-	err := s.repository.Create(&task)
-
-	if err != nil {
-		if database.IsUniqueViolation(err) {
-			return 0, ErrTaskAlreadyExists
-		}
-		return 0, err
-	}
-
-	return task.ID, nil
-
 }
 
 func (s *service) Update(userID uint, updateDTO UpdateTaskDTO) error {
@@ -130,6 +150,23 @@ func (s *service) StartTask(userID, taskID uint) error {
 	return nil
 }
 
-func (s *service) CompleteTask() error {
+func (s *service) CompleteTask(userID, taskID uint) error {
+
+	now := time.Now()
+	var task Task = Task{
+		CompletedAt: &now,
+	}
+	task.ID = taskID
+
+	rowsAffected, err := s.repository.Update(userID, &task)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrTaskNotFound
+	}
+
 	return nil
 }

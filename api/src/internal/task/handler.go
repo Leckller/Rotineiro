@@ -15,6 +15,8 @@ type Handler interface {
 	FindAllByUser(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	StartTask(ctx *gin.Context)
+	Delete(ctx *gin.Context)
+	CompleteTask(ctx *gin.Context)
 }
 
 type handler struct {
@@ -75,6 +77,38 @@ func (h *handler) Create(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"taskId": userId, "message": "Task created successfully"})
+
+}
+
+func (h *handler) Delete(ctx *gin.Context) {
+
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrTaskBadRequest})
+		return
+	}
+
+	userID := ctx.GetUint("userID")
+
+	err = h.service.Delete(userID, uint(taskID))
+
+	if err != nil {
+		if errors.Is(err, ErrTaskNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		print(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 
 }
 
@@ -197,6 +231,37 @@ func (h *handler) StartTask(ctx *gin.Context) {
 	userID := ctx.GetUint("userID")
 
 	err = h.service.StartTask(userID, uint(taskID))
+
+	if err != nil {
+		if errors.Is(err, ErrTaskNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+
+}
+
+func (h *handler) CompleteTask(ctx *gin.Context) {
+
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrTaskBadRequest})
+		return
+	}
+
+	userID := ctx.GetUint("userID")
+
+	err = h.service.CompleteTask(userID, uint(taskID))
 
 	if err != nil {
 		if errors.Is(err, ErrTaskNotFound) {
