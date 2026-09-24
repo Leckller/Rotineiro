@@ -7,4 +7,5 @@ import (
 func RegisterRoutes(rg *gin.RouterGroup, h Handler) {
 	rg.GET("/tasks", h.FindAllByUser)
 	rg.POST("/tasks", h.Create)
+	rg.PATCH("/tasks", h.Update)
 }

@@ -6,6 +6,7 @@ type CreateTaskDTO struct {
 }
 
 type UpdateTaskDTO struct {
-	Title       string `json:"title" binding:"min=3,max=50"`
+	ID          uint   `json:"id" binding:"required"`
+	Title       string `json:"title" binding:"max=50"` // a validação do min fica manual p poder dxar opcional
 	Description string `json:"description" binding:"max=200"`
 }

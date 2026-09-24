@@ -13,6 +13,7 @@ import (
 type Handler interface {
 	Create(ctx *gin.Context)
 	FindAllByUser(ctx *gin.Context)
+	Update(ctx *gin.Context)
 }
 
 type handler struct {
@@ -118,5 +119,71 @@ func (h *handler) FindAllByUser(ctx *gin.Context) {
 		"data": tasks,
 		"meta": paginationMeta,
 	})
+
+}
+
+func (h *handler) Update(ctx *gin.Context) {
+
+	var updateDTO UpdateTaskDTO
+
+	if err := ctx.ShouldBindBodyWithJSON(&updateDTO); err != nil {
+
+		if errors.Is(err, io.EOF) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": "Body is required",
+			})
+			return
+		}
+
+		if fieldErrors := utils.FormatValidationErrors(err); fieldErrors != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"errors": fieldErrors})
+			return
+		}
+
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userID, exists := ctx.Get("userID")
+
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Não autorizado"})
+		return
+	}
+
+	if err := h.service.Update(userID.(uint), updateDTO); err != nil {
+
+		if errors.Is(err, ErrTaskBadRequest) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if errors.Is(err, ErrTaskAlreadyExists) {
+			ctx.JSON(http.StatusConflict, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if errors.Is(err, ErrTaskNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+
+}
+
+func (h *handler) StartTask(ctx *gin.Context) {
 
 }

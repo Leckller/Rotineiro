@@ -10,7 +10,7 @@ type Repository interface {
 	Create(t *Task) error
 	FindByID(id uint) (*Task, error)
 	FindAllByUser(userID uint, page, pageSize int) ([]Task, int64, error)
-	Update(t *Task) error
+	Update(userID uint, task *Task) (int64, error)
 	Delete(id uint) error
 }
 
@@ -62,8 +62,21 @@ func (r *repository) FindAllByUser(userID uint, page, pageSize int) ([]Task, int
 
 }
 
-func (r *repository) Update(t *Task) error {
-	return r.db.Save(t).Error
+func (r *repository) Update(userID uint, task *Task) (int64, error) {
+
+	tx := r.db.
+		Model(&Task{}).
+		Where("id = ? AND user_id = ?", task.ID, userID).
+		Updates(task)
+
+	err := tx.Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return tx.RowsAffected, nil
+
 }
 
 func (r *repository) Delete(id uint) error {

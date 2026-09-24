@@ -8,8 +8,8 @@ import (
 
 type Service interface {
 	Create(userID uint, createDTO CreateTaskDTO) (uint, error)
-	Update(updateDTO UpdateTaskDTO) error
-	StartTask() error
+	Update(userID uint, updateDTO UpdateTaskDTO) error
+	StartTask(userID, taskID uint) error
 	CompleteTask() error
 	FindAllByUser(
 		userID uint,
@@ -77,14 +77,19 @@ func (s *service) Create(userID uint, createDTO CreateTaskDTO) (uint, error) {
 
 }
 
-func (s *service) Update(updateDTO UpdateTaskDTO) error {
+func (s *service) Update(userID uint, updateDTO UpdateTaskDTO) error {
+
+	if len(updateDTO.Title) < 3 && len(updateDTO.Description) <= 0 {
+		return ErrTaskBadRequest
+	}
 
 	var task Task = Task{
 		Title:       updateDTO.Title,
-		Description: updateDTO.Title,
+		Description: updateDTO.Description,
 	}
+	task.ID = updateDTO.ID
 
-	err := s.repository.Update(&task)
+	rowsAffected, err := s.repository.Update(userID, &task)
 
 	if err != nil {
 
@@ -95,11 +100,23 @@ func (s *service) Update(updateDTO UpdateTaskDTO) error {
 
 	}
 
+	if rowsAffected <= 0 {
+		return ErrTaskNotFound
+	}
+
 	return nil
 
 }
 
-func (s *service) StartTask() error {
+func (s *service) StartTask(userID, taskID uint) error {
+
+	// var task Task = Task{
+	// 	Title:       updateDTO.Title,
+	// 	Description: updateDTO.Title,
+	// }
+
+	// err := s.repository.Update(&task)
+
 	return nil
 }
 
