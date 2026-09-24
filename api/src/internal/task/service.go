@@ -4,6 +4,7 @@ import (
 	"api/src/internal/database"
 	"api/src/utils"
 	"math"
+	"time"
 )
 
 type Service interface {
@@ -110,12 +111,21 @@ func (s *service) Update(userID uint, updateDTO UpdateTaskDTO) error {
 
 func (s *service) StartTask(userID, taskID uint) error {
 
-	// var task Task = Task{
-	// 	Title:       updateDTO.Title,
-	// 	Description: updateDTO.Title,
-	// }
+	now := time.Now()
+	var task Task = Task{
+		StartedAt: &now,
+	}
+	task.ID = taskID
 
-	// err := s.repository.Update(&task)
+	rowsAffected, err := s.repository.Update(userID, &task)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrTaskNotFound
+	}
 
 	return nil
 }

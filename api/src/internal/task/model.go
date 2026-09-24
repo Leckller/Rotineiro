@@ -10,7 +10,7 @@ type Task struct {
 	gorm.Model
 	Title       string `gorm:"uniqueIndex:idx_tasks_user_title"`
 	Description string
-	startedAt   time.Time
-	completedAt time.Time
+	StartedAt   *time.Time
+	CompletedAt *time.Time
 	UserID      uint `gorm:"uniqueIndex:idx_tasks_user_title"`
 }

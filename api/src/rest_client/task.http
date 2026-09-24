@@ -9,7 +9,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVz
 content-type: application/json
 
 {
-    "title": "tesss",
+    "title": "BaAssad",
     "description": "sss"
 }
 
@@ -21,5 +21,10 @@ content-type: application/json
 
 {
     "id": 3,
-    "title": "tes"
+    "title": "tesss"
 }
+
+###
+
+PATCH http://localhost:8080/v1/tasks/start/33 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTAyOTUwMDUsInVzZXJJRCI6Mn0.ByhE0XQ3z4HJ6R4UXg0t6-gCH_Xe_tc3llVEf-hUyQY
