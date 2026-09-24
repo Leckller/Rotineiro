@@ -9,11 +9,11 @@ import (
 
 var secretKey = []byte("secret-key")
 
-func CreateToken(email string) (string, error) {
+func CreateToken(userID uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"email": email,
-			"exp":   time.Now().Add(time.Hour * 24).Unix(),
+			"userID": userID,
+			"exp":    time.Now().Add(time.Hour * 24).Unix(),
 		})
 
 	tokenString, err := token.SignedString(secretKey)
@@ -24,7 +24,7 @@ func CreateToken(email string) (string, error) {
 	return tokenString, nil
 }
 
-func VerifyToken(tokenString string) (*string, error) {
+func VerifyToken(tokenString string) (*uint, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
@@ -38,16 +38,15 @@ func VerifyToken(tokenString string) (*string, error) {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-
 	if !ok {
 		return nil, fmt.Errorf("claims not ok")
 	}
 
-	email, ok := claims["email"].(string)
-
+	userIDFloat, ok := claims["userID"].(float64)
 	if !ok {
-		return nil, fmt.Errorf("email not found in token")
+		return nil, fmt.Errorf("userID not found in token")
 	}
 
-	return &email, nil
+	userID := uint(userIDFloat)
+	return &userID, nil
 }
