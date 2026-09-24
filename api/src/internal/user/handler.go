@@ -2,6 +2,8 @@ package user
 
 import (
 	"api/src/utils"
+	"errors"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,12 +29,21 @@ func (h *handler) Create(ctx *gin.Context) {
 	var user CreateUser
 
 	if err := ctx.ShouldBindBodyWithJSON(&user); err != nil {
+
+		if errors.Is(err, io.EOF) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": "Body is required",
+			})
+			return
+		}
+
 		if fieldErrors := utils.FormatValidationErrors(err); fieldErrors != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"errors": fieldErrors})
 			return
 		}
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+
 	}
 
 	token, err := h.service.Create(&User{
@@ -46,20 +57,30 @@ func (h *handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(201, gin.H{token: token, "message": "User created successfully"})
+	ctx.JSON(201, gin.H{"token": token, "message": "User created successfully"})
 
 }
 
 func (h *handler) Login(ctx *gin.Context) {
+
 	var user LoginDTO
 
 	if err := ctx.ShouldBindBodyWithJSON(&user); err != nil {
+
+		if errors.Is(err, io.EOF) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": "Body is required",
+			})
+			return
+		}
+
 		if fieldErrors := utils.FormatValidationErrors(err); fieldErrors != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"errors": fieldErrors})
 			return
 		}
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+
 	}
 
 	token, err := h.service.Login(user.Email, user.Password)
@@ -69,6 +90,6 @@ func (h *handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{token: token, "message": "User login successfully"})
+	ctx.JSON(200, gin.H{"token": token, "message": "User login successfully"})
 
 }

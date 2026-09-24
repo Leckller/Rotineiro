@@ -1,11 +1,15 @@
 package task
 
-import "gorm.io/gorm"
+import (
+	"api/src/utils"
+
+	"gorm.io/gorm"
+)
 
 type Repository interface {
 	Create(t *Task) error
 	FindByID(id uint) (*Task, error)
-	FindAllByUser(userID uint) ([]Task, error)
+	FindAllByUser(userID uint, page, pageSize int) ([]Task, int64, error)
 	Update(t *Task) error
 	Delete(id uint) error
 }
@@ -32,12 +36,30 @@ func (r *repository) FindByID(id uint) (*Task, error) {
 	return &task, nil
 }
 
-func (r *repository) FindAllByUser(userID uint) ([]Task, error) {
+func (r *repository) FindAllByUser(userID uint, page, pageSize int) ([]Task, int64, error) {
+
 	var tasks []Task
-	if err := r.db.Where("user_id = ?", userID).Find(&tasks).Error; err != nil {
-		return nil, err
+	var total int64
+
+	paginateScope := utils.Paginate(r.db, page, pageSize)
+
+	if err := r.db.
+		Model(&Task{}).
+		Where("user_id = ?", userID).
+		Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
-	return tasks, nil
+
+	if err := r.db.
+		Scopes(paginateScope).
+		Where("user_id = ?", userID).
+		Find(&tasks).
+		Error; err != nil {
+		return nil, 0, err
+	}
+
+	return tasks, total, nil
+
 }
 
 func (r *repository) Update(t *Task) error {
