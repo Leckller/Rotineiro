@@ -87,9 +87,7 @@ func (r *repository) Delete(userID uint, task *Task) (int64, error) {
 		Unscoped().
 		Delete(&task, task.ID)
 
-	err := tx.Error
-
-	if err != nil {
+	if err := tx.Error; err != nil {
 		return 0, err
 	}
 
