@@ -2,12 +2,18 @@ package routine
 
 import (
 	"api/src/internal/database"
+	"api/src/utils"
+	"math"
 	"time"
 )
 
 type Service interface {
 	StartRotuine(userID, routineID uint) error
 	CompleteRotuine(userID, routineID uint) error
+	Create(userID uint, createDTO CreateRoutineDTO) (uint, error)
+	FindAllByUser(userID uint, page, pageSize int) ([]Routine, utils.PaginationMeta, error)
+	Update(userID uint, updateDTO UpdateRoutineDTO) error
+	Delete(userID, routineID uint) error
 }
 
 type service struct {
@@ -18,6 +24,27 @@ func NewService(repository Repository) Service {
 	return &service{
 		repository: repository,
 	}
+}
+
+func (s *service) FindAllByUser(userID uint, page, pageSize int) ([]Routine, utils.PaginationMeta, error) {
+
+	routines, total, err := s.repository.FindAllByUser(userID, page, pageSize)
+
+	if err != nil {
+		return nil, utils.PaginationMeta{}, err
+	}
+
+	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
+
+	meta := utils.PaginationMeta{
+		Page:       page,
+		PageSize:   pageSize,
+		Total:      int(total),
+		TotalPages: totalPages,
+	}
+
+	return routines, meta, nil
+
 }
 
 func (s *service) Create(userID uint, createDTO CreateRoutineDTO) (uint, error) {
