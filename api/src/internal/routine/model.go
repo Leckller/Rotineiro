@@ -9,7 +9,7 @@ import (
 
 type Routine struct {
 	gorm.Model
-	Name        string
+	Title       string
 	Description string
 	StartedAt   *time.Time
 	CompletedAt *time.Time

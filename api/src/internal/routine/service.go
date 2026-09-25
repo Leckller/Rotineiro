@@ -1,6 +1,13 @@
 package routine
 
+import (
+	"api/src/internal/database"
+	"time"
+)
+
 type Service interface {
+	StartRotuine(userID, routineID uint) error
+	CompleteRotuine(userID, routineID uint) error
 }
 
 type service struct {
@@ -8,7 +15,110 @@ type service struct {
 }
 
 func NewService(repository Repository) Service {
-	return service{
+	return &service{
 		repository: repository,
 	}
+}
+
+func (s *service) Create(userID uint, createDTO CreateRoutineDTO) (uint, error) {
+
+	var routine Routine = Routine{
+		UserID:      userID,
+		Title:       createDTO.Title,
+		Description: createDTO.Title,
+	}
+
+	err := s.repository.Create(&routine)
+
+	if err != nil {
+		if database.IsUniqueViolation(err) {
+			return 0, ErrRoutineAlreadyExists
+		}
+		return 0, err
+	}
+
+	return routine.ID, nil
+
+}
+
+func (s *service) Update(userID uint, updateDTO UpdateRoutineDTO) error {
+
+	routine := &Routine{
+		UserID:      userID,
+		Title:       updateDTO.Title,
+		Description: updateDTO.Description,
+	}
+
+	rowsAffected, err := s.repository.Update(userID, routine)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrRoutineNotFound
+	}
+
+	return nil
+
+}
+
+func (s *service) Delete(userID, routineID uint) error {
+
+	var routine Routine = Routine{}
+	routine.ID = routineID
+
+	rowsAffected, err := s.repository.Delete(userID, &routine)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrRoutineNotFound
+	}
+
+	return nil
+}
+
+func (s *service) StartRotuine(userID, routineID uint) error {
+
+	now := time.Now()
+	var routine Routine = Routine{
+		StartedAt: &now,
+	}
+	routine.ID = routineID
+
+	rowsAffected, err := s.repository.Update(userID, &routine)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrRoutineNotFound
+	}
+
+	return nil
+}
+
+func (s *service) CompleteRotuine(userID, routineID uint) error {
+
+	now := time.Now()
+	var routine Routine = Routine{
+		CompletedAt: &now,
+	}
+	routine.ID = routineID
+
+	rowsAffected, err := s.repository.Update(userID, &routine)
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected <= 0 {
+		return ErrRoutineNotFound
+	}
+
+	return nil
 }

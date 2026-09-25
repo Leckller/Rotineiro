@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	Create(userID uint, routine *Routine) error
+	Create(routine *Routine) error
 	FindAllByUser(userID uint, page, pageSize int) ([]Routine, int64, error)
 	Update(userID uint, routine *Routine) (int64, error)
 	Delete(userID uint, routine *Routine) (int64, error)
@@ -23,7 +23,7 @@ func NewRepository(db *gorm.DB) Repository {
 	}
 }
 
-func (r *repository) Create(userID uint, routine *Routine) error {
+func (r *repository) Create(routine *Routine) error {
 	return r.db.Create(routine).Error
 }
 
