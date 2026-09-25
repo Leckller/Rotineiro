@@ -11,8 +11,8 @@ type Routine struct {
 	gorm.Model
 	Name        string
 	Description string
-	startedAt   time.Time
-	finishedAt  time.Time
+	StartedAt   *time.Time
+	CompletedAt *time.Time
 	tasks       []task.Task `gorm:"many2many:routine_tasks;"`
 	UserID      uint
 }
