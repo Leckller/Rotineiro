@@ -9,10 +9,10 @@ import (
 
 type Routine struct {
 	gorm.Model
-	Title       string
+	Title       string `gorm:"uniqueIndex:idx_routine_user_title"`
 	Description string
 	StartedAt   *time.Time
 	CompletedAt *time.Time
 	tasks       []task.Task `gorm:"many2many:routine_tasks;"`
-	UserID      uint
+	UserID      uint        `gorm:"uniqueIndex:idx_routine_user_title"`
 }

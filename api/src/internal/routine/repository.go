@@ -55,7 +55,7 @@ func (r *repository) Update(userID uint, routine *Routine) (int64, error) {
 
 	tx := r.db.
 		Model(&Routine{}).
-		Where("user_id = ?", userID).
+		Where("id = ? AND user_id = ?", routine.ID, userID).
 		Updates(&routine)
 
 	if err := tx.Error; err != nil {

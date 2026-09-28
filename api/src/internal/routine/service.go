@@ -70,21 +70,29 @@ func (s *service) Create(userID uint, createDTO CreateRoutineDTO) (uint, error) 
 
 func (s *service) Update(userID uint, updateDTO UpdateRoutineDTO) error {
 
+	if len(updateDTO.Title) < 3 && len(updateDTO.Description) <= 0 {
+		return ErrRoutineBadRequest
+	}
+
 	routine := &Routine{
-		UserID:      userID,
 		Title:       updateDTO.Title,
 		Description: updateDTO.Description,
 	}
+	routine.ID = updateDTO.ID
 
 	rowsAffected, err := s.repository.Update(userID, routine)
 
 	if err != nil {
+		if database.IsUniqueViolation(err) {
+			return ErrRoutineAlreadyExists
+		}
 		return err
 	}
 
 	if rowsAffected <= 0 {
 		return ErrRoutineNotFound
 	}
+	print(rowsAffected)
 
 	return nil
 
