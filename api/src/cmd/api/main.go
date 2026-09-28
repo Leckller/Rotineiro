@@ -38,6 +38,7 @@ func main() {
 	auth.Use(middleware.AuthRequired())
 
 	task.RegisterRoutes(auth, *task.Wird(db))
+	routine.RegisterRoutes(auth, *routine.Wird(db))
 
 	router.GET("/ping", utils.Ping)
 
