@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/token_storage.dart';
 import 'package:mobile/providers/auth_provider.dart';
-import 'package:mobile/screens/app_screens.dart';
-import 'package:mobile/screens/auth/login_page.dart';
-import 'package:mobile/screens/auth/register_page.dart';
-import 'package:mobile/screens/auth/welcome_page.dart';
-import 'package:mobile/screens/home/home_screen.dart';
+import 'package:mobile/providers/routine_provider.dart';
+import 'package:mobile/screens/auth/auth_gate.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -18,19 +16,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx) => AuthProvider())
+        ChangeNotifierProvider(
+          create: (ctx) => AuthProvider(TokenStorage())..checkAuth(),
+        ),
+        ChangeNotifierProvider(create: (ctx) => RoutineProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 89, 212, 199)),
+          colorScheme: .fromSeed(
+            seedColor: const Color.fromARGB(255, 89, 212, 199),
+          ),
         ),
-        home: HomeScreen(),
+        home: AuthGate(),
         routes: {
-          Appscreens().WELCOME: (ctx) => WelcomePage(),
-          Appscreens().LOGIN: (ctx) => LoginPage(),
-          Appscreens().REGISTER: (ctx) => RegisterPage(),
         },
       ),
     );
