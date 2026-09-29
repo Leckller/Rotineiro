@@ -3,7 +3,9 @@ import 'package:mobile/models/routine.dart';
 import 'package:mobile/service/routine_service.dart';
 
 class RoutineProvider extends ChangeNotifier {
-  final _service = RoutineService();
+  final RoutineService _service;
+
+  RoutineProvider({required this._service});
 
   List<Routine> routines = [];
   bool loading = false;
