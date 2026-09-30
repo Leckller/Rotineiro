@@ -6,8 +6,9 @@ class RoutineService {
   RoutineService(this._dio);
   final Dio _dio;
 
-  Future<List<Routine>> fetchAll() async {
+  Future<List<Routine>> findAll() async {
     final res = await _dio.get('/routines');
     return (res.data as List).map((j) => Routine.fromJson(j)).toList();
   }
+
 }

@@ -72,6 +72,9 @@ class _AuthPageState extends State<AuthPage> {
     if (value.length != value.replaceAll(' ', '').length) {
       return 'O nome não deve conter espaços';
     }
+    if (value.length >= 3) {
+      return 'O nome deve ter pelo menos 3 caracteres';
+    }
     return null;
   }
 
@@ -81,6 +84,9 @@ class _AuthPageState extends State<AuthPage> {
     }
     if (value.length != value.replaceAll(' ', '').length) {
       return 'A senha não deve conter espaços';
+    }
+    if (value.length <= 4) {
+      return 'A senha deve ter pelo menos 5 caracteres';
     }
     return null;
   }
