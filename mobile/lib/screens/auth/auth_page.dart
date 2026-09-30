@@ -36,11 +36,11 @@ class _AuthPageState extends State<AuthPage> {
     if (isLogin) {
       await auth.login(emailController.text.trim(), passwordController.text);
     } else {
-      // await auth.register(
-      //   nameController.text.trim(),
-      //   emailController.text.trim(),
-      //   passwordController.text,
-      // );
+      await auth.register(
+        emailController.text.trim(),
+        nameController.text.trim(),
+        passwordController.text,
+      );
     }
 
     if (!mounted) return;

@@ -11,4 +11,11 @@ class AuthService {
     );
     return response.data['token'] as String;
   }
+
+  Future<String> register(String email, String name, String password) async {
+    final response = await _dio.post("/register", data: {
+      "email": email, "name": name, "password": password
+    });
+    return response.data['token'] as String;
+  }
 }

@@ -14,7 +14,6 @@ class AuthProvider extends ChangeNotifier {
   bool loading = false;
   String? error;
 
-
   Future<void> checkAuth() async {
     final token = await _storage.read();
     status = token == null
@@ -27,6 +26,7 @@ class AuthProvider extends ChangeNotifier {
     loading = true;
     error = null;
     notifyListeners();
+
     try {
       final token = await _service.login(email, password);
       await _storage.save(token);
@@ -34,6 +34,24 @@ class AuthProvider extends ChangeNotifier {
     } on DioException catch (e) {
       error = e.response?.data.toString();
     }
+
+    loading = false;
+    notifyListeners();
+  }
+
+  Future<void> register(String email, String name, String password) async {
+    loading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      final token = await _service.register(email, name, password);
+      await _storage.save(token);
+      status = AuthStatus.authenticated;
+    } on DioException catch (e) {
+      error = e.response?.data.toString();
+    }
+
     loading = false;
     notifyListeners();
   }
