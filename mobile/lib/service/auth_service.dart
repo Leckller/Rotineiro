@@ -1,0 +1,21 @@
+import 'package:dio/dio.dart';
+
+class AuthService {
+  AuthService(this._dio);
+  final Dio _dio;
+
+  Future<String> login(String email, String senha) async {
+    final response = await _dio.post(
+      "/login",
+      data: {"email": email, "password": senha},
+    );
+    return response.data['token'] as String;
+  }
+
+  Future<String> register(String email, String name, String password) async {
+    final response = await _dio.post("/register", data: {
+      "email": email, "name": name, "password": password
+    });
+    return response.data['token'] as String;
+  }
+}
