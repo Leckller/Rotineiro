@@ -58,7 +58,7 @@ func (h *handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	userId, err := h.service.Create(userID.(uint), createRoutineDTO)
+	routineID, err := h.service.Create(userID.(uint), createRoutineDTO)
 
 	if err != nil {
 
@@ -76,7 +76,7 @@ func (h *handler) Create(ctx *gin.Context) {
 
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"routineId": userId, "message": "Routine created successfully"})
+	ctx.JSON(http.StatusCreated, gin.H{"routineId": routineID, "message": "Routine created successfully"})
 
 }
 

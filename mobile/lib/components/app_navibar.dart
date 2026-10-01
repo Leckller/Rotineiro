@@ -6,9 +6,9 @@ class AppNavibar extends StatelessWidget {
   final String currentRoute;
 
   static const _routes = [
-    '/home',
+    '/',
     '/historico',
-    '/adicionar',
+    '/library',
     '/dashboard',
     '/perfil',
   ];
@@ -20,8 +20,7 @@ class AppNavibar extends StatelessWidget {
 
   void _onDestinationSelected(BuildContext context, int index) {
     final route = _routes[index];
-    if (route == currentRoute) return; // já está na tela
-
+    if (route == currentRoute) return;
     Navigator.of(context).pushReplacementNamed(route);
   }
 
