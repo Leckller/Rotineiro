@@ -13,12 +13,22 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen> {
   bool isTask = false;
+  ScrollController scrollController = ScrollController();
+
   TextEditingController searchController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    searchController.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
+    scrollController.dispose();
+  }
 
   void _openTaskForm(BuildContext context) {
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -65,14 +75,24 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                       description: descriptionController.text,
                                     );
                                   } else {
-                                    await context
-                                        .read<RoutineProvider>()
-                                        .create(
-                                          title: titleController.text,
-                                          description: descriptionController.text,
-                                        );
+                                    RoutineProvider routine = context
+                                        .read<RoutineProvider>();
+
+                                    await routine.create(
+                                      title: titleController.text,
+                                      description: descriptionController.text,
+                                    );
+
+                                    if (routine.error != null) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text(routine.error!)),
+                                      );
+                                    }
+
+                                    if (context.mounted) Navigator.pop(context);
                                   }
-                                  if (context.mounted) Navigator.pop(context);
                                 },
                                 child: const Text("Adicionar"),
                               ),
@@ -91,12 +111,33 @@ class _LibraryScreenState extends State<LibraryScreen> {
     );
   }
 
+  void _onScroll() {
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent - 200) {
+      // chegou perto do fim (200px de margem)
+      if (isTask) {
+        // context.read<TaskProvider>().loadMore();
+      } else {
+        context.read<RoutineProvider>().loadMore();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<RoutineProvider>().findAll();
+      RoutineProvider routine = context.read<RoutineProvider>();
+      routine.findAll(refresh: true);
+
+      if (routine.error != null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(routine.error!)));
+      }
     });
+
+    scrollController.addListener(_onScroll);
   }
 
   @override
@@ -168,6 +209,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
             Expanded(
               child: isTask
                   ? ListView.builder(
+                      controller: scrollController,
                       itemCount: taskProvider.tasks.length,
                       itemBuilder: (context, index) {
                         final t = taskProvider.tasks[index];
@@ -179,6 +221,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       },
                     )
                   : ListView.builder(
+                      controller: scrollController,
                       itemCount: routineProvider.routines.length,
                       itemBuilder: (context, index) {
                         final r = routineProvider.routines[index];

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mobile/models/query_result.dart';
 
 import '../models/routine.dart';
 
@@ -6,10 +7,24 @@ class RoutineService {
   RoutineService(this._dio);
   final Dio _dio;
 
-  Future<List<Routine>> findAll() async {
-    final res = await _dio.get('/routines');
-    // print(res.data.toString());
-    return (res.data['data'] as List).map((j) => Routine.fromJson(j)).toList();
+  Future<QueryResult<List<Routine>>> findAll({
+    required int page,
+    required int pageSize,
+  }) async {
+    final res = await _dio.get(
+      '/routines',
+      queryParameters: {"page": page, "pageSize": pageSize},
+    );
+    List<Routine> routines = (res.data['data'] as List)
+        .map((j) => Routine.fromJson(j))
+        .toList();
+    return QueryResult(
+      page: res.data['meta']['page'],
+      pageSize: res.data['meta']['pageSize'],
+      total: res.data['meta']['total'],
+      totalPages: res.data['meta']['totalPages'],
+      data: routines,
+    );
   }
 
   Future<int> create({required String title, String description = ""}) async {

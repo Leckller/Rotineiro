@@ -8,6 +8,9 @@ class TaskProvider extends ChangeNotifier {
   final TaskService _service;
 
   List<Task> tasks = [];
+  int total = 0;
+  int page = 0;
+  int pageSize = 15;
   bool loading = false;
   String? error;
 
@@ -17,7 +20,7 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      tasks = await _service.findAll();
+      tasks = await _service.findAll(page: page, pageSize: pageSize);
     } catch (e) {
       error = 'Não foi possível carregar as tarefas';
     }
@@ -89,5 +92,4 @@ class TaskProvider extends ChangeNotifier {
     loading = false;
     notifyListeners();
   }
-
 }

@@ -5,8 +5,8 @@ class TaskService {
   TaskService(this._dio);
   final Dio _dio;
 
-  Future<List<Task>> findAll() async {
-    final res = await _dio.get('/tasks');
+  Future<List<Task>> findAll({required int page, required int pageSize}) async {
+    final res = await _dio.get('/tasks', queryParameters: {"page": page, "pageSize": pageSize});
     return (res.data['data'] as List).map((j) => Task.fromJson(j)).toList();
   }
 
