@@ -10,9 +10,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// RegisterJSONTagNames faz o validator usar os nomes das tags `json`
-// ao invés do nome do campo Go nas mensagens de erro.
-// Isso aq é meio desnecessário pq geralmente só vai mudar a primeira letra estar maiúscula ou não... mas fé eu gosto
 func RegisterJSONTagNames() {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterTagNameFunc(func(fld reflect.StructField) string {
@@ -25,9 +22,6 @@ func RegisterJSONTagNames() {
 	}
 }
 
-// FormatValidationErrors converte um erro de binding do Gin/validator
-// num map[campo]mensagem amigável. Retorna nil se o erro não for
-// de validação
 func FormatValidationErrors(err error) map[string]string {
 	var ve validator.ValidationErrors
 	if !isValidationError(err, &ve) {
