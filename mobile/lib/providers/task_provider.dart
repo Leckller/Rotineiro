@@ -57,7 +57,7 @@ class TaskProvider extends ChangeNotifier {
 
     try {
       await _service.update(id: id, title: title, description: description);
-      
+
       int index = tasks.indexWhere((t) => t.id == id);
       if (title.isNotEmpty) {
         tasks[index].title = title;
@@ -73,4 +73,21 @@ class TaskProvider extends ChangeNotifier {
     loading = false;
     notifyListeners();
   }
+
+  Future<void> delete(int id) async {
+    loading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      await _service.delete(id);
+      tasks.removeWhere((r) => r.id == id);
+    } catch (e) {
+      error = 'Não foi possível deletar a tarefa';
+    }
+
+    loading = false;
+    notifyListeners();
+  }
+
 }

@@ -15,6 +15,81 @@ class _LibraryScreenState extends State<LibraryScreen> {
   bool isTask = false;
   TextEditingController searchController = TextEditingController();
 
+  void _openTaskForm(BuildContext context) {
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 16,
+              right: 16,
+              top: 16,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Cadastro de ${isTask ? 'Tarefa' : 'Rotina'}"),
+                  const SizedBox(height: 16),
+                  Form(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            label: Text("Título"),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: descriptionController,
+                          decoration: const InputDecoration(
+                            label: Text("Descrição"),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (isTask) {
+                                    await context.read<TaskProvider>().create(
+                                      title: titleController.text,
+                                      description: descriptionController.text,
+                                    );
+                                  } else {
+                                    await context
+                                        .read<RoutineProvider>()
+                                        .create(
+                                          title: titleController.text,
+                                          description: descriptionController.text,
+                                        );
+                                  }
+                                  if (context.mounted) Navigator.pop(context);
+                                },
+                                child: const Text("Adicionar"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -47,7 +122,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   ],
                 ),
                 IconButton(
-                  onPressed: () => {},
+                  onPressed: () => _openTaskForm(context),
                   icon: Icon(Icons.add),
                 ),
               ],
