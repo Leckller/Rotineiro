@@ -153,6 +153,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          spacing: 16,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,38 +171,116 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ],
             ),
             Column(
+              spacing: 16,
               children: [
                 SizedBox(
                   width: double.infinity,
-                  child: SegmentedButton<bool>(
-                    segments: [
-                      ButtonSegment(
-                        value: false,
-                        icon: Icon(Icons.calendar_month_outlined),
-                        label: Text("Rotinas"),
-                      ),
-                      ButtonSegment(
-                        value: true,
-                        icon: Icon(Icons.task),
-                        label: Text("Tarefas"),
-                      ),
-                    ],
-                    selected: {isTask},
-                    onSelectionChanged: (_) {
-                      setState(() {
-                        isTask = !isTask;
-                        if (isTask) {
-                          taskProvider.findAll();
-                        } else {
-                          routineProvider.findAll(refresh: true);
-                        }
-                      });
-                    },
+                  child: Container(
+                    height: 60,
+                    padding: EdgeInsetsGeometry.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 4,
+                      children: [
+                        Expanded(
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              backgroundColor: isTask
+                                  ? Colors.transparent
+                                  : Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isTask = false;
+                              });
+                              if (isTask) {
+                                taskProvider.findAll();
+                              } else {
+                                routineProvider.findAll(refresh: true);
+                              }
+                            },
+                            child: Row(
+                              spacing: 16,
+                              children: [
+                                Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: isTask
+                                      ? Colors.black38
+                                      : Colors.blueAccent,
+                                ),
+                                Text(
+                                  "Rotinas",
+                                  style: TextStyle(
+                                    color: isTask
+                                        ? Colors.black38
+                                        : Colors.blueAccent,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              backgroundColor: isTask
+                                  ? Colors.white
+                                  : Colors.transparent,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isTask = true;
+                              });
+                              if (isTask) {
+                                taskProvider.findAll();
+                              } else {
+                                routineProvider.findAll(refresh: true);
+                              }
+                            },
+                            child: Row(
+                              spacing: 16,
+                              children: [
+                                Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: isTask
+                                      ? Colors.blueAccent
+                                      : Colors.black38,
+                                ),
+                                Text(
+                                  "Tarefas",
+                                  style: TextStyle(
+                                    color: isTask
+                                        ? Colors.blueAccent
+                                        : Colors.black38,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 TextField(
                   controller: searchController,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
                     label: Text("Buscar por ${isTask ? 'Tarefa' : 'Rotina'}"),
                   ),
                 ),
