@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/components/app_navibar.dart';
 import 'package:mobile/providers/routine_provider.dart';
 import 'package:mobile/providers/task_provider.dart';
+import 'package:mobile/screens/library/components/routine_card.dart';
 import 'package:provider/provider.dart';
 
 class LibraryScreen extends StatefulWidget {
@@ -112,9 +113,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   void _onScroll() {
+    // chegou perto do fim (200px de margem)
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
-      // chegou perto do fim (200px de margem)
       if (isTask) {
         // context.read<TaskProvider>().loadMore();
       } else {
@@ -192,7 +193,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         if (isTask) {
                           taskProvider.findAll();
                         } else {
-                          routineProvider.findAll();
+                          routineProvider.findAll(refresh: true);
                         }
                       });
                     },
@@ -225,11 +226,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       itemCount: routineProvider.routines.length,
                       itemBuilder: (context, index) {
                         final r = routineProvider.routines[index];
-                        return SizedBox(
-                          height: 80,
-                          width: double.infinity,
-                          child: Card(child: Text(r.title)),
-                        );
+                        return RoutineCard(routine: r);
                       },
                     ),
             ),
