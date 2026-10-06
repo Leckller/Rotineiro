@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/models/routine.dart';
-import 'package:mobile/screens/app_screens.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mobile/models/task.dart';
 
-class RoutineCard extends StatelessWidget {
-  const RoutineCard({super.key, required this.routine});
+class TaskCard extends StatelessWidget {
+  const TaskCard({super.key, required this.task});
 
-  final Routine routine;
+  final Task task;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class RoutineCard extends StatelessWidget {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.yellow,
+                        color: Colors.blue,
                         borderRadius: BorderRadiusDirectional.all(
                           Radius.circular(8),
                         ),
@@ -41,7 +41,7 @@ class RoutineCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            routine.title,
+                            task.title,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -49,7 +49,7 @@ class RoutineCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "3 tarefas",
+                            task.description,
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ), // Tem que adicionar o vinculo com as tasks e dpois mudar aqui
                         ],
@@ -58,9 +58,10 @@ class RoutineCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(onPressed: () {
-                Navigator.of(context).pushNamed(Appscreens().routineDetails, arguments: routine);
-              }, icon: Icon(Icons.chevron_right, color: Colors.grey,)),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.chevron_right, color: Colors.grey),
+              ),
             ],
           ),
         ),

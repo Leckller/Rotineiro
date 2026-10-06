@@ -4,4 +4,6 @@ class Appscreens {
   final REGISTER = "/auth/register";
   final home = "/";
   final library = "/library";
+  final routineDetails = "/library/routine";
+  final taskDetails = "/library/task";
 }

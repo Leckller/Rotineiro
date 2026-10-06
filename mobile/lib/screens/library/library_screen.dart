@@ -3,6 +3,7 @@ import 'package:mobile/components/app_navibar.dart';
 import 'package:mobile/providers/routine_provider.dart';
 import 'package:mobile/providers/task_provider.dart';
 import 'package:mobile/screens/library/components/routine_card.dart';
+import 'package:mobile/screens/library/components/task_card.dart';
 import 'package:provider/provider.dart';
 
 class LibraryScreen extends StatefulWidget {
@@ -200,11 +201,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                               setState(() {
                                 isTask = false;
                               });
-                              if (isTask) {
-                                taskProvider.findAll();
-                              } else {
-                                routineProvider.findAll(refresh: true);
-                              }
+                              routineProvider.findAll(refresh: true);
                             },
                             child: Row(
                               spacing: 16,
@@ -242,11 +239,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                               setState(() {
                                 isTask = true;
                               });
-                              if (isTask) {
-                                taskProvider.findAll();
-                              } else {
-                                routineProvider.findAll(refresh: true);
-                              }
+                              taskProvider.findAll();
                             },
                             child: Row(
                               spacing: 16,
@@ -293,11 +286,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       itemCount: taskProvider.tasks.length,
                       itemBuilder: (context, index) {
                         final t = taskProvider.tasks[index];
-                        return SizedBox(
-                          height: 80,
-                          width: double.infinity,
-                          child: Card(child: Text(t.title)),
-                        );
+                        return TaskCard(task: t);
                       },
                     )
                   : ListView.builder(

@@ -9,6 +9,7 @@ import 'package:mobile/providers/task_provider.dart';
 import 'package:mobile/screens/app_screens.dart';
 import 'package:mobile/screens/auth/auth_gate.dart';
 import 'package:mobile/screens/library/library_screen.dart';
+import 'package:mobile/screens/routine/routine_details_screen.dart';
 import 'package:mobile/service/auth_service.dart';
 import 'package:mobile/service/routine_service.dart';
 import 'package:mobile/service/task_service.dart';
@@ -56,7 +57,8 @@ class MyApp extends StatelessWidget {
         ),
         home: const AuthGate(),
         routes: {
-          routes.library: (ctx) => LibraryScreen()
+          routes.library: (ctx) => LibraryScreen(),
+          routes.routineDetails: (ctx) => RoutineDetailsScreen()
         },
       ),
     );
