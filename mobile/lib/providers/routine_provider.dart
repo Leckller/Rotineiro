@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/models/query_result.dart';
 import 'package:mobile/models/routine.dart';
@@ -110,7 +111,11 @@ class RoutineProvider extends ChangeNotifier {
         if (description.isNotEmpty) routines[index].description = description;
       }
 
-    } catch (e) {
+    }
+    // on DioException catch (e) {
+    //   print(e.response?.data.toString());
+    // } 
+    catch (e) {
       error = 'Não foi possível atualizar a rotina';
     }
 

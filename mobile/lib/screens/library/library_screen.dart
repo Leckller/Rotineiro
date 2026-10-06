@@ -148,6 +148,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
     var taskProvider = Provider.of<TaskProvider>(context);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Sua biblioteca"),
+            Text("Tarefas & Rotinas", style: TextStyle(fontSize: 24)),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => _openTaskForm(context),
+            icon: Icon(Icons.add),
+          ),
+        ],
+      ),
       bottomNavigationBar: AppNavibar(
         currentRoute: ModalRoute.of(context)!.settings.name!,
       ),
@@ -156,21 +171,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
         child: Column(
           spacing: 16,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text("Sua biblioteca"),
-                    Text("Tarefas & Rotinas", style: TextStyle(fontSize: 24)),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () => _openTaskForm(context),
-                  icon: Icon(Icons.add),
-                ),
-              ],
-            ),
             Column(
               spacing: 16,
               children: [

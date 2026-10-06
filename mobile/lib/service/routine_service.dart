@@ -40,7 +40,9 @@ class RoutineService {
     String title = "",
     String description = "",
   }) async {
-    Map<String, dynamic> data = {"id": id};
+    Map<String, dynamic> data = {};
+
+    data['id'] = id;
 
     if (title.isNotEmpty) {
       data['title'] = title;
@@ -49,6 +51,7 @@ class RoutineService {
     if (description.isNotEmpty) {
       data['description'] = description;
     }
+    print(data.toString());
 
     await _dio.patch("/routines", data: data);
   }
