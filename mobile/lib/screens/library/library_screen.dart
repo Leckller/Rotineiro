@@ -152,14 +152,26 @@ class _LibraryScreenState extends State<LibraryScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Sua biblioteca"),
-            Text("Tarefas & Rotinas", style: TextStyle(fontSize: 24)),
+            Text("Sua biblioteca", style: TextStyle(color: Colors.grey, fontSize: 14),),
+            Text(
+              "Tarefas & Rotinas",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+            ),
           ],
         ),
         actions: [
           IconButton(
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onPressed: () => _openTaskForm(context),
-            icon: Icon(Icons.add),
+            icon: Container(
+              padding: EdgeInsetsGeometry.all(6),
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: BorderRadiusGeometry.all(Radius.circular(8)),
+              ),
+              child: Icon(Icons.add, color: Colors.white),
+            ),
           ),
         ],
       ),
