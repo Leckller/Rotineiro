@@ -42,6 +42,6 @@ class TaskService {
   }
 
   Future<void> delete(int id) async {
-    await _dio.delete("task/delete/$id");
+    await _dio.delete("/tasks/delete/$id");
   }
 }

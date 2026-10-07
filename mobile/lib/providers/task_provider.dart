@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/service/task_service.dart';
+import 'package:toastification/toastification.dart';
 
 class TaskProvider extends ChangeNotifier {
   TaskProvider({required this._service});
@@ -69,6 +70,12 @@ class TaskProvider extends ChangeNotifier {
       if (description.isNotEmpty) {
         tasks[index].description = description;
       }
+
+      toastification.show(
+        title: Text('Tarefa atualizada com sucesso'),
+        type: ToastificationType.success,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     } catch (e) {
       error = 'Não foi possível atualizar a tarefa';
     }
@@ -85,6 +92,11 @@ class TaskProvider extends ChangeNotifier {
     try {
       await _service.delete(id);
       tasks.removeWhere((r) => r.id == id);
+      toastification.show(
+        title: Text('Tarefa deletada com sucesso'),
+        type: ToastificationType.success,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     } catch (e) {
       error = 'Não foi possível deletar a tarefa';
     }

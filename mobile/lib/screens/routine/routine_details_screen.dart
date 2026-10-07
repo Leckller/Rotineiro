@@ -39,7 +39,7 @@ class _RoutineDetailsScreenState extends State<RoutineDetailsScreen> {
 
   Future<void> updateRoutine(int id) async {
     final p = context.read<RoutineProvider>();
-    
+
     await p.update(
       id: id,
       title: titleController.text,
@@ -47,11 +47,59 @@ class _RoutineDetailsScreenState extends State<RoutineDetailsScreen> {
     );
 
     if (!mounted) return;
-    
+
     if (p.error != null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(p.error!)));
+    }
+  }
+
+  Future<void> deleteTask() async {
+    final p = context.read<RoutineProvider>();
+
+    await p.delete(routine.id);
+
+    if (!mounted) return;
+
+    if (p.error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(p.error!)));
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text("Tem certeza que deseja apagar essa rotina?"),
+          content: Text("Esta ação é irreversível."),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: Text("Cancelar", style: TextStyle(color: Colors.white)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              child: Text("Confirmar", style: TextStyle(color: Colors.black)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      await deleteTask();
     }
   }
 
@@ -69,6 +117,17 @@ class _RoutineDetailsScreenState extends State<RoutineDetailsScreen> {
           "Editar Rotina",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                _confirmDelete();
+              },
+              icon: Icon(Icons.delete),
+            ),
+          ),
+        ],
       ),
       body: Container(
         padding: EdgeInsetsGeometry.all(8),

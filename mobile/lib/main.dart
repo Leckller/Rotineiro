@@ -16,6 +16,7 @@ import 'package:mobile/service/auth_service.dart';
 import 'package:mobile/service/routine_service.dart';
 import 'package:mobile/service/task_service.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   final storage = TokenStorage();
@@ -49,21 +50,23 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: routineProvider),
         ChangeNotifierProvider.value(value: taskProvider,)
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Rotineiro',
-        theme: ThemeData(
-          textTheme: GoogleFonts.firaSansTextTheme(),
-          colorScheme: .fromSeed(
-            seedColor: const Color.fromARGB(255, 89, 212, 199),
+      child: ToastificationWrapper(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Rotineiro',
+          theme: ThemeData(
+            textTheme: GoogleFonts.firaSansTextTheme(),
+            colorScheme: .fromSeed(
+              seedColor: const Color.fromARGB(255, 89, 212, 199),
+            ),
           ),
+          home: const AuthGate(),
+          routes: {
+            routes.library: (ctx) => LibraryScreen(),
+            routes.routineDetails: (ctx) => RoutineDetailsScreen(),
+            routes.taskDetails: (ctx) => TaskDetailsScreen()
+          },
         ),
-        home: const AuthGate(),
-        routes: {
-          routes.library: (ctx) => LibraryScreen(),
-          routes.routineDetails: (ctx) => RoutineDetailsScreen(),
-          routes.taskDetails: (ctx) => TaskDetailsScreen()
-        },
       ),
     );
   }

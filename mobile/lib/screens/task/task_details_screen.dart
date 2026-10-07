@@ -31,11 +31,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     initialized = true;
   }
 
-  Future<void> updateTask(int id) async {
+  Future<void> updateTask() async {
     final p = context.read<TaskProvider>();
 
     await p.update(
-      id: id,
+      id: task.id,
       title: titleController.text,
       description: descriptionController.text,
     );
@@ -46,6 +46,54 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(p.error!)));
+    }
+  }
+
+  Future<void> deleteTask() async {
+    final p = context.read<TaskProvider>();
+
+    await p.delete(task.id);
+
+    if (!mounted) return;
+
+    if (p.error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(p.error!)));
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text("Tem certeza que deseja apagar essa tarefa?"),
+          content: Text("Esta ação é irreversível."),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: Text("Cancelar", style: TextStyle(color: Colors.white)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              child: Text("Confirmar", style: TextStyle(color: Colors.black)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      await deleteTask();
     }
   }
 
@@ -94,6 +142,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           },
           icon: Icon(Icons.arrow_back),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                _confirmDelete();
+              },
+              icon: Icon(Icons.delete),
+            ),
+          ),
+        ],
         title: Text("Editar Tarefa"),
       ),
       body: Container(
@@ -168,7 +227,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      updateTask(task.id);
+                      updateTask();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),

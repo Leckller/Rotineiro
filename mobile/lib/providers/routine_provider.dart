@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/models/query_result.dart';
 import 'package:mobile/models/routine.dart';
 import 'package:mobile/service/routine_service.dart';
+import 'package:toastification/toastification.dart';
 
 class RoutineProvider extends ChangeNotifier {
   RoutineProvider({required this._service});
@@ -52,13 +53,12 @@ class RoutineProvider extends ChangeNotifier {
         page: page,
         pageSize: pageSize,
       );
-  
+
       routines = result.data;
       page = result.page;
       pageSize = result.pageSize;
       total = result.total;
       totalPages = result.totalPages;
-      
     } catch (e) {
       error = 'Não foi possível carregar os produtos';
     }
@@ -110,10 +110,15 @@ class RoutineProvider extends ChangeNotifier {
         if (description.isNotEmpty) routines[index].description = description;
       }
 
+      toastification.show(
+        title: Text('Rotina atualizada com sucesso'),
+        type: ToastificationType.success,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     }
     // on DioException catch (e) {
     //   print(e.response?.data.toString());
-    // } 
+    // }
     catch (e) {
       error = 'Não foi possível atualizar a rotina';
     }
@@ -130,6 +135,11 @@ class RoutineProvider extends ChangeNotifier {
     try {
       await _service.delete(id);
       routines.removeWhere((r) => r.id == id);
+      toastification.show(
+        title: Text('Rotina deletada com sucesso'),
+        type: ToastificationType.success,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     } catch (e) {
       error = 'Não foi possível deletar a rotina';
     }

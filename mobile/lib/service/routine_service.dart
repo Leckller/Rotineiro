@@ -51,12 +51,11 @@ class RoutineService {
     if (description.isNotEmpty) {
       data['description'] = description;
     }
-    print(data.toString());
 
     await _dio.patch("/routines", data: data);
   }
 
   Future<void> delete(int id) async {
-    await _dio.delete("routines/delete/$id");
+    await _dio.delete("/routines/delete/$id");
   }
 }
