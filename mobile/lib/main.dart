@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/core/api_client.dart';
 import 'package:mobile/core/auth_interceptor.dart';
 import 'package:mobile/core/token_storage.dart';
@@ -10,6 +11,7 @@ import 'package:mobile/screens/app_screens.dart';
 import 'package:mobile/screens/auth/auth_gate.dart';
 import 'package:mobile/screens/library/library_screen.dart';
 import 'package:mobile/screens/routine/routine_details_screen.dart';
+import 'package:mobile/screens/task/task_details_screen.dart';
 import 'package:mobile/service/auth_service.dart';
 import 'package:mobile/service/routine_service.dart';
 import 'package:mobile/service/task_service.dart';
@@ -51,6 +53,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Rotineiro',
         theme: ThemeData(
+          textTheme: GoogleFonts.firaSansTextTheme(),
           colorScheme: .fromSeed(
             seedColor: const Color.fromARGB(255, 89, 212, 199),
           ),
@@ -58,7 +61,8 @@ class MyApp extends StatelessWidget {
         home: const AuthGate(),
         routes: {
           routes.library: (ctx) => LibraryScreen(),
-          routes.routineDetails: (ctx) => RoutineDetailsScreen()
+          routes.routineDetails: (ctx) => RoutineDetailsScreen(),
+          routes.taskDetails: (ctx) => TaskDetailsScreen()
         },
       ),
     );

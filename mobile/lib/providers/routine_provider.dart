@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/models/query_result.dart';
 import 'package:mobile/models/routine.dart';

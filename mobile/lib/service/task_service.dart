@@ -6,7 +6,10 @@ class TaskService {
   final Dio _dio;
 
   Future<List<Task>> findAll({required int page, required int pageSize}) async {
-    final res = await _dio.get('/tasks', queryParameters: {"page": page, "pageSize": pageSize});
+    final res = await _dio.get(
+      '/tasks',
+      queryParameters: {"page": page, "pageSize": pageSize},
+    );
     return (res.data['data'] as List).map((j) => Task.fromJson(j)).toList();
   }
 
@@ -18,24 +21,27 @@ class TaskService {
     return res.data['taskID'] ?? 0;
   }
 
-  Future<void> update({required int id, String title = "", String description = ""}) async {
-    Map<String, dynamic> data = {
-      "id": id,
-    };
+  Future<void> update({
+    required int id,
+    String title = "",
+    String description = "",
+  }) async {
+    Map<String, dynamic> data = {};
 
-    if(title.isNotEmpty) {
+    data['id'] = id;
+
+    if (title.isNotEmpty) {
       data['title'] = title;
     }
-    
-    if(description.isNotEmpty) {
+
+    if (description.isNotEmpty) {
       data['description'] = description;
     }
 
-    await _dio.patch("/task", data: data); 
+    await _dio.patch("/tasks", data: data);
   }
 
   Future<void> delete(int id) async {
     await _dio.delete("task/delete/$id");
   }
-
 }

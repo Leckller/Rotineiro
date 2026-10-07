@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/screens/app_screens.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({super.key, required this.task});
@@ -59,7 +60,9 @@ class TaskCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Appscreens().taskDetails, arguments: task);
+                },
                 icon: Icon(Icons.chevron_right, color: Colors.grey),
               ),
             ],

@@ -13,8 +13,8 @@ class RoutineDetailsScreen extends StatefulWidget {
 class _RoutineDetailsScreenState extends State<RoutineDetailsScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  late Routine routine;
   bool initialized = false;
+  late Routine routine;
 
   @override
   void dispose() {
