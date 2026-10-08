@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class ExecutionScreen extends StatefulWidget {
@@ -8,16 +10,44 @@ class ExecutionScreen extends StatefulWidget {
 }
 
 class _ExecutionScreenState extends State<ExecutionScreen> {
-  bool play = false;
+  Timer? _timer;
+  int _segundos = 0;
 
-  void togglePlay() {
-    setState(() {
-      play = !play;
+  bool get _rodando => _timer?.isActive ?? false;
+
+  void _iniciar() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() => _segundos++);
     });
+    setState(() {});
+  }
+
+  void _pausar() {
+    _timer?.cancel();
+    setState(() {});
+  }
+
+  void _zerar() {
+    _timer?.cancel();
+    setState(() => _segundos = 0);
+  }
+
+  String _formatar(int total) {
+    final h = (total ~/ 3600).toString().padLeft(2, '0');
+    final m = ((total % 3600) ~/ 60).toString().padLeft(2, '0');
+    final s = (total % 60).toString().padLeft(2, '0');
+    return '$h:$m:$s';
   }
 
   void nextTask() {
     // Validar se é a última, caso contrário salvar a data de conclusão no backe ir para a próxima tarefa.
+    _zerar();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
   }
 
   @override
@@ -26,7 +56,13 @@ class _ExecutionScreenState extends State<ExecutionScreen> {
       appBar: AppBar(
         leading: IconButton(
           style: IconButton.styleFrom(backgroundColor: Colors.blueAccent),
-          onPressed: () {},
+          onPressed: () {
+            // Chamar uma requisição para pausar no backend e o usuário poder voltar dpois
+            // lembrando que caso ele volte no dia seguinte deve exibir um modal informando isso e perguntando
+            // se quer salvar o que tinha sido feito no histórico e reiniciar a rotina! essa "validação" vai ficar
+            // aq no cliente
+            Navigator.of(context).pop();
+          },
           icon: Icon(Icons.close, color: Colors.white),
         ),
         title: Text("Titulo da tarefa"),
@@ -35,8 +71,8 @@ class _ExecutionScreenState extends State<ExecutionScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           SizedBox(
-            width: 150,
-            height: 150,
+            width: 200,
+            height: 200,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -50,7 +86,7 @@ class _ExecutionScreenState extends State<ExecutionScreen> {
                   ),
                 ),
                 Text(
-                  '00:00',
+                  _formatar(_segundos),
                   style: TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -88,10 +124,8 @@ class _ExecutionScreenState extends State<ExecutionScreen> {
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: IconButton(
-                  onPressed: () {
-                    togglePlay();
-                  },
-                  icon: Icon(play ? Icons.pause : Icons.play_arrow),
+                  onPressed: _rodando ? _pausar : _iniciar,
+                  icon: Icon(_rodando ? Icons.pause : Icons.play_arrow),
                 ),
               ),
               Container(
