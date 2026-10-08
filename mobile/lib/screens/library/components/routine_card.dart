@@ -21,19 +21,31 @@ class RoutineCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Row(
-                  spacing: 24,
+                  spacing: 16,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.yellow,
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadiusDirectional.all(
-                          Radius.circular(8),
+                          Radius.circular(100),
                         ),
                       ),
-                      child: Icon(Icons.sunny),
+                      child: IconButton(
+                        icon: Icon(Icons.play_arrow, color: Colors.white,),
+                        onPressed: () {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Appscreens().execution, arguments: routine);
+                        },
+                      ),
+                    ),
+                    Container(
+                      color: Colors.black12,
+                      width: 1,
+                      height: 50,
                     ),
                     Expanded(
                       child: Column(
@@ -58,9 +70,14 @@ class RoutineCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(onPressed: () {
-                Navigator.of(context).pushNamed(Appscreens().routineDetails, arguments: routine);
-              }, icon: Icon(Icons.chevron_right, color: Colors.grey,)),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(
+                    context,
+                  ).pushNamed(Appscreens().routineDetails, arguments: routine);
+                },
+                icon: Icon(Icons.chevron_right, color: Colors.grey),
+              ),
             ],
           ),
         ),
