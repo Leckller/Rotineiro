@@ -12,6 +12,7 @@ type Repository interface {
 	FindAllByUser(userID uint, page, pageSize int) ([]Task, int64, error)
 	Update(userID uint, task *Task) (int64, error)
 	Delete(userID uint, task *Task) (int64, error)
+	CreateEvent(taskEvent *TaskEvent) error
 }
 
 type repository struct {
@@ -61,6 +62,16 @@ func (r *repository) FindAllByUser(userID uint, page, pageSize int) ([]Task, int
 	return tasks, total, nil
 
 }
+
+func (r *repository) CreateEvent(taskEvent *TaskEvent) error {
+
+	return r.db.Create(taskEvent).Error
+
+}
+
+// func (r *repository) ConvertHistory(tasks []Task) {
+
+// }
 
 func (r *repository) Update(userID uint, task *Task) (int64, error) {
 

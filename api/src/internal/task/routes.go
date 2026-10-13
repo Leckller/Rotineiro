@@ -8,7 +8,9 @@ func RegisterRoutes(rg *gin.RouterGroup, h Handler) {
 	rg.GET("/tasks", h.FindAllByUser)
 	rg.POST("/tasks", h.Create)
 	rg.PATCH("/tasks", h.Update)
-	rg.PATCH("/tasks/start/:taskID", h.StartTask)
-	rg.PATCH("/tasks/complete/:taskID", h.CompleteTask)
 	rg.DELETE("/tasks/delete/:taskID", h.Delete)
+	rg.PATCH("/tasks/start/:taskID", h.CreateEvent(TaskEventStart))
+	rg.PATCH("/tasks/complete/:taskID", h.CreateEvent(TaskEventCompleted))
+	rg.PATCH("/tasks/pause/:taskID", h.CreateEvent(TaskEventPause))
+	rg.PATCH("/tasks/resume/:taskID", h.CreateEvent(TaskEventResume))
 }

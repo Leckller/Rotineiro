@@ -18,6 +18,7 @@ type Service interface {
 		page,
 		pageSize int,
 	) ([]Task, utils.PaginationMeta, error)
+	CreateEvent(userID, taskID uint, eventString string) error
 }
 
 type service struct {
@@ -152,21 +153,33 @@ func (s *service) StartTask(userID, taskID uint) error {
 
 func (s *service) CompleteTask(userID, taskID uint) error {
 
-	now := time.Now()
-	var task Task = Task{
-		CompletedAt: &now,
+	var taskEvent = TaskEvent{
+		EventType: TaskEventCompleted,
+		TaskId:    taskID,
 	}
-	task.ID = taskID
 
-	rowsAffected, err := s.repository.Update(userID, &task)
+	err := s.repository.CreateEvent(&taskEvent)
 
 	if err != nil {
 		return err
 	}
 
-	if rowsAffected <= 0 {
-		return ErrTaskNotFound
+	return nil
+}
+
+func (s *service) CreateEvent(userID, taskID uint, eventString string) error {
+
+	var taskEvent = TaskEvent{
+		EventType: eventString,
+		TaskId:    taskID,
+	}
+
+	err := s.repository.CreateEvent(&taskEvent)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
+
 }
