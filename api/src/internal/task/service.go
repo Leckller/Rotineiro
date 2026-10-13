@@ -174,7 +174,17 @@ func (s *service) CreateEvent(userID, taskID uint, eventString string) error {
 		TaskId:    taskID,
 	}
 
-	err := s.repository.CreateEvent(&taskEvent)
+	task, err := s.repository.FindByID(taskID)
+
+	if err != nil {
+		return ErrTaskNotFound
+	}
+
+	if task.UserID != userID {
+		return ErrTaskUnauthorized
+	}
+
+	err = s.repository.CreateEvent(&taskEvent)
 
 	if err != nil {
 		return err

@@ -240,6 +240,12 @@ func (h *handler) CreateEvent(event string) gin.HandlerFunc {
 				})
 				return
 			}
+			if errors.Is(err, ErrTaskUnauthorized) {
+				ctx.JSON(http.StatusUnauthorized, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
 
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "internal server error",

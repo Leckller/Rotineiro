@@ -21,6 +21,7 @@ func main() {
 
 	err := db.AutoMigrate(
 		&task.Task{},
+		&task.TaskEvent{},
 		&user.User{},
 		&history.History{},
 		&routine.Routine{},
