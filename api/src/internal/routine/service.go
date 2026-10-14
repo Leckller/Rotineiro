@@ -14,6 +14,7 @@ type Service interface {
 	FindAllByUser(userID uint, page, pageSize int) ([]Routine, utils.PaginationMeta, error)
 	Update(userID uint, updateDTO UpdateRoutineDTO) error
 	Delete(userID, routineID uint) error
+	FindByID(userID, routineID uint) (*Routine, error)
 }
 
 type service struct {
@@ -24,6 +25,25 @@ func NewService(repository Repository) Service {
 	return &service{
 		repository: repository,
 	}
+}
+
+func (s *service) FindByID(userID, routineID uint) (*Routine, error) {
+
+	routine, err := s.repository.FindByID(routineID)
+
+	if err != nil {
+		if routine == nil {
+			return nil, ErrRoutineNotFound
+		}
+		return nil, err
+	}
+
+	if routine.UserID != userID {
+		return nil, ErrRoutineNotFound
+	}
+
+	return routine, nil
+
 }
 
 func (s *service) FindAllByUser(userID uint, page, pageSize int) ([]Routine, utils.PaginationMeta, error) {

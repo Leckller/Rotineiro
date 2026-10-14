@@ -1,11 +1,16 @@
 
+GET http://localhost:8080/v1/routines/51 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
+
+###
+
 GET http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 
 ###
 
 POST http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 content-type: application/json
 
 {
@@ -16,7 +21,7 @@ content-type: application/json
 ###
 
 PATCH http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 content-type: application/json
 
 {
@@ -27,14 +32,14 @@ content-type: application/json
 ###
 
 PATCH http://localhost:8080/v1/routines/start/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 
 ###
 
 PATCH http://localhost:8080/v1/routines/complete/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 
 ###
 
 DELETE http://localhost:8080/v1/routines/delete/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI

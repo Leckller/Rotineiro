@@ -13,6 +13,6 @@ type Routine struct {
 	Description string
 	StartedAt   *time.Time
 	CompletedAt *time.Time
-	tasks       []task.Task `gorm:"many2many:routine_tasks;"`
+	Tasks       []task.Task `gorm:"many2many:routine_tasks;"`
 	UserID      uint        `gorm:"uniqueIndex:idx_routine_user_title"`
 }

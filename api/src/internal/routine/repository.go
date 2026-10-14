@@ -11,6 +11,7 @@ type Repository interface {
 	FindAllByUser(userID uint, page, pageSize int) ([]Routine, int64, error)
 	Update(userID uint, routine *Routine) (int64, error)
 	Delete(userID uint, routine *Routine) (int64, error)
+	FindByID(routineID uint) (*Routine, error)
 }
 
 type repository struct {
@@ -25,6 +26,18 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (r *repository) Create(routine *Routine) error {
 	return r.db.Create(routine).Error
+}
+
+func (r *repository) FindByID(routineID uint) (*Routine, error) {
+
+	var routine Routine
+
+	if err := r.db.Model(&Routine{}).Preload("Tasks").First(&routine, routineID).Error; err != nil {
+		return nil, err
+	}
+
+	return &routine, nil
+
 }
 
 func (r *repository) FindAllByUser(userID uint, page, pageSize int) ([]Routine, int64, error) {
