@@ -222,61 +222,39 @@ func (s *service) CompleteRotuine(userID, routineID uint) error {
 	// task.TaskEventPause
 	// task.TaskEventResume
 
-	for i := 0; i < len(curRoutine.Tasks); i++ {
-
-		curTask := curRoutine.Tasks[i]
-		initTime := time.Now()
+	for _, curTask := range curRoutine.Tasks {
 		var activeTime time.Duration
 		var inactiveTime time.Duration
 
-		for j := range curTask.TaskEvents {
-			curEvent := curTask.TaskEvents[j]
+		now := time.Now()
 
-			if curEvent.EventType == task.TaskEventSkip {
+		for j, curEvent := range curTask.TaskEvents {
+			var endTime time.Time
 
-				continue
-
-			} else if curEvent.EventType == task.TaskEventStart {
-
-				if j == len(curTask.TaskEvents)-1 { // evento atual é o último
-
-					if curTask.FinishedAt != nil {
-						period := curTask.FinishedAt.Sub(curEvent.CreatedAt)
-						activeTime += period
-					} else {
-						period := initTime.Sub(curEvent.CreatedAt)
-						activeTime += period
-					}
-					continue
-
-				}
-
-				nextEvent := curTask.TaskEvents[(j + 1)]
-				period := nextEvent.CreatedAt.Sub(curEvent.CreatedAt)
-				activeTime += period
-
-			} else if curEvent.EventType == task.TaskEventPause {
-
-				if j == len(curTask.TaskEvents)-1 { // evento atual é o último
-
-					if curTask.FinishedAt != nil {
-						period := curTask.FinishedAt.Sub(curEvent.CreatedAt)
-						inactiveTime += period
-					} else {
-						period := initTime.Sub(curEvent.CreatedAt)
-						inactiveTime += period
-					}
-
-					continue
-
-				}
-
-				nextEvent := curTask.TaskEvents[(j + 1)]
-				period := nextEvent.CreatedAt.Sub(curEvent.CreatedAt)
-				inactiveTime += period
-
+			if j+1 < len(curTask.TaskEvents) {
+				endTime = curTask.TaskEvents[j+1].CreatedAt
+			} else if curTask.FinishedAt != nil {
+				endTime = *curTask.FinishedAt
+			} else {
+				endTime = now
 			}
 
+			period := endTime.Sub(curEvent.CreatedAt)
+
+			if period < 0 {
+				continue
+			}
+
+			switch curEvent.EventType {
+			case task.TaskEventStart:
+				activeTime += period
+
+			case task.TaskEventPause:
+				inactiveTime += period
+
+			case task.TaskEventSkip:
+				continue
+			}
 		}
 
 	}
