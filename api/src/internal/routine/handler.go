@@ -1,6 +1,7 @@
 package routine
 
 import (
+	"api/src/internal/task"
 	"api/src/utils"
 	"errors"
 	"io"
@@ -18,6 +19,8 @@ type Handler interface {
 	StartRoutine(ctx *gin.Context)
 	CompleteRoutine(ctx *gin.Context)
 	FindByID(ctx *gin.Context)
+	DeleteTaskFromRoutine(ctx *gin.Context)
+	AddTaskToRoutine(ctx *gin.Context)
 }
 
 type handler struct {
@@ -208,8 +211,6 @@ func (h *handler) Update(ctx *gin.Context) {
 			return
 		}
 
-		print(err.Error())
-
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "internal server error",
 		})
@@ -241,7 +242,89 @@ func (h *handler) Delete(ctx *gin.Context) {
 			return
 		}
 
-		print(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+
+}
+
+func (h *handler) AddTaskToRoutine(ctx *gin.Context) {
+
+	routineID, err := strconv.Atoi(ctx.Param("routineID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrRoutineBadRequest})
+	}
+
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrRoutineBadRequest})
+	}
+
+	userID := ctx.GetUint("userID")
+
+	if err = h.service.AddTaskToRoutine(userID, uint(routineID), uint(taskID)); err != nil {
+		if errors.Is(err, ErrRoutineNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if errors.Is(err, task.ErrTaskNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+
+		return
+	}
+
+	ctx.Status(http.StatusCreated)
+
+}
+
+func (h *handler) DeleteTaskFromRoutine(ctx *gin.Context) {
+
+	routineID, err := strconv.Atoi(ctx.Param("routineID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrRoutineBadRequest})
+	}
+
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrRoutineBadRequest})
+	}
+
+	userID := ctx.GetUint("userID")
+
+	if err = h.service.DeleteTaskFromRoutine(userID, uint(routineID), uint(taskID)); err != nil {
+		if errors.Is(err, ErrRoutineNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if errors.Is(err, task.ErrTaskNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "internal server error",
 		})
@@ -272,7 +355,6 @@ func (h *handler) StartRoutine(ctx *gin.Context) {
 			})
 			return
 		}
-		print(err.Error())
 
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "internal server error",

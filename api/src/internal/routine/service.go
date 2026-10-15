@@ -2,6 +2,7 @@ package routine
 
 import (
 	"api/src/internal/database"
+	"api/src/internal/task"
 	"api/src/utils"
 	"math"
 	"time"
@@ -15,15 +16,19 @@ type Service interface {
 	Update(userID uint, updateDTO UpdateRoutineDTO) error
 	Delete(userID, routineID uint) error
 	FindByID(userID, routineID uint) (*Routine, error)
+	AddTaskToRoutine(userID, routineID, taskID uint) error
+	DeleteTaskFromRoutine(userID, routineID, taskID uint) error
 }
 
 type service struct {
-	repository Repository
+	repository  Repository
+	taskService task.Service
 }
 
-func NewService(repository Repository) Service {
+func NewService(repository Repository, taskService task.Service) Service {
 	return &service{
-		repository: repository,
+		repository:  repository,
+		taskService: taskService,
 	}
 }
 
@@ -32,10 +37,11 @@ func (s *service) FindByID(userID, routineID uint) (*Routine, error) {
 	routine, err := s.repository.FindByID(routineID)
 
 	if err != nil {
-		if routine == nil {
-			return nil, ErrRoutineNotFound
-		}
 		return nil, err
+	}
+
+	if routine == nil {
+		return nil, ErrRoutineNotFound
 	}
 
 	if routine.UserID != userID {
@@ -43,6 +49,42 @@ func (s *service) FindByID(userID, routineID uint) (*Routine, error) {
 	}
 
 	return routine, nil
+
+}
+
+func (s *service) AddTaskToRoutine(userID, routineID, taskID uint) error {
+
+	resultTask, err := s.taskService.FindByID(userID, taskID)
+
+	if err != nil {
+		return err
+	}
+
+	resultRoutine, err := s.FindByID(userID, routineID)
+
+	if err != nil {
+		return err
+	}
+
+	return s.repository.AddTaskToRoutine(*resultRoutine, *resultTask)
+
+}
+
+func (s *service) DeleteTaskFromRoutine(userID, routineID, taskID uint) error {
+
+	resultTask, err := s.taskService.FindByID(userID, taskID)
+
+	if err != nil {
+		return err
+	}
+
+	resultRoutine, err := s.FindByID(userID, routineID)
+
+	if err != nil {
+		return err
+	}
+
+	return s.repository.DeleteTaskFromRoutine(*resultRoutine, *resultTask)
 
 }
 

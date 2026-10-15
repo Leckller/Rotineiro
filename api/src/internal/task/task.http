@@ -1,6 +1,6 @@
 
 GET http://localhost:8080/v1/tasks HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTE5NzU0NjEsInVzZXJJRCI6MX0.gbEcGFcA_N9uCc_FgBk79d0orpmNpU59vlLL-HYMV44
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxMDE3ODQsInVzZXJJRCI6MX0.OOgvBVFuUwB2idrT_LR-lKVYSoO43PJqnzukKozCgtI
 
 ###
 

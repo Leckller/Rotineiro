@@ -18,6 +18,7 @@ type Service interface {
 		page,
 		pageSize int,
 	) ([]Task, utils.PaginationMeta, error)
+	FindByID(userID, taskID uint) (*Task, error)
 	CreateEvent(userID, taskID uint, eventString string) error
 }
 
@@ -49,6 +50,26 @@ func (s *service) Create(userID uint, createDTO CreateTaskDTO) (uint, error) {
 	}
 
 	return task.ID, nil
+
+}
+
+func (s *service) FindByID(userID, taskID uint) (*Task, error) {
+
+	task, err := s.repository.FindByID(taskID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if task == nil {
+		return nil, ErrTaskNotFound
+	}
+
+	if task.UserID != userID {
+		return nil, ErrTaskNotFound
+	}
+
+	return task, nil
 
 }
 

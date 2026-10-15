@@ -1,6 +1,7 @@
 package routine
 
 import (
+	"api/src/internal/task"
 	"api/src/utils"
 
 	"gorm.io/gorm"
@@ -12,6 +13,8 @@ type Repository interface {
 	Update(userID uint, routine *Routine) (int64, error)
 	Delete(userID uint, routine *Routine) (int64, error)
 	FindByID(routineID uint) (*Routine, error)
+	AddTaskToRoutine(routine Routine, task task.Task) error
+	DeleteTaskFromRoutine(routine Routine, task task.Task) error
 }
 
 type repository struct {
@@ -38,6 +41,20 @@ func (r *repository) FindByID(routineID uint) (*Routine, error) {
 
 	return &routine, nil
 
+}
+
+func (r *repository) AddTaskToRoutine(routine Routine, task task.Task) error {
+	return r.db.
+		Model(&routine).
+		Association("Tasks").
+		Append(&task)
+}
+
+func (r *repository) DeleteTaskFromRoutine(routine Routine, task task.Task) error {
+	return r.db.
+		Model(&routine).
+		Association("Tasks").
+		Delete(&task)
 }
 
 func (r *repository) FindAllByUser(userID uint, page, pageSize int) ([]Routine, int64, error) {
