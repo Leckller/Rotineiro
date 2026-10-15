@@ -15,6 +15,7 @@ type Repository interface {
 	FindByID(routineID uint) (*Routine, error)
 	AddTaskToRoutine(routine Routine, task task.Task) error
 	DeleteTaskFromRoutine(routine Routine, task task.Task) error
+	FindByIDWithEvents(routineID *uint) (*Routine, error)
 }
 
 type repository struct {
@@ -41,6 +42,20 @@ func (r *repository) FindByID(routineID uint) (*Routine, error) {
 
 	return &routine, nil
 
+}
+
+func (r *repository) FindByIDWithEvents(routineID *uint) (*Routine, error) { // ORDENAR EVENTOS POR CREATED_AT
+	var routine Routine
+
+	if err := r.db.
+		Preload("Tasks").
+		Preload("Tasks.TaskEvents").
+		First(&routine, routineID).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return &routine, nil
 }
 
 func (r *repository) AddTaskToRoutine(routine Routine, task task.Task) error {

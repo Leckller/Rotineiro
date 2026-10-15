@@ -2,7 +2,6 @@ package main
 
 import (
 	"api/src/internal/database"
-	"api/src/internal/history"
 	"api/src/internal/routine"
 	"api/src/internal/task"
 	"api/src/internal/user"
@@ -20,12 +19,13 @@ func main() {
 	db := database.Connect("app.db")
 
 	err := db.AutoMigrate(
+		&user.User{},
 		&task.Task{},
 		&task.TaskEvent{},
-		&user.User{},
-		&history.History{},
 		&routine.Routine{},
+		&routine.RoutineHistory{},
 	)
+
 	if err != nil {
 		panic(err)
 	}

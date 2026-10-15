@@ -201,21 +201,86 @@ func (s *service) StartRotuine(userID, routineID uint) error {
 
 func (s *service) CompleteRotuine(userID, routineID uint) error {
 
-	now := time.Now()
-	var routine Routine = Routine{
-		CompletedAt: &now,
-	}
-	routine.ID = routineID
-
-	rowsAffected, err := s.repository.Update(userID, &routine)
+	curRoutine, err := s.repository.FindByIDWithEvents(&routineID)
 
 	if err != nil {
 		return err
 	}
 
-	if rowsAffected <= 0 {
+	if curRoutine == nil {
 		return ErrRoutineNotFound
 	}
 
+	if curRoutine.UserID != userID {
+		return ErrRoutineUnauthorized
+	}
+
+	if curRoutine.StartedAt == nil {
+		return ErrRoutineNotStarted
+	}
+
+	// task.TaskEventPause
+	// task.TaskEventResume
+
+	for i := 0; i < len(curRoutine.Tasks); i++ {
+
+		curTask := curRoutine.Tasks[i]
+		initTime := time.Now()
+		var activeTime time.Duration
+		var inactiveTime time.Duration
+
+		for j := range curTask.TaskEvents {
+			curEvent := curTask.TaskEvents[j]
+
+			if curEvent.EventType == task.TaskEventSkip {
+
+				continue
+
+			} else if curEvent.EventType == task.TaskEventStart {
+
+				if j == len(curTask.TaskEvents)-1 { // evento atual é o último
+
+					if curTask.FinishedAt != nil {
+						period := curTask.FinishedAt.Sub(curEvent.CreatedAt)
+						activeTime += period
+					} else {
+						period := initTime.Sub(curEvent.CreatedAt)
+						activeTime += period
+					}
+					continue
+
+				}
+
+				nextEvent := curTask.TaskEvents[(j + 1)]
+				period := nextEvent.CreatedAt.Sub(curEvent.CreatedAt)
+				activeTime += period
+
+			} else if curEvent.EventType == task.TaskEventPause {
+
+				if j == len(curTask.TaskEvents)-1 { // evento atual é o último
+
+					if curTask.FinishedAt != nil {
+						period := curTask.FinishedAt.Sub(curEvent.CreatedAt)
+						inactiveTime += period
+					} else {
+						period := initTime.Sub(curEvent.CreatedAt)
+						inactiveTime += period
+					}
+
+					continue
+
+				}
+
+				nextEvent := curTask.TaskEvents[(j + 1)]
+				period := nextEvent.CreatedAt.Sub(curEvent.CreatedAt)
+				inactiveTime += period
+
+			}
+
+		}
+
+	}
+
 	return nil
+
 }

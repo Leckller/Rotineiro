@@ -9,6 +9,7 @@ import (
 var (
 	TaskEventStart     = "start"
 	TaskEventPause     = "pause"
+	TaskEventSkip      = "skip"
 	TaskEventResume    = "resume"
 	TaskEventCompleted = "completed"
 )
@@ -18,14 +19,14 @@ type Task struct {
 	Title       string `gorm:"uniqueIndex:idx_tasks_user_title"`
 	Description string
 	StartedAt   *time.Time
-	CompletedAt *time.Time
+	FinishedAt  *time.Time
 	TaskEvents  []TaskEvent
 	UserID      uint `gorm:"uniqueIndex:idx_tasks_user_title"`
 }
 
 type TaskEvent struct {
 	gorm.Model
-	EventType string // start, pause, finished
+	EventType string // pause, resume
 	TaskId    uint
 }
 
@@ -34,7 +35,7 @@ type TaskHistory struct {
 	Title             string
 	Description       string
 	StartedAt         *time.Time
-	CompletedAt       *time.Time
+	FinishedAt        *time.Time
 	TotalTimeActive   *time.Time
 	TotalTimeInactive *time.Time
 }
