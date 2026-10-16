@@ -17,7 +17,7 @@ type Handler interface {
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 	StartRoutine(ctx *gin.Context)
-	CompleteRoutine(ctx *gin.Context)
+	FinishRoutine(ctx *gin.Context)
 	FindByID(ctx *gin.Context)
 	DeleteTaskFromRoutine(ctx *gin.Context)
 	AddTaskToRoutine(ctx *gin.Context)
@@ -366,8 +366,7 @@ func (h *handler) StartRoutine(ctx *gin.Context) {
 
 }
 
-// ALTERAR ISSO AQUI DEVE SALVAR A ROTINA NO HISTÓRICO E RESETAR NA TABELA
-func (h *handler) CompleteRoutine(ctx *gin.Context) {
+func (h *handler) FinishRoutine(ctx *gin.Context) {
 
 	routineID, err := strconv.Atoi(ctx.Param("routineID"))
 
@@ -378,7 +377,7 @@ func (h *handler) CompleteRoutine(ctx *gin.Context) {
 
 	userID := ctx.GetUint("userID")
 
-	err = h.service.CompleteRotuine(userID, uint(routineID))
+	err = h.service.FinishRotuine(userID, uint(routineID))
 
 	if err != nil {
 		if errors.Is(err, ErrRoutineNotFound) {
@@ -388,6 +387,21 @@ func (h *handler) CompleteRoutine(ctx *gin.Context) {
 			return
 		}
 
+		if errors.Is(err, ErrRoutineUnauthorized) {
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if errors.Is(err, ErrRoutineNotStarted) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		print(err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "internal server error",
 		})

@@ -21,8 +21,8 @@ type RoutineHistory struct {
 	Title             string
 	Description       string
 	StartedAt         *time.Time
-	TotalTimeActive   *time.Time
-	TotalTimeInactive *time.Time
-	Tasks             []task.TaskHistory `gorm:"many2many:routine_tasks;"`
+	TotalTimeActive   *time.Duration
+	TotalTimeInactive *time.Duration
+	Tasks             []task.TaskHistory `gorm:"foreignKey:RoutineHistoryID"`
 	UserID            uint
 }

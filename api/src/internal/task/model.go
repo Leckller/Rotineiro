@@ -36,6 +36,7 @@ type TaskHistory struct {
 	Description       string
 	StartedAt         *time.Time
 	FinishedAt        *time.Time
-	TotalTimeActive   *time.Time
-	TotalTimeInactive *time.Time
+	TotalTimeActive   *time.Duration
+	TotalTimeInactive *time.Duration
+	RoutineHistoryID  uint
 }

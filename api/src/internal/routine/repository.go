@@ -13,9 +13,10 @@ type Repository interface {
 	Update(userID uint, routine *Routine) (int64, error)
 	Delete(userID uint, routine *Routine) (int64, error)
 	FindByID(routineID uint) (*Routine, error)
+	FindByIDWithEvents(routineID uint) (*Routine, error)
 	AddTaskToRoutine(routine Routine, task task.Task) error
 	DeleteTaskFromRoutine(routine Routine, task task.Task) error
-	FindByIDWithEvents(routineID *uint) (*Routine, error)
+	CreateHistory(routine *Routine, history *RoutineHistory) error
 }
 
 type repository struct {
@@ -44,18 +45,57 @@ func (r *repository) FindByID(routineID uint) (*Routine, error) {
 
 }
 
-func (r *repository) FindByIDWithEvents(routineID *uint) (*Routine, error) { // ORDENAR EVENTOS POR CREATED_AT
+func (r *repository) FindByIDWithEvents(routineID uint) (*Routine, error) {
 	var routine Routine
 
 	if err := r.db.
 		Preload("Tasks").
-		Preload("Tasks.TaskEvents").
+		Preload("Tasks.TaskEvents", func(db *gorm.DB) *gorm.DB {
+			return db.Order("created_at ASC")
+		}).
 		First(&routine, routineID).
 		Error; err != nil {
 		return nil, err
 	}
 
 	return &routine, nil
+}
+
+func (r *repository) CreateHistory(routine *Routine, history *RoutineHistory) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Create(history).Error; err != nil {
+			return err
+		}
+
+		for _, t := range routine.Tasks {
+
+			if err := tx.Where(
+				"task_id = ?", t.ID,
+			).Delete(&task.TaskEvent{}).Error; err != nil {
+				return err
+			}
+
+			if err := tx.Model(&task.Task{}).
+				Where("id = ?", t.ID).
+				Updates(map[string]interface{}{
+					"started_at":  nil,
+					"finished_at": nil,
+				}).Error; err != nil {
+				return err
+			}
+
+		}
+
+		if err := tx.Model(&Routine{}).
+			Where("id = ?", routine.ID).
+			Update("started_at", nil).Error; err != nil {
+			return err
+		}
+
+		return nil
+
+	})
 }
 
 func (r *repository) AddTaskToRoutine(routine Routine, task task.Task) error {

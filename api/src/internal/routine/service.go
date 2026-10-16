@@ -10,7 +10,7 @@ import (
 
 type Service interface {
 	StartRotuine(userID, routineID uint) error
-	CompleteRotuine(userID, routineID uint) error
+	FinishRotuine(userID, routineID uint) error
 	Create(userID uint, createDTO CreateRoutineDTO) (uint, error)
 	FindAllByUser(userID uint, page, pageSize int) ([]Routine, utils.PaginationMeta, error)
 	Update(userID uint, updateDTO UpdateRoutineDTO) error
@@ -199,9 +199,9 @@ func (s *service) StartRotuine(userID, routineID uint) error {
 	return nil
 }
 
-func (s *service) CompleteRotuine(userID, routineID uint) error {
+func (s *service) FinishRotuine(userID, routineID uint) error {
 
-	curRoutine, err := s.repository.FindByIDWithEvents(&routineID)
+	curRoutine, err := s.repository.FindByIDWithEvents(routineID)
 
 	if err != nil {
 		return err
@@ -219,16 +219,29 @@ func (s *service) CompleteRotuine(userID, routineID uint) error {
 		return ErrRoutineNotStarted
 	}
 
-	// task.TaskEventPause
-	// task.TaskEventResume
+	totalActive := time.Duration(0)
+	totalInactive := time.Duration(0)
+
+	var routineHistory *RoutineHistory = &RoutineHistory{
+		Title:             curRoutine.Title,
+		Description:       curRoutine.Description,
+		StartedAt:         curRoutine.StartedAt,
+		TotalTimeActive:   &totalActive,
+		TotalTimeInactive: &totalInactive,
+		UserID:            userID,
+	}
 
 	for _, curTask := range curRoutine.Tasks {
-		var activeTime time.Duration
-		var inactiveTime time.Duration
+		var activeTime time.Duration = *new(time.Duration)
+		var inactiveTime time.Duration = *new(time.Duration)
 
 		now := time.Now()
 
 		for j, curEvent := range curTask.TaskEvents {
+			if curEvent.EventType == task.TaskEventSkip {
+				continue
+			}
+
 			var endTime time.Time
 
 			if j+1 < len(curTask.TaskEvents) {
@@ -251,14 +264,29 @@ func (s *service) CompleteRotuine(userID, routineID uint) error {
 
 			case task.TaskEventPause:
 				inactiveTime += period
-
-			case task.TaskEventSkip:
-				continue
 			}
 		}
 
+		finishedAt := now
+		if curTask.FinishedAt != nil {
+			finishedAt = *curTask.FinishedAt
+		}
+
+		var taskHistory task.TaskHistory = task.TaskHistory{
+			Title:             curTask.Title,
+			Description:       curTask.Description,
+			StartedAt:         curTask.StartedAt,
+			FinishedAt:        &finishedAt,
+			TotalTimeActive:   &activeTime,
+			TotalTimeInactive: &inactiveTime,
+		}
+
+		routineHistory.Tasks = append(routineHistory.Tasks, taskHistory)
+		*routineHistory.TotalTimeActive += activeTime
+		*routineHistory.TotalTimeInactive += inactiveTime
+
 	}
 
-	return nil
+	return s.repository.CreateHistory(curRoutine, routineHistory)
 
 }
