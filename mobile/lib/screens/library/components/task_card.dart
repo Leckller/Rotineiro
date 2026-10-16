@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/screens/app_screens.dart';
 
@@ -22,20 +21,28 @@ class TaskCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Row(
-                  spacing: 24,
+                  spacing: 16,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadiusDirectional.all(
-                          Radius.circular(8),
+                          Radius.circular(100),
                         ),
                       ),
-                      child: Icon(Icons.sunny),
+                      child: IconButton(
+                        icon: Icon(Icons.play_arrow, color: Colors.white,),
+                        onPressed: () {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Appscreens().execution, arguments: task);
+                        },
+                      ),
                     ),
+                    Container(color: Colors.black12, width: 1, height: 50),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +68,9 @@ class TaskCard extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(Appscreens().taskDetails, arguments: task);
+                  Navigator.of(
+                    context,
+                  ).pushNamed(Appscreens().taskDetails, arguments: task);
                 },
                 icon: Icon(Icons.chevron_right, color: Colors.grey),
               ),

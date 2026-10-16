@@ -1,11 +1,16 @@
 
+GET http://localhost:8080/v1/routines/51 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
+
+###
+
 GET http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
 
 ###
 
 POST http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
 content-type: application/json
 
 {
@@ -15,8 +20,20 @@ content-type: application/json
 
 ###
 
+PATCH http://localhost:8080/v1/routines/associate/51/11 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
+
+
+###
+
+DELETE http://localhost:8080/v1/routines/disassociate/51/11 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
+
+
+###
+
 PATCH http://localhost:8080/v1/routines HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
 content-type: application/json
 
 {
@@ -26,15 +43,15 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:8080/v1/routines/start/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+PATCH http://localhost:8080/v1/routines/start/51 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
 
 ###
 
-PATCH http://localhost:8080/v1/routines/complete/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+PATCH http://localhost:8080/v1/routines/finish/51 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU
 
 ###
 
-DELETE http://localhost:8080/v1/routines/delete/36 HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA4OTcxMjAsInVzZXJJRCI6MX0.Hn4qW-n32GeJaMfRlis4alqOy2WP5RgDNEjGJpPWNTk
+DELETE http://localhost:8080/v1/routines/delete/51 HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTIxOTg5ODUsInVzZXJJRCI6MX0.ctgLhrApSwKsZqY10Fr0N2N0CTw4C9OrwJyKeovk0SU

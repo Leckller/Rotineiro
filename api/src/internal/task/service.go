@@ -18,6 +18,8 @@ type Service interface {
 		page,
 		pageSize int,
 	) ([]Task, utils.PaginationMeta, error)
+	FindByID(userID, taskID uint) (*Task, error)
+	CreateEvent(userID, taskID uint, eventString string) error
 }
 
 type service struct {
@@ -48,6 +50,26 @@ func (s *service) Create(userID uint, createDTO CreateTaskDTO) (uint, error) {
 	}
 
 	return task.ID, nil
+
+}
+
+func (s *service) FindByID(userID, taskID uint) (*Task, error) {
+
+	task, err := s.repository.FindByID(taskID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if task == nil {
+		return nil, ErrTaskNotFound
+	}
+
+	if task.UserID != userID {
+		return nil, ErrTaskNotFound
+	}
+
+	return task, nil
 
 }
 
@@ -152,21 +174,43 @@ func (s *service) StartTask(userID, taskID uint) error {
 
 func (s *service) CompleteTask(userID, taskID uint) error {
 
-	now := time.Now()
-	var task Task = Task{
-		CompletedAt: &now,
+	var taskEvent = TaskEvent{
+		EventType: TaskEventCompleted,
+		TaskId:    taskID,
 	}
-	task.ID = taskID
 
-	rowsAffected, err := s.repository.Update(userID, &task)
+	err := s.repository.CreateEvent(&taskEvent)
 
 	if err != nil {
 		return err
 	}
 
-	if rowsAffected <= 0 {
+	return nil
+}
+
+func (s *service) CreateEvent(userID, taskID uint, eventString string) error {
+
+	var taskEvent = TaskEvent{
+		EventType: eventString,
+		TaskId:    taskID,
+	}
+
+	task, err := s.repository.FindByID(taskID)
+
+	if err != nil {
 		return ErrTaskNotFound
 	}
 
+	if task.UserID != userID {
+		return ErrTaskUnauthorized
+	}
+
+	err = s.repository.CreateEvent(&taskEvent)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
+
 }

@@ -6,4 +6,5 @@ class Appscreens {
   final library = "/library";
   final routineDetails = "/library/routine";
   final taskDetails = "/library/task";
+  final execution = "/execution";
 }

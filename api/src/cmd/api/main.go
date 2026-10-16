@@ -2,7 +2,6 @@ package main
 
 import (
 	"api/src/internal/database"
-	"api/src/internal/history"
 	"api/src/internal/routine"
 	"api/src/internal/task"
 	"api/src/internal/user"
@@ -20,11 +19,14 @@ func main() {
 	db := database.Connect("app.db")
 
 	err := db.AutoMigrate(
-		&task.Task{},
 		&user.User{},
-		&history.History{},
+		&task.Task{},
+		&task.TaskHistory{},
+		&task.TaskEvent{},
 		&routine.Routine{},
+		&routine.RoutineHistory{},
 	)
+
 	if err != nil {
 		panic(err)
 	}
@@ -50,8 +52,11 @@ func main() {
 	auth := v1.Group("")
 	auth.Use(middleware.AuthRequired())
 
-	task.RegisterRoutes(auth, *task.Wird(db))
-	routine.RegisterRoutes(auth, *routine.Wird(db))
+	taskHandler, taskService := task.Wird(db)
+	task.RegisterRoutes(auth, *taskHandler)
+
+	routineHandler, _ := routine.Wird(db, taskService)
+	routine.RegisterRoutes(auth, *routineHandler)
 
 	router.GET("/ping", utils.Ping)
 

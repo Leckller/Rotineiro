@@ -1,12 +1,16 @@
 package routine
 
-import "gorm.io/gorm"
+import (
+	"api/src/internal/task"
 
-func Wird(db *gorm.DB) *Handler {
+	"gorm.io/gorm"
+)
+
+func Wird(db *gorm.DB, taskService task.Service) (*Handler, Service) {
 
 	repository := NewRepository(db)
-	service := NewService(repository)
+	service := NewService(repository, taskService)
 	handler := NewHandler(service)
-	return &handler
+	return &handler, service
 
 }

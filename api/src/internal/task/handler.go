@@ -14,9 +14,8 @@ type Handler interface {
 	Create(ctx *gin.Context)
 	FindAllByUser(ctx *gin.Context)
 	Update(ctx *gin.Context)
-	StartTask(ctx *gin.Context)
 	Delete(ctx *gin.Context)
-	CompleteTask(ctx *gin.Context)
+	CreateEvent(event string) gin.HandlerFunc
 }
 
 type handler struct {
@@ -219,64 +218,43 @@ func (h *handler) Update(ctx *gin.Context) {
 
 }
 
-func (h *handler) StartTask(ctx *gin.Context) {
+func (h *handler) CreateEvent(event string) gin.HandlerFunc {
 
-	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+	return func(ctx *gin.Context) {
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrTaskBadRequest})
-		return
-	}
+		taskID, err := strconv.Atoi(ctx.Param("taskID"))
 
-	userID := ctx.GetUint("userID")
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrTaskBadRequest})
+			return
+		}
 
-	err = h.service.StartTask(userID, uint(taskID))
+		userID := ctx.GetUint("userID")
 
-	if err != nil {
-		if errors.Is(err, ErrTaskNotFound) {
-			ctx.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
+		err = h.service.CreateEvent(userID, uint(taskID), event)
+
+		if err != nil {
+			if errors.Is(err, ErrTaskNotFound) {
+				ctx.JSON(http.StatusNotFound, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+			if errors.Is(err, ErrTaskUnauthorized) {
+				ctx.JSON(http.StatusUnauthorized, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "internal server error",
 			})
 			return
 		}
 
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
-		return
+		ctx.Status(http.StatusNoContent)
+
 	}
-
-	ctx.Status(http.StatusNoContent)
-
-}
-
-func (h *handler) CompleteTask(ctx *gin.Context) {
-
-	taskID, err := strconv.Atoi(ctx.Param("taskID"))
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrTaskBadRequest})
-		return
-	}
-
-	userID := ctx.GetUint("userID")
-
-	err = h.service.CompleteTask(userID, uint(taskID))
-
-	if err != nil {
-		if errors.Is(err, ErrTaskNotFound) {
-			ctx.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
-		return
-	}
-
-	ctx.Status(http.StatusNoContent)
 
 }
